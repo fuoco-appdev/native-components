@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "storybook": "STORYBOOK_ENABLED=true react-native start",
+    "storybook": "react-native start",
     "storybook:ios": "STORYBOOK_ENABLED=true react-native run-ios",
     "storybook:android": "STORYBOOK_ENABLED=true react-native run-android",
     "storybook-generate": "sb-rn-get-stories --config-path .ondevice",
