@@ -1,42 +1,200 @@
-import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+  useColorScheme,
+} from 'react-native';
+import Colors from '../Themes/colors';
 
-export type ButtonProps = {
-  onPress: () => void;
-  text: string;
-  color?: string;
-  textColor?: string;
-};
+export interface ButtonStyles {
+  root?: StyleSheet.NamedStyles<any>;
+  button?: StyleSheet.NamedStyles<any>;
+  loading?: StyleSheet.NamedStyles<any>;
+  leftIconContainer?: StyleSheet.NamedStyles<any>;
+  rightIconContainer?: StyleSheet.NamedStyles<any>;
+  children?: StyleSheet.NamedStyles<any>;
+}
 
-const styles = StyleSheet.create({
-  button: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 4,
-    alignSelf: 'flex-start',
-    flexGrow: 0,
-    backgroundColor: 'purple',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    alignItems: 'flex-start',
-    flex: 1,
-  },
+export interface ButtonProps {
+  children?: React.ReactNode;
+  touchableOpacityProps?: TouchableOpacityProps;
+  block?: boolean;
+  customStyles?: ButtonStyles;
+  customLightStyles?: ButtonStyles;
+  customDarkStyles?: ButtonStyles;
+  disabled?: boolean;
+  icon?: React.ReactNode;
+  iconRight?: React.ReactNode;
+  loading?: boolean;
+  loadingComponent?: React.ReactNode;
+  size?: 'tiny' | 'small' | 'medium' | 'large' | 'xlarge' | 'full';
+  rounded?: boolean;
+  type?:
+    | 'primary'
+    | 'default'
+    | 'secondary'
+    | 'outline'
+    | 'dashed'
+    | 'link'
+    | 'text'
+    | 'rounded';
+  danger?: boolean;
+  textAlign?: 'left' | 'center' | 'right';
+}
+
+const styles = StyleSheet.create<ButtonStyles>({
+  root: {},
+  button: {},
+  loading: {},
+  leftIconContainer: {},
+  rightIconContainer: {},
+  children: {},
 });
 
-export const MyButton = ({text, onPress, color, textColor}: ButtonProps) => (
-  <View style={styles.buttonContainer}>
-    <TouchableOpacity
-      style={[styles.button, !!color && {backgroundColor: color}]}
-      onPress={onPress}
-      activeOpacity={0.8}>
-      <Text style={[styles.buttonText, !!textColor && {color: textColor}]}>
-        {text}
-      </Text>
-    </TouchableOpacity>
-  </View>
-);
+const lightStyles = StyleSheet.create<ButtonStyles>({
+  root: {},
+  button: {},
+  loading: {},
+  leftIconContainer: {},
+  rightIconContainer: {},
+  children: {},
+});
+
+const darkStyles = StyleSheet.create<ButtonStyles>({
+  root: {},
+  button: {},
+  loading: {},
+  leftIconContainer: {},
+  rightIconContainer: {},
+  children: {},
+});
+
+export function Button({
+  touchableOpacityProps,
+  block,
+  danger,
+  disabled = false,
+  icon,
+  iconRight,
+  loading = false,
+  loadingComponent,
+  size = 'tiny',
+  rounded = false,
+  type = 'primary',
+  textAlign = 'center',
+  children,
+  customStyles = {},
+  customLightStyles = {},
+  customDarkStyles = {},
+}: ButtonProps) {
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
+  console.log(isDarkTheme);
+  const showIcon = loading || icon;
+
+  return (
+    <View
+      style={[
+        styles.root,
+        block && {
+          width: '100%',
+        },
+        customStyles?.root ?? {},
+        ...(isDarkTheme
+          ? [darkStyles?.root, customDarkStyles?.root ?? {}]
+          : [lightStyles?.root, customLightStyles?.root ?? {}]),
+      ]}
+    >
+      <TouchableOpacity
+        style={[
+          styles.button,
+          customStyles?.button ?? {},
+          ...(isDarkTheme
+            ? [
+                darkStyles.button,
+                type === 'primary' && {
+                  backgroundColor: Colors.dark_2,
+                },
+                customDarkStyles?.button ?? {},
+              ]
+            : [lightStyles.button, customLightStyles?.button ?? {}]),
+        ]}
+        onPress={() => {}}
+        activeOpacity={0.8}
+        {...touchableOpacityProps}
+      >
+        {showIcon &&
+          (loading ? (
+            <View />
+          ) : (
+            icon && (
+              <View
+                style={[
+                  styles.leftIconContainer,
+                  customStyles?.leftIconContainer ?? {},
+                  ...(isDarkTheme
+                    ? [
+                        darkStyles.leftIconContainer,
+                        customDarkStyles?.leftIconContainer ?? {},
+                      ]
+                    : [
+                        lightStyles.leftIconContainer,
+                        customLightStyles?.leftIconContainer ?? {},
+                      ]),
+                ]}
+              >
+                {icon}
+              </View>
+            )
+          ))}
+        {loading && (
+          <View
+            style={[
+              styles.loading,
+              customStyles?.loading ?? {},
+              ...(isDarkTheme
+                ? [darkStyles.loading, customDarkStyles?.loading ?? {}]
+                : [lightStyles.loading, customLightStyles?.loading ?? {}]),
+            ]}
+          >
+            {loadingComponent}
+          </View>
+        )}
+        {!loading && children && (
+          <Text
+            style={[
+              styles.children,
+              customStyles?.children ?? {},
+              ...(isDarkTheme
+                ? [darkStyles.children, customDarkStyles?.children ?? {}]
+                : [lightStyles.children, customLightStyles?.children ?? {}]),
+            ]}
+          >
+            {children}
+          </Text>
+        )}
+        {iconRight && !loading && (
+          <View
+            style={[
+              styles.rightIconContainer,
+              customStyles?.rightIconContainer ?? {},
+              ...(isDarkTheme
+                ? [
+                    darkStyles.rightIconContainer,
+                    customDarkStyles?.rightIconContainer ?? {},
+                  ]
+                : [
+                    lightStyles.rightIconContainer,
+                    customLightStyles?.rightIconContainer ?? {},
+                  ]),
+            ]}
+          >
+            {iconRight}
+          </View>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+}

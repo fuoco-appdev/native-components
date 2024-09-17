@@ -1,17 +1,20 @@
-import { withBackgrounds } from "@storybook/addon-ondevice-backgrounds";
-import { Preview } from "@storybook/react";
+import React from 'react';
+import { withBackgrounds } from '@storybook/addon-ondevice-backgrounds';
+import { Preview } from '@storybook/react';
+import { addons } from '@storybook/preview-api';
+import { themes } from '@storybook/theming';
+import { withModes } from '../packages/darkmode/src';
 
 const preview: Preview = {
   parameters: {
-    backgrounds: {
-      default: "plain",
+    modes: {
+      default: 'light',
       values: [
-        { name: "plain", value: "white" },
-        { name: "warm", value: "hotpink" },
-        { name: "cool", value: "deepskyblue" },
+        { name: 'light', value: 'white' },
+        { name: 'dark', value: '#121212' },
       ],
     },
-    actions: { argTypesRegex: "^on[A-Z].*" },
+    actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -19,7 +22,7 @@ const preview: Preview = {
       },
     },
   },
-  decorators: [withBackgrounds],
+  decorators: [withModes],
 };
 
 export default preview;
