@@ -1,9 +1,13 @@
 import {
   FlexStyle,
+  GestureResponderEvent,
   ImageStyle,
+  Pressable,
+  PressableProps,
   StyleSheet,
   Text,
   TextStyle,
+  TouchableNativeFeedback,
   TouchableOpacity,
   TouchableOpacityProps,
   View,
@@ -25,7 +29,8 @@ export interface ButtonStyles {
 
 export interface ButtonProps {
   children?: React.ReactNode;
-  touchableOpacityProps?: TouchableOpacityProps;
+  onPress?: ((event: GestureResponderEvent) => void) | null | undefined;
+  pressableProps?: PressableProps;
   block?: boolean;
   customStyles?: ButtonStyles;
   customLightStyles?: ButtonStyles;
@@ -128,7 +133,12 @@ const darkStyles = StyleSheet.create<ButtonStyles>({
 });
 
 export function Button({
-  touchableOpacityProps,
+  pressableProps = {
+    android_ripple: {
+      color: 'rgba(255, 255, 255, 0.34)',
+    },
+  },
+  onPress,
   block,
   danger,
   disabled = false,
@@ -393,7 +403,7 @@ export function Button({
           : [lightStyles?.root, customLightStyles?.root ?? {}]),
       ]}
     >
-      <TouchableOpacity
+      <Pressable
         disabled={disabled}
         style={[
           styles.button,
@@ -414,98 +424,99 @@ export function Button({
                 customLightStyles?.button ?? {},
               ]),
         ]}
-        onPress={() => {}}
-        activeOpacity={0.8}
-        {...touchableOpacityProps}
+        onPress={onPress}
+        {...pressableProps}
       >
-        {showIcon &&
-          (loading ? (
-            <View />
-          ) : (
-            icon && (
-              <View
-                style={[
-                  styles.leftIconContainer,
-                  children !== undefined && {
-                    marginRight: MarginsPaddings.mp_4,
-                  },
-                  customStyles?.leftIconContainer ?? {},
-                  ...(isDarkTheme
-                    ? [
-                        darkStyles.leftIconContainer,
-                        customDarkStyles?.leftIconContainer ?? {},
-                      ]
-                    : [
-                        lightStyles.leftIconContainer,
-                        customLightStyles?.leftIconContainer ?? {},
-                      ]),
-                ]}
-              >
-                {icon}
-              </View>
-            )
-          ))}
-        {loading && (
-          <View
-            style={[
-              styles.loading,
-              customStyles?.loading ?? {},
-              ...(isDarkTheme
-                ? [darkStyles.loading, customDarkStyles?.loading ?? {}]
-                : [lightStyles.loading, customLightStyles?.loading ?? {}]),
-            ]}
-          >
-            {loadingComponent}
-          </View>
-        )}
-        {!loading && children && (
-          <Text
-            style={[
-              styles.children,
-              textStyle,
-              danger && {
-                color: Colors.red_500,
-              },
-              customStyles?.children ?? {},
-              ...(isDarkTheme
-                ? [
-                    darkStyles.children,
-                    textDarkStyle,
-                    customDarkStyles?.children ?? {},
-                  ]
-                : [
-                    lightStyles.children,
-                    textLightStyle,
-                    customLightStyles?.children ?? {},
-                  ]),
-            ]}
-          >
-            {children}
-          </Text>
-        )}
-        {iconRight && !loading && (
-          <View
-            style={[
-              styles.rightIconContainer,
-              children !== undefined && {
-                marginLeft: MarginsPaddings.mp_4,
-              },
-              customStyles?.rightIconContainer ?? {},
-              ...(isDarkTheme
-                ? [
-                    darkStyles.rightIconContainer,
-                    customDarkStyles?.rightIconContainer ?? {},
-                  ]
-                : [
-                    lightStyles.rightIconContainer,
-                    customLightStyles?.rightIconContainer ?? {},
-                  ]),
-            ]}
-          >
-            {iconRight}
-          </View>
-        )}
-      </TouchableOpacity>
+        <>
+          {showIcon &&
+            (loading ? (
+              <View />
+            ) : (
+              icon && (
+                <View
+                  style={[
+                    styles.leftIconContainer,
+                    children !== undefined && {
+                      marginRight: MarginsPaddings.mp_4,
+                    },
+                    customStyles?.leftIconContainer ?? {},
+                    ...(isDarkTheme
+                      ? [
+                          darkStyles.leftIconContainer,
+                          customDarkStyles?.leftIconContainer ?? {},
+                        ]
+                      : [
+                          lightStyles.leftIconContainer,
+                          customLightStyles?.leftIconContainer ?? {},
+                        ]),
+                  ]}
+                >
+                  {icon}
+                </View>
+              )
+            ))}
+          {loading && (
+            <View
+              style={[
+                styles.loading,
+                customStyles?.loading ?? {},
+                ...(isDarkTheme
+                  ? [darkStyles.loading, customDarkStyles?.loading ?? {}]
+                  : [lightStyles.loading, customLightStyles?.loading ?? {}]),
+              ]}
+            >
+              {loadingComponent}
+            </View>
+          )}
+          {!loading && children && (
+            <Text
+              style={[
+                styles.children,
+                textStyle,
+                danger && {
+                  color: Colors.red_500,
+                },
+                customStyles?.children ?? {},
+                ...(isDarkTheme
+                  ? [
+                      darkStyles.children,
+                      textDarkStyle,
+                      customDarkStyles?.children ?? {},
+                    ]
+                  : [
+                      lightStyles.children,
+                      textLightStyle,
+                      customLightStyles?.children ?? {},
+                    ]),
+              ]}
+            >
+              {children}
+            </Text>
+          )}
+          {iconRight && !loading && (
+            <View
+              style={[
+                styles.rightIconContainer,
+                children !== undefined && {
+                  marginLeft: MarginsPaddings.mp_4,
+                },
+                customStyles?.rightIconContainer ?? {},
+                ...(isDarkTheme
+                  ? [
+                      darkStyles.rightIconContainer,
+                      customDarkStyles?.rightIconContainer ?? {},
+                    ]
+                  : [
+                      lightStyles.rightIconContainer,
+                      customLightStyles?.rightIconContainer ?? {},
+                    ]),
+              ]}
+            >
+              {iconRight}
+            </View>
+          )}
+        </>
+      </Pressable>
     </View>
   );
 }
