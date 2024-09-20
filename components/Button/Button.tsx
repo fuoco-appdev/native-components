@@ -17,6 +17,7 @@ import {
 import Colors from '../Themes/colors';
 import MarginsPaddings from '../Themes/margins_paddings';
 import Globals from '../Themes/globals';
+import { darkTheme } from '@storybook/react-native-theming';
 
 export interface ButtonStyles {
   root?: ViewStyle | TextStyle | ImageStyle;
@@ -79,6 +80,7 @@ const styles = StyleSheet.create<ButtonStyles>({
     borderRadius: Globals.rounded_base,
     height: 'auto',
     width: 'auto',
+    overflow: 'hidden',
   },
   loading: {
     display: 'flex',
@@ -133,11 +135,7 @@ const darkStyles = StyleSheet.create<ButtonStyles>({
 });
 
 export function Button({
-  pressableProps = {
-    android_ripple: {
-      color: 'rgba(255, 255, 255, 0.34)',
-    },
-  },
+  pressableProps = {},
   onPress,
   block,
   danger,
@@ -425,6 +423,14 @@ export function Button({
               ]),
         ]}
         onPress={onPress}
+        android_ripple={{
+          radius: rounded ? Globals.rounded_full : Globals.rounded_md,
+          borderless: false,
+          foreground: true,
+          color: darkTheme
+            ? 'rgba(255, 255, 255, 0.34)'
+            : 'rgba(0, 0, 0, 0.34)',
+        }}
         {...pressableProps}
       >
         <>

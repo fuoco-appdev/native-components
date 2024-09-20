@@ -1,11 +1,10 @@
-// stories/MyButton.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronRight, ShoppingBag, Refresh } from '../Icon/Icons/Line';
 import { Button } from './Button';
 import { ScrollView, View } from 'react-native';
 
 const meta = {
-  title: 'components/Button',
+  title: 'General/Button',
   component: Button,
 } satisfies Meta<typeof Button>;
 
@@ -59,7 +58,7 @@ export const WithBlock: Story = {
 export const WithOnlyIcon: Story = {
   render: () => <Button icon={<ChevronRight size={21} color={'#fff'} />} />,
 };
-export const withOnlyLoading: Story = {
+export const WithOnlyLoading: Story = {
   render: () => <Button loading={true} />,
 };
 // export const withRef = () => {
@@ -295,7 +294,7 @@ export const AllButtons: Story = {
   ),
 };
 
-export const rounded: Story = {
+export const Rounded: Story = {
   render: (args: any) => (
     <View
       style={{
