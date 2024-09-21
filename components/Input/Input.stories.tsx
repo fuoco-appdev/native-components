@@ -69,15 +69,27 @@ export const WithDescription: Story = {
 };
 
 export const TextArea: Story = {
-  render: () => <Input.TextArea />,
+  render: () => <Input.TextArea label={'This is a text area'} />,
 };
 
 export const TextAreaWithError: Story = {
-  render: () => <Input.TextArea />,
+  render: () => (
+    <Input.TextArea
+      label={'This is a text area'}
+      error={'Field cannot be empty'}
+    />
+  ),
 };
 
 export const TextAreaWithLimit: Story = {
-  render: () => <Input.TextArea />,
+  render: () => (
+    <Input.TextArea
+      label={'This is a text area, with 10 rows'}
+      labelOptional={'500 character limit'}
+      numberOfLines={10}
+      limit={500}
+    />
+  ),
 };
 
 export const WithRevealAndCopy: Story = {

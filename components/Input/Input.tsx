@@ -455,15 +455,92 @@ function Input({
   );
 }
 
-export interface TextAreaStyles {}
+export interface TextAreaStyles {
+  root?: ViewStyle | TextStyle | ImageStyle;
+  container?: ViewStyle | TextStyle | ImageStyle;
+  input?: ViewStyle | TextStyle | ImageStyle;
+  error?: ViewStyle | TextStyle | ImageStyle;
+  withIcon?: ViewStyle | TextStyle | ImageStyle;
+  borderless?: ViewStyle | TextStyle | ImageStyle;
+  actionsContainer?: ViewStyle | TextStyle | ImageStyle;
+}
+
+export interface ExtraTextAreaStyles {
+  formLayoutStyles?: FormLayoutStyles;
+  formLayoutDarkStyles?: FormLayoutStyles;
+  formLayoutLightStyles?: FormLayoutStyles;
+}
 
 export interface TextAreaProps {
+  autoComplete?:
+    | 'additional-name'
+    | 'address-line1'
+    | 'address-line2'
+    | 'birthdate-day'
+    | 'birthdate-full'
+    | 'birthdate-month'
+    | 'birthdate-year'
+    | 'cc-csc'
+    | 'cc-exp'
+    | 'cc-exp-day'
+    | 'cc-exp-month'
+    | 'cc-exp-year'
+    | 'cc-number'
+    | 'cc-name'
+    | 'cc-given-name'
+    | 'cc-middle-name'
+    | 'cc-family-name'
+    | 'cc-type'
+    | 'country'
+    | 'current-password'
+    | 'email'
+    | 'family-name'
+    | 'gender'
+    | 'given-name'
+    | 'honorific-prefix'
+    | 'honorific-suffix'
+    | 'name'
+    | 'name-family'
+    | 'name-given'
+    | 'name-middle'
+    | 'name-middle-initial'
+    | 'name-prefix'
+    | 'name-suffix'
+    | 'new-password'
+    | 'nickname'
+    | 'one-time-code'
+    | 'organization'
+    | 'organization-title'
+    | 'password'
+    | 'password-new'
+    | 'postal-address'
+    | 'postal-address-country'
+    | 'postal-address-extended'
+    | 'postal-address-extended-postal-code'
+    | 'postal-address-locality'
+    | 'postal-address-region'
+    | 'postal-code'
+    | 'street-address'
+    | 'sms-otp'
+    | 'tel'
+    | 'tel-country-code'
+    | 'tel-national'
+    | 'tel-device'
+    | 'url'
+    | 'username'
+    | 'username-new'
+    | 'off';
+  autoFocus?: boolean;
+  placeholderTextColor?: ColorValue;
   customStyles?: TextAreaStyles;
   customLightStyles?: TextAreaStyles;
   customDarkStyles?: TextAreaStyles;
-  autoComplete?: boolean;
+  customExtraStyles?: ExtraTextAreaStyles;
   autofocus?: boolean;
+  type?: KeyboardTypeOptions;
+  numberOfLines?: number;
   descriptionText?: string;
+  defaultValue?: string;
   disabled?: boolean;
   error?: string;
   icon?: any;
@@ -473,31 +550,247 @@ export interface TextAreaProps {
   beforeLabel?: string;
   labelOptional?: string;
   name?: string;
-  onChange?(x: React.ChangeEvent<HTMLTextAreaElement>): void;
-  onFocus?(x: React.FocusEvent<HTMLTextAreaElement>): void;
-  onBlur?(x: React.FocusEvent<HTMLTextAreaElement>): void;
-  onKeyDown?(x: React.KeyboardEvent<HTMLTextAreaElement>): void;
+  onChange?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
+  onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   placeholder?: string;
   value?: any;
   style?: React.CSSProperties;
-  rows?: number;
   limit?: number;
   size?: 'tiny' | 'small' | 'medium' | 'large' | 'xlarge';
   borderless?: boolean;
   shakeInterpolationCount?: number;
   shakeDistance?: number;
+  textInputProps?: TextInputProps;
 }
 
-const textAreaStyles = StyleSheet.create<TextAreaStyles>({});
-const textAreaLightStyles = StyleSheet.create<TextAreaStyles>({});
-const textAreaDarkStyles = StyleSheet.create<TextAreaStyles>({});
+const textAreaStyles = StyleSheet.create<TextAreaStyles>({
+  root: {},
+  container: {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'row',
+    borderRadius: Globals.rounded_md,
+    paddingLeft: MarginsPaddings.mp_5,
+    paddingRight: MarginsPaddings.mp_5,
+  },
+  error: {
+    borderColor: Colors.red_500,
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
+  withIcon: {},
+  borderless: {},
+  iconContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    marginRight: MarginsPaddings.mp_4,
+  },
+  input: {
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+    paddingTop: MarginsPaddings.mp_5,
+    paddingBottom: MarginsPaddings.mp_5,
+    width: '100%',
+    height: '100%',
+    fontSize: Globals.font_size_sm,
+    lineHeight: Globals.font_line_height_sm,
+  },
+  actionsContainer: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: MarginsPaddings.mp_4,
+    top: 0,
+    bottom: 0,
+    right: 0,
+    paddingRight: MarginsPaddings.mp_5,
+    paddingLeft: MarginsPaddings.mp_5,
+  },
+});
+const textAreaLightStyles = StyleSheet.create<TextAreaStyles>({
+  root: {},
+  container: {
+    backgroundColor: Colors.gray_100,
+  },
+  error: {},
+  withIcon: {},
+  borderless: {},
+  iconContainer: {
+    color: Colors.gray_900,
+  },
+  input: {
+    color: Colors.gray_900,
+  },
+  actionsContainer: {
+    color: Colors.gray_900,
+  },
+});
+const textAreaDarkStyles = StyleSheet.create<TextAreaStyles>({
+  root: {},
+  container: {
+    backgroundColor: Colors.dark_1,
+  },
+  error: {},
+  withIcon: {},
+  borderless: {},
+  iconContainer: {
+    color: Colors.gray_100,
+  },
+  input: {
+    color: Colors.gray_100,
+  },
+  actionsContainer: {
+    color: Colors.gray_100,
+  },
+});
 
 function TextArea({
-  customStyles,
-  customLightStyles,
-  customDarkStyles,
-}: InputProps) {
-  return <View></View>;
+  autoComplete,
+  autoFocus,
+  onChange,
+  onFocus,
+  onBlur,
+  placeholder,
+  placeholderTextColor,
+  value,
+  defaultValue,
+  type,
+  numberOfLines = 4,
+  customStyles = {},
+  customLightStyles = {},
+  customDarkStyles = {},
+  customExtraStyles = {},
+  descriptionText,
+  disabled,
+  error,
+  icon,
+  limit,
+  label,
+  afterLabel,
+  beforeLabel,
+  labelOptional,
+  borderless = false,
+  shakeInterpolationCount = 3,
+  shakeDistance = 6,
+  textInputProps,
+}: TextAreaProps) {
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
+
+  const { x } = useSpring({
+    from: { x: 0 },
+    to: error ? { x: 1 } : { x: 0 },
+    config: { mass: 1, tension: 500, friction: 100 },
+  });
+
+  const interpolation: number[] = [];
+  interpolation.push(0);
+
+  for (let i = 0; i < shakeInterpolationCount; i++) {
+    interpolation.push(-shakeDistance);
+    interpolation.push(shakeDistance);
+  }
+
+  interpolation.push(0);
+
+  return (
+    <animated.View
+      style={[
+        {
+          x: x.to([0, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1], interpolation),
+        },
+        textAreaStyles.root as any,
+        customStyles?.root ?? {},
+        ...(isDarkTheme
+          ? [textAreaDarkStyles?.root, customDarkStyles?.root ?? {}]
+          : [textAreaLightStyles?.root, customLightStyles?.root ?? {}]),
+      ]}
+    >
+      <FormLayout
+        label={label}
+        afterLabel={afterLabel}
+        beforeLabel={beforeLabel}
+        labelOptional={labelOptional}
+        error={error}
+        descriptionText={descriptionText}
+        customStyles={customExtraStyles.formLayoutStyles}
+        customDarkStyles={customExtraStyles.formLayoutDarkStyles}
+        customLightStyles={customExtraStyles.formLayoutLightStyles}
+      >
+        <View
+          style={[
+            textAreaStyles.container,
+            customStyles?.container ?? {},
+            error ? textAreaStyles.error : {},
+            ...(isDarkTheme
+              ? [
+                  textAreaDarkStyles?.container,
+                  error ? textAreaDarkStyles.error : {},
+                  customDarkStyles?.container ?? {},
+                ]
+              : [
+                  textAreaLightStyles?.container,
+                  error ? textAreaLightStyles.error : {},
+                  customLightStyles?.container ?? {},
+                ]),
+          ]}
+        >
+          <TextInput
+            style={[
+              textAreaStyles.input,
+              customStyles?.input ?? {},
+              ...(isDarkTheme
+                ? [textAreaDarkStyles?.input, customDarkStyles?.input ?? {}]
+                : [textAreaLightStyles?.input, customLightStyles?.input ?? {}]),
+            ]}
+            multiline={true}
+            value={value}
+            autoComplete={autoComplete}
+            autoFocus={autoFocus}
+            textAlignVertical={'top'}
+            placeholderTextColor={
+              placeholderTextColor ?? isDarkTheme
+                ? Colors.gray_400
+                : Colors.gray_600
+            }
+            numberOfLines={numberOfLines}
+            maxLength={limit}
+            defaultValue={defaultValue}
+            editable={!disabled}
+            selectTextOnFocus={!disabled}
+            onChange={onChange ? (event) => onChange(event) : undefined}
+            onFocus={onFocus ? (event) => onFocus(event) : undefined}
+            onBlur={onBlur ? (event) => onBlur(event) : undefined}
+            placeholder={placeholder}
+            keyboardType={type}
+            {...textInputProps}
+          />
+          {error && (
+            <View
+              style={[
+                textAreaStyles.actionsContainer,
+                customStyles?.actionsContainer ?? {},
+                ...(isDarkTheme
+                  ? [
+                      textAreaDarkStyles?.actionsContainer,
+                      customDarkStyles?.actionsContainer ?? {},
+                    ]
+                  : [
+                      textAreaLightStyles?.actionsContainer,
+                      customLightStyles?.actionsContainer ?? {},
+                    ]),
+              ]}
+            >
+              <ErrorOutline size={21} color={Colors.red_500} />
+            </View>
+          )}
+        </View>
+      </FormLayout>
+    </animated.View>
+  );
 }
 
 Input.TextArea = TextArea;
