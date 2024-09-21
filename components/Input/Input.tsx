@@ -35,6 +35,7 @@ import {
   VisibilityOff,
 } from '../Icon/Icons/Line';
 import { useState } from 'react';
+import Typography from '../Typography/Typography';
 
 export interface InputStyles {
   root?: ViewStyle;
@@ -677,6 +678,7 @@ function TextArea({
   shakeDistance = 6,
   textInputProps,
 }: TextAreaProps) {
+  const [charLength, setCharLength] = useState(0);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
@@ -685,6 +687,13 @@ function TextArea({
     to: error ? { x: 1 } : { x: 0 },
     config: { mass: 1, tension: 500, friction: 100 },
   });
+
+  const onInputChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    setCharLength(e.nativeEvent.text.length);
+    if (onChange) {
+      onChange(e);
+    }
+  };
 
   const interpolation: number[] = [];
   interpolation.push(0);
@@ -761,7 +770,7 @@ function TextArea({
             defaultValue={defaultValue}
             editable={!disabled}
             selectTextOnFocus={!disabled}
-            onChange={onChange ? (event) => onChange(event) : undefined}
+            onChange={(event) => onInputChange(event)}
             onFocus={onFocus ? (event) => onFocus(event) : undefined}
             onBlur={onBlur ? (event) => onBlur(event) : undefined}
             placeholder={placeholder}
@@ -788,6 +797,11 @@ function TextArea({
             </View>
           )}
         </View>
+        {limit && (
+          <Typography.Text>
+            {charLength}/{limit}
+          </Typography.Text>
+        )}
       </FormLayout>
     </animated.View>
   );
