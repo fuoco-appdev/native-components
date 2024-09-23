@@ -49,12 +49,8 @@ export interface InputStyles {
 }
 
 export interface ExtraInputStyles {
-  formLayoutStyles?: FormLayoutStyles;
-  formLayoutDarkStyles?: FormLayoutStyles;
-  formLayoutLightStyles?: FormLayoutStyles;
-  revealButtonStyles?: ButtonStyles;
-  revealButtonDarkStyles?: ButtonStyles;
-  revealButtonLightStyles?: ButtonStyles;
+  formLayout?: FormLayoutStyles;
+  revealButton?: ButtonStyles;
 }
 
 export interface InputProps {
@@ -128,6 +124,8 @@ export interface InputProps {
   customLightStyles?: InputStyles;
   customDarkStyles?: InputStyles;
   customExtraStyles?: ExtraInputStyles;
+  customExtraDarkStyles?: ExtraInputStyles;
+  customExtraLightStyles?: ExtraInputStyles;
   copy?: boolean;
   password?: boolean;
   defaultValue?: string;
@@ -244,6 +242,8 @@ function Input({
   customLightStyles = {},
   customDarkStyles = {},
   customExtraStyles = {},
+  customExtraDarkStyles = {},
+  customExtraLightStyles = {},
   copy,
   password,
   defaultValue,
@@ -316,9 +316,9 @@ function Input({
         labelOptional={labelOptional}
         error={error}
         descriptionText={descriptionText}
-        customStyles={customExtraStyles.formLayoutStyles}
-        customDarkStyles={customExtraStyles.formLayoutDarkStyles}
-        customLightStyles={customExtraStyles.formLayoutLightStyles}
+        customStyles={customExtraStyles.formLayout}
+        customDarkStyles={customExtraDarkStyles.formLayout}
+        customLightStyles={customExtraLightStyles.formLayout}
       >
         <View
           style={[
@@ -402,9 +402,9 @@ function Input({
             >
               {reveal ? (
                 <Button
-                  customStyles={customExtraStyles.revealButtonStyles}
-                  customDarkStyles={customExtraStyles.revealButtonDarkStyles}
-                  customLightStyles={customExtraStyles.revealButtonLightStyles}
+                  customStyles={customExtraStyles.revealButton}
+                  customDarkStyles={customExtraDarkStyles.revealButton}
+                  customLightStyles={customExtraLightStyles.revealButton}
                   size={'tiny'}
                   type={'text'}
                   rounded={true}

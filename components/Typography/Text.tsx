@@ -10,7 +10,7 @@ export interface TextStyles {
   root?: ReactNative.TextStyle;
 }
 
-export interface TitleProps {
+export interface TextProps {
   children?: React.ReactNode;
   type?: 'default' | 'secondary' | 'success' | 'warning' | 'danger';
   align?: 'center' | 'left' | 'right';
@@ -52,7 +52,7 @@ function Text({
   underline,
   strikethrough,
   strong,
-}: TitleProps) {
+}: TextProps) {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
