@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "include": [
+        "components/"
+    ],
+    "exclude": [
+        "App.tsx",
+        "storybook_static/",
+        "**/*.stories.tsx",
+        "node_modules/"
+    ]
+}  

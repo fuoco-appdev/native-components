@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronRight, ShoppingBag, Refresh } from '../Icon/Icons/Line';
-import { Button } from './Button';
+import Button from './Button';
 import { ScrollView, View } from 'react-native';
 
 const meta = {

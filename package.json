@@ -13,7 +13,8 @@
     "storybook:android": "STORYBOOK_ENABLED=true react-native run-android",
     "storybook-generate": "sb-rn-get-stories --config-path .ondevice",
     "storybook:web": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepare": "bob build"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
@@ -27,14 +28,15 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/helpers": "^7.25.7",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@react-native-clipboard/clipboard": "^1.14.2",
+    "@react-native-community/checkbox": "^0.5.17",
     "@react-native/babel-preset": "0.73.19",
     "@react-native/eslint-config": "0.73.2",
     "@react-native/metro-config": "0.73.3",
     "@react-native/typescript-config": "0.73.1",
-    "@react-native-clipboard/clipboard": "^1.14.2",
-    "@react-native-community/checkbox": "^0.5.17",
     "@react-spring/native": "^9.7.4",
     "@storybook/addon-actions": "^7.6.13",
     "@storybook/addon-controls": "^7.6.13",
@@ -58,6 +60,7 @@
     "babel-loader": "^8.2.4",
     "babel-plugin-react-docgen-typescript": "^1.5.1",
     "babel-plugin-react-native-web": "^0.19.10",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
@@ -67,10 +70,47 @@
     "react-test-renderer": "18.2.0",
     "storybook": "^7.6.13",
     "storybook-dark-mode": "^4.0.2",
-    "typescript": "5.0.4",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.4"
+    "typescript": "5.0.4"
   },
   "jest": {
-    "preset": "react-native"
-  }
+    "preset": "react-native",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/lib/"
+    ]
+  },
+  "source": "./index.js",
+  "main": "./lib/commonjs/index.js",
+  "module": "./lib/module/index.js",
+  "types": "./lib/typescript/components/index.d.ts",
+  "react-native": "./components/index.tsx",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./lib\\module\\index.js"
+      },
+      "require": {
+        "default": "./lib\\commonjs\\index.js"
+      }
+    }
+  },
+  "files": [
+    "components",
+    "lib"
+  ],
+  "react-native-builder-bob": {
+    "source": "components",
+    "output": "lib",
+    "targets": [
+      [
+        "commonjs",
+        {"copyFlow": true}
+      ],
+      "module",
+      ["typescript", {"project": "tsconfig.lib.json"}]
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
 }
