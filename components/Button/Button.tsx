@@ -116,7 +116,9 @@ const lightStyles = StyleSheet.create<ButtonStyles>({
   rightIconContainer: {
     color: Colors.gray_900,
   },
-  children: {},
+  children: {
+    color: Colors.gray_900,
+  },
 });
 
 const darkStyles = StyleSheet.create<ButtonStyles>({
@@ -375,11 +377,13 @@ export function Button({
   } else if (size === 'full') {
     sizeStyle = {
       width: '100%',
-      height: '100%',
+      paddingTop: MarginsPaddings.mp_5,
+      paddingBottom: MarginsPaddings.mp_5,
     };
     sizeWithChildrenStyle = {
       width: '100%',
-      height: '100%',
+      paddingTop: MarginsPaddings.mp_5,
+      paddingBottom: MarginsPaddings.mp_5,
     };
     textStyle = {
       ...textStyle,
@@ -391,20 +395,34 @@ export function Button({
   return (
     <View
       style={[
-        styles.root,
+        ...(isDarkTheme
+          ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
+          : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
+        { ...styles.root, ...(customStyles?.root ?? {}) },
         block && {
           width: '100%',
         },
-        customStyles?.root ?? {},
-        ...(isDarkTheme
-          ? [darkStyles?.root, customDarkStyles?.root ?? {}]
-          : [lightStyles?.root, customLightStyles?.root ?? {}]),
       ]}
     >
       <Pressable
         disabled={disabled}
         style={[
-          styles.button,
+          ...(isDarkTheme
+            ? [
+                {
+                  ...darkStyles.button,
+                  ...typeDarkStyle,
+                  ...(customDarkStyles?.button ?? {}),
+                },
+              ]
+            : [
+                {
+                  ...lightStyles.button,
+                  ...typeLightStyle,
+                  ...(customLightStyles?.button ?? {}),
+                },
+              ]),
+          { ...styles.button, ...customStyles.button },
           typeStyle,
           children ? sizeWithChildrenStyle : sizeStyle,
           rounded && {
@@ -413,23 +431,15 @@ export function Button({
           danger && {
             borderColor: Colors.red_500,
           },
-          customStyles?.button ?? {},
-          ...(isDarkTheme
-            ? [darkStyles.button, typeDarkStyle, customDarkStyles?.button ?? {}]
-            : [
-                lightStyles.button,
-                typeLightStyle,
-                customLightStyles?.button ?? {},
-              ]),
         ]}
         onPress={onPress}
         android_ripple={{
           radius: rounded ? Globals.rounded_full : Globals.rounded_md,
           borderless: false,
           foreground: true,
-          color: darkTheme
-            ? 'rgba(255, 255, 255, 0.34)'
-            : 'rgba(0, 0, 0, 0.34)',
+          color: isDarkTheme
+            ? 'rgba(255, 255, 255, 0.13)'
+            : 'rgba(0, 0, 0, 0.13)',
         }}
         {...pressableProps}
       >
@@ -441,20 +451,26 @@ export function Button({
               icon && (
                 <View
                   style={[
-                    styles.leftIconContainer,
+                    ...(isDarkTheme
+                      ? [
+                          {
+                            ...darkStyles.leftIconContainer,
+                            ...(customDarkStyles?.leftIconContainer ?? {}),
+                          },
+                        ]
+                      : [
+                          {
+                            ...lightStyles.leftIconContainer,
+                            ...(customLightStyles?.leftIconContainer ?? {}),
+                          },
+                        ]),
+                    {
+                      ...styles.leftIconContainer,
+                      ...(customStyles?.leftIconContainer ?? {}),
+                    },
                     children !== undefined && {
                       marginRight: MarginsPaddings.mp_4,
                     },
-                    customStyles?.leftIconContainer ?? {},
-                    ...(isDarkTheme
-                      ? [
-                          darkStyles.leftIconContainer,
-                          customDarkStyles?.leftIconContainer ?? {},
-                        ]
-                      : [
-                          lightStyles.leftIconContainer,
-                          customLightStyles?.leftIconContainer ?? {},
-                        ]),
                   ]}
                 >
                   {icon}
@@ -464,11 +480,20 @@ export function Button({
           {loading && (
             <View
               style={[
-                styles.loading,
-                customStyles?.loading ?? {},
                 ...(isDarkTheme
-                  ? [darkStyles.loading, customDarkStyles?.loading ?? {}]
-                  : [lightStyles.loading, customLightStyles?.loading ?? {}]),
+                  ? [
+                      {
+                        ...darkStyles.loading,
+                        ...(customDarkStyles?.loading ?? {}),
+                      },
+                    ]
+                  : [
+                      {
+                        ...lightStyles.loading,
+                        ...(customLightStyles?.loading ?? {}),
+                      },
+                    ]),
+                { ...styles.loading, ...(customStyles?.loading ?? {}) },
               ]}
             >
               {loadingComponent}
@@ -477,23 +502,26 @@ export function Button({
           {!loading && children && (
             <Text
               style={[
-                styles.children,
+                ...(isDarkTheme
+                  ? [
+                      {
+                        ...darkStyles.children,
+                        ...(customDarkStyles?.children ?? {}),
+                      },
+                      textDarkStyle,
+                    ]
+                  : [
+                      {
+                        ...lightStyles.children,
+                        ...(customLightStyles?.children ?? {}),
+                      },
+                      textLightStyle,
+                    ]),
+                { ...styles.children, ...(customStyles?.children ?? {}) },
                 textStyle,
                 danger && {
                   color: Colors.red_500,
                 },
-                customStyles?.children ?? {},
-                ...(isDarkTheme
-                  ? [
-                      darkStyles.children,
-                      textDarkStyle,
-                      customDarkStyles?.children ?? {},
-                    ]
-                  : [
-                      lightStyles.children,
-                      textLightStyle,
-                      customLightStyles?.children ?? {},
-                    ]),
               ]}
             >
               {children}
@@ -502,20 +530,26 @@ export function Button({
           {iconRight && !loading && (
             <View
               style={[
-                styles.rightIconContainer,
+                ...(isDarkTheme
+                  ? [
+                      {
+                        ...darkStyles.rightIconContainer,
+                        ...(customDarkStyles?.rightIconContainer ?? {}),
+                      },
+                    ]
+                  : [
+                      {
+                        ...lightStyles.rightIconContainer,
+                        ...(customLightStyles?.rightIconContainer ?? {}),
+                      },
+                    ]),
+                {
+                  ...styles.rightIconContainer,
+                  ...(customStyles?.rightIconContainer ?? {}),
+                },
                 children !== undefined && {
                   marginLeft: MarginsPaddings.mp_4,
                 },
-                customStyles?.rightIconContainer ?? {},
-                ...(isDarkTheme
-                  ? [
-                      darkStyles.rightIconContainer,
-                      customDarkStyles?.rightIconContainer ?? {},
-                    ]
-                  : [
-                      lightStyles.rightIconContainer,
-                      customLightStyles?.rightIconContainer ?? {},
-                    ]),
               ]}
             >
               {iconRight}

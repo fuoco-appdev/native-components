@@ -4,6 +4,7 @@ import Colors from '../Themes/colors';
 import Globals from '../Themes/globals';
 import Title from './Title';
 import Text from './Text';
+import Link from './Link';
 
 export interface TypographyStyles {
   root?: ReactNative.TextStyle;
@@ -46,11 +47,10 @@ function Typography({
   return (
     <ReactNative.Text
       style={[
-        styles.root,
-        customStyles?.root ?? {},
         ...(isDarkTheme
           ? [darkStyles?.root, customDarkStyles?.root ?? {}]
           : [lightStyles?.root, customLightStyles?.root ?? {}]),
+        { ...styles.root, ...(customStyles?.root ?? {}) },
       ]}
     >
       {children}
@@ -60,5 +60,6 @@ function Typography({
 
 Typography.Title = Title;
 Typography.Text = Text;
+Typography.Link = Link;
 
 export default Typography;

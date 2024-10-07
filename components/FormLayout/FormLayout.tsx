@@ -204,38 +204,44 @@ export function FormLayout({
   return (
     <View
       style={[
-        styles.root,
-        customStyles.root,
         ...(isDarkTheme
-          ? [darkStyles?.root, customDarkStyles?.root ?? {}]
-          : [lightStyles?.root, customLightStyles?.root ?? {}]),
+          ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
+          : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
+        { ...styles.root, ...customStyles.root },
       ]}
     >
       {labelled && (
         <Text
           style={[
-            styles.label,
-            customStyles.label,
-            textSizeStyle,
             ...(isDarkTheme
-              ? [darkStyles?.label, customDarkStyles?.label ?? {}]
-              : [lightStyles?.label, customLightStyles?.label ?? {}]),
+              ? [{ ...darkStyles?.label, ...(customDarkStyles?.label ?? {}) }]
+              : [
+                  {
+                    ...lightStyles?.label,
+                    ...(customLightStyles?.label ?? {}),
+                  },
+                ]),
+            { ...styles.label, ...customStyles.label },
+            textSizeStyle,
           ]}
         >
           {beforeLabel && (
             <Text
               style={[
-                styles.labelBefore,
-                customStyles.labelBefore,
                 ...(isDarkTheme
                   ? [
-                      darkStyles?.labelBefore,
-                      customDarkStyles?.labelBefore ?? {},
+                      {
+                        ...darkStyles?.labelBefore,
+                        ...(customDarkStyles?.labelBefore ?? {}),
+                      },
                     ]
                   : [
-                      lightStyles?.labelBefore,
-                      customLightStyles?.labelBefore ?? {},
+                      {
+                        ...lightStyles?.labelBefore,
+                        ...(customLightStyles?.labelBefore ?? {}),
+                      },
                     ]),
+                { ...styles.labelBefore, ...customStyles.labelBefore },
               ]}
             >
               {beforeLabel}
@@ -245,14 +251,20 @@ export function FormLayout({
           {afterLabel && (
             <Text
               style={[
-                styles.labelAfter,
-                customStyles.labelAfter,
                 ...(isDarkTheme
-                  ? [darkStyles?.labelAfter, customDarkStyles?.labelAfter ?? {}]
+                  ? [
+                      {
+                        ...darkStyles?.labelAfter,
+                        ...(customDarkStyles?.labelAfter ?? {}),
+                      },
+                    ]
                   : [
-                      lightStyles?.labelAfter,
-                      customLightStyles?.labelAfter ?? {},
+                      {
+                        ...lightStyles?.labelAfter,
+                        ...(customLightStyles?.labelAfter ?? {}),
+                      },
                     ]),
+                { ...styles.labelAfter, ...customStyles.labelAfter },
               ]}
             >
               {afterLabel}
@@ -263,17 +275,20 @@ export function FormLayout({
       {labelOptional && (
         <Text
           style={[
-            styles.labelOptional,
-            customStyles.labelOptional,
             ...(isDarkTheme
               ? [
-                  darkStyles?.labelOptional,
-                  customDarkStyles?.labelOptional ?? {},
+                  {
+                    ...darkStyles?.labelOptional,
+                    ...(customDarkStyles?.labelOptional ?? {}),
+                  },
                 ]
               : [
-                  lightStyles?.labelOptional,
-                  customLightStyles?.labelOptional ?? {},
+                  {
+                    ...lightStyles?.labelOptional,
+                    ...(customLightStyles?.labelOptional ?? {}),
+                  },
                 ]),
+            { ...styles.labelOptional, ...customStyles.labelOptional },
           ]}
         >
           {labelOptional}
@@ -283,11 +298,15 @@ export function FormLayout({
       {error && (
         <Text
           style={[
-            styles.error,
-            customStyles.error,
             ...(isDarkTheme
-              ? [darkStyles?.error, customDarkStyles?.error ?? {}]
-              : [lightStyles?.error, customLightStyles?.error ?? {}]),
+              ? [{ ...darkStyles?.error, ...(customDarkStyles?.error ?? {}) }]
+              : [
+                  {
+                    ...lightStyles?.error,
+                    ...(customLightStyles?.error ?? {}),
+                  },
+                ]),
+            { ...styles.error, ...customStyles.error },
           ]}
         >
           {error}
@@ -296,14 +315,20 @@ export function FormLayout({
       {descriptionText && (
         <Text
           style={[
-            styles.description,
-            customStyles.description,
             ...(isDarkTheme
-              ? [darkStyles?.description, customDarkStyles?.description ?? {}]
+              ? [
+                  {
+                    ...darkStyles?.description,
+                    ...(customDarkStyles?.description ?? {}),
+                  },
+                ]
               : [
-                  lightStyles?.description,
-                  customLightStyles?.description ?? {},
+                  {
+                    ...lightStyles?.description,
+                    ...(customLightStyles?.description ?? {}),
+                  },
                 ]),
+            { ...styles.description, ...customStyles.description },
           ]}
         >
           {descriptionText}

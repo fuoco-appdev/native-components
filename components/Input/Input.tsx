@@ -380,7 +380,7 @@ function Input({
             onFocus={onFocus ? (event) => onFocus(event) : undefined}
             onBlur={onBlur ? (event) => onBlur(event) : undefined}
             placeholder={placeholder}
-            secureTextEntry={password || isHidden}
+            secureTextEntry={isHidden}
             keyboardType={type}
             {...textInputProps}
           />

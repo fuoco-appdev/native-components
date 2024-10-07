@@ -39,7 +39,6 @@ const styles = StyleSheet.create<DividerStyles>({
     alignItems: 'center',
     userSelect: 'none',
     flexDirection: 'row',
-    top: '50%',
   },
   leftSeperator: {
     height: 1,
@@ -124,23 +123,28 @@ export default function Divider({
   return (
     <View
       style={[
-        styles.root,
-        customStyles?.root ?? {},
         ...(isDarkTheme
-          ? [darkStyles?.root, customDarkStyles?.root ?? {}]
-          : [lightStyles?.root, customLightStyles?.root ?? {}]),
+          ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
+          : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
+        { ...styles.root, ...(customStyles?.root ?? {}) },
       ]}
     >
       <View
         style={[
-          styles.leftSeperator,
-          customStyles?.leftSeperator ?? {},
           ...(isDarkTheme
-            ? [darkStyles?.leftSeperator, customDarkStyles?.leftSeperator ?? {}]
+            ? [
+                {
+                  ...darkStyles?.leftSeperator,
+                  ...(customDarkStyles?.leftSeperator ?? {}),
+                },
+              ]
             : [
-                lightStyles?.leftSeperator,
-                customLightStyles?.leftSeperator ?? {},
+                {
+                  ...lightStyles?.leftSeperator,
+                  ...(customLightStyles?.leftSeperator ?? {}),
+                },
               ]),
+          { ...styles.leftSeperator, ...(customStyles?.leftSeperator ?? {}) },
           leftOrientationStyles,
         ]}
       />
@@ -164,17 +168,20 @@ export default function Divider({
       )}
       <View
         style={[
-          styles.rightSeperator,
-          customStyles?.rightSeperator ?? {},
           ...(isDarkTheme
             ? [
-                darkStyles?.rightSeperator,
-                customDarkStyles?.rightSeperator ?? {},
+                {
+                  ...darkStyles?.rightSeperator,
+                  ...(customDarkStyles?.rightSeperator ?? {}),
+                },
               ]
             : [
-                lightStyles?.rightSeperator,
-                customLightStyles?.rightSeperator ?? {},
+                {
+                  ...lightStyles?.rightSeperator,
+                  ...(customLightStyles?.rightSeperator ?? {}),
+                },
               ]),
+          { ...styles.rightSeperator, ...(customStyles?.rightSeperator ?? {}) },
           rightOrientationStyles,
         ]}
       />
