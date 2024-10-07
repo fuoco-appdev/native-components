@@ -136,7 +136,7 @@ const darkStyles = StyleSheet.create<ButtonStyles>({
   },
 });
 
-export function Button({
+export default function Button({
   pressableProps = {},
   onPress,
   block,

@@ -7,7 +7,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { Button, ButtonStyles } from '../Button/Button';
+import Button, { ButtonStyles } from '../Button/Button';
 import Input, { InputStyles } from '../Input/Input';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
 import { AuthStrings, defaultStrings } from './Auth';

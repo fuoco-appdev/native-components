@@ -26,7 +26,7 @@ import { animated, useSpring } from '@react-spring/native';
 import Colors from '../Themes/colors';
 import MarginsPaddings from '../Themes/margins_paddings';
 import Globals from '../Themes/globals';
-import { ButtonStyles, Button } from '../Button/Button';
+import Button, { ButtonStyles } from '../Button/Button';
 import { FormLayout, FormLayoutStyles } from '../FormLayout/FormLayout';
 import {
   ContentCopy,

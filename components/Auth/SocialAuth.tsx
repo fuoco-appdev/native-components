@@ -6,7 +6,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { ButtonStyles } from '../Button/Button';
+import Button, { ButtonStyles } from '../Button/Button';
 import Divider, { DividerStyles } from '../Divider/Divider';
 import {
   AndroidRippleProps,
