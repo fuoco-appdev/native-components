@@ -22,6 +22,8 @@ import ForgottenPassword, {
 } from './ForgottenPassword';
 import UpdatePassword, { ExtraUpdatePasswordStyles } from './UpdatePassword';
 import ResetPassword from './ResetPassword';
+import TermsOfService from './TermsOfService';
+import PrivacyPolicy from './PrivacyPolicy';
 
 export const VIEWS: ViewsMap = {
   SIGN_IN: 'sign_in',
@@ -332,15 +334,19 @@ function Auth({
         />
       )}
       {authView === VIEWS.TERMS_OF_SERVICE && (
-        // <TermsOfService termsOfService={termsOfService} />
-        <></>
+        <TermsOfService children={termsOfService} />
       )}
       {authView === VIEWS.PRIVACY_POLICY && (
-        // <PrivacyPolicy privacyPolicy={privacyPolicy} />
-        <></>
+        <PrivacyPolicy children={privacyPolicy} />
       )}
     </View>
   );
 }
+
+Auth.ForgottenPassword = ForgottenPassword;
+Auth.ResetPassword = ResetPassword;
+Auth.UpdatePassword = UpdatePassword;
+Auth.TermsOfService = TermsOfService;
+Auth.PrivacyPolicy = PrivacyPolicy;
 
 export default Auth;
