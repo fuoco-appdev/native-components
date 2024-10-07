@@ -102,14 +102,31 @@
     "targets": [
       [
         "commonjs",
-        {"copyFlow": true}
+        {
+          "copyFlow": true
+        }
       ],
       "module",
-      ["typescript", {"project": "tsconfig.lib.json"}]
+      [
+        "typescript",
+        {
+          "project": "tsconfig.lib.json"
+        }
+      ]
     ]
   },
   "eslintIgnore": [
     "node_modules/",
     "lib/"
-  ]
+  ],
+  "description": "React native UI library",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fuoco-appdev/native-components.git"
+  },
+  "author": "lucasfuoco",
+  "license": "ISC"
 }
