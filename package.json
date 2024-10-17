@@ -1,6 +1,6 @@
 {
   "name": "@fuoco.appdev/native-components",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
@@ -81,15 +81,17 @@
   "source": "./index.js",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
-  "types": "./lib/typescript/components/index.d.ts",
+  "types": "./lib/typescript/module/components/index.d.ts",
   "react-native": "./components/index.tsx",
   "exports": {
     ".": {
       "import": {
-        "default": "./lib\\module\\index.js"
+        "types": "./lib/typescript/module/components/index.d.ts",
+        "default": "./lib/module/index.js"
       },
       "require": {
-        "default": "./lib\\commonjs\\index.js"
+        "types": "./lib/typescript/commonjs/components/index.d.ts",
+        "default": "./lib/commonjs/index.js"
       }
     }
   },
@@ -104,13 +106,15 @@
       [
         "commonjs",
         {
+          "esm": true,
           "copyFlow": true
         }
       ],
-      "module",
+      ["module", {"esm": true}],
       [
         "typescript",
         {
+          "esm": true,
           "project": "tsconfig.lib.json"
         }
       ]
