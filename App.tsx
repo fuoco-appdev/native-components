@@ -1,6 +1,6 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-AppEntryPoint = require("./.ondevice").default;
+const AppEntryPoint = require('./.ondevice').default;
 
 export default AppEntryPoint;

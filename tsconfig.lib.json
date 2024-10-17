@@ -8,7 +8,7 @@
     ],
     "exclude": [
         "App.tsx",
-        "storybook_static/",
+        "storybook-static/",
         "**/*.stories.tsx",
         "node_modules/"
     ]
