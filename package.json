@@ -1,6 +1,6 @@
 {
   "name": "@fuoco.appdev/native-components",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
@@ -107,10 +107,11 @@
         "commonjs",
         {
           "esm": true,
-          "copyFlow": true
+          "copyFlow": true,
+          "project": "tsconfig.lib.json"
         }
       ],
-      ["module", {"esm": true}],
+      ["module", {"esm": true, "project": "tsconfig.lib.json"}],
       [
         "typescript",
         {
