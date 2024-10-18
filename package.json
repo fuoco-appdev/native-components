@@ -1,6 +1,6 @@
 {
   "name": "@fuoco.appdev/native-components",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
@@ -128,7 +128,8 @@
   ],
   "description": "React native UI library",
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "components": "components"
   },
   "repository": {
     "type": "git",
