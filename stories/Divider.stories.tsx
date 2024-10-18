@@ -4,10 +4,10 @@ import {
   ShoppingBag,
   Refresh,
   ShoppingBasket,
-} from '../Icon/Icons/Line';
-import Divider from './Divider';
+} from '../components/Icon/Icons/Line';
+import Divider from '../components/Divider/Divider';
 import { ScrollView, View } from 'react-native';
-import Colors from '../Themes/colors';
+import Colors from '../components/Themes/colors';
 
 const meta = {
   title: 'Utilities/Divider',

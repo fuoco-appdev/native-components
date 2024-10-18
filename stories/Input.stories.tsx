@@ -4,10 +4,10 @@ import {
   ShoppingBag,
   Refresh,
   ShoppingBasket,
-} from '../Icon/Icons/Line';
-import Input from './Input';
+} from '../components/Icon/Icons/Line';
+import Input from '../components/Input/Input';
 import { ScrollView, View } from 'react-native';
-import Colors from '../Themes/colors';
+import Colors from '../components/Themes/colors';
 
 const meta = {
   title: 'Data Input/Input',

@@ -4,10 +4,10 @@ import {
   ShoppingBag,
   Refresh,
   ShoppingBasket,
-} from '../Icon/Icons/Line';
-import Auth from './Auth';
+} from '../components/Icon/Icons/Line';
+import Auth from '../components/Auth/Auth';
 import { ScrollView, View } from 'react-native';
-import Colors from '../Themes/colors';
+import Colors from '../components/Themes/colors';
 import 'react-native-url-polyfill/auto';
 import { AuthError, createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';

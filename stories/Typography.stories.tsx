@@ -4,10 +4,10 @@ import {
   ShoppingBag,
   Refresh,
   ShoppingBasket,
-} from '../Icon/Icons/Line';
-import Typography from './Typography';
+} from '../components/Icon/Icons/Line';
+import Typography from '../components/Typography/Typography';
 import { ScrollView, View } from 'react-native';
-import Colors from '../Themes/colors';
+import Colors from '../components/Themes/colors';
 
 const meta = {
   title: 'General/Typography',

@@ -172,8 +172,8 @@ const inputStyles = StyleSheet.create<InputStyles>({
   input: {
     overflow: 'hidden',
     backgroundColor: 'transparent',
-    paddingTop: MarginsPaddings.mp_5,
-    paddingBottom: MarginsPaddings.mp_5,
+    paddingTop: MarginsPaddings.mp_4,
+    paddingBottom: MarginsPaddings.mp_4,
     width: '100%',
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
