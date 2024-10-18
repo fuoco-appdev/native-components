@@ -103,7 +103,7 @@
   "react-native-builder-bob": {
     "source": "components",
     "output": "lib",
-    "exclude": ["storybook-static/"],
+    "exclude": ["storybook-static", "stories"],
     "targets": [
       [
         "commonjs",

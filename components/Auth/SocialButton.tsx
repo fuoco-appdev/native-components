@@ -13,7 +13,6 @@ import {
 import Button, { ButtonStyles } from '../Button/Button';
 import * as SocialIcons from './Icons';
 import MarginsPaddings from '../Themes/margins_paddings';
-import { color } from '../../storybook-static/sb-manager/chunk-YDUB7CS6';
 
 export interface SocialButtonStyles {
   buttonContainer?: ViewStyle | TextStyle | ImageStyle;
