@@ -13,6 +13,7 @@ import {
 import Button, { ButtonStyles } from '../Button/Button';
 import * as SocialIcons from './Icons';
 import MarginsPaddings from '../Themes/margins_paddings';
+import { Globals } from '../Themes';
 
 export interface SocialButtonStyles {
   buttonContainer?: ViewStyle | TextStyle | ImageStyle;
@@ -253,13 +254,18 @@ export default function SocialButton({
             )}
           </View>
           <Text
-            style={{
-              ...(socialColors
-                ? textStyles[provider]
-                : isDarkTheme
-                ? { color: '#fff' }
-                : { color: '#000' }),
-            }}
+            style={[
+              {
+                ...(socialColors
+                  ? textStyles[provider]
+                  : isDarkTheme
+                  ? { color: '#fff' }
+                  : { color: '#000' }),
+              },
+              {
+                fontFamily: Globals.font_family,
+              },
+            ]}
           >
             {verticalSocialLayout && signLabel + provider}
           </Text>

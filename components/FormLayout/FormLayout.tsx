@@ -12,28 +12,27 @@ import MarginsPaddings from '../Themes/margins_paddings';
 import Globals from '../Themes/globals';
 
 export interface FormLayoutStyles {
-  root?: ViewStyle | TextStyle | ImageStyle;
-  flex?: ViewStyle | TextStyle | ImageStyle;
-  flexLeft?: ViewStyle | TextStyle | ImageStyle;
-  flexRight?: ViewStyle | TextStyle | ImageStyle;
-  labelContainerHorizontal?: ViewStyle | TextStyle | ImageStyle;
-  labelContainerVertical?: ViewStyle | TextStyle | ImageStyle;
-  label?: ViewStyle | TextStyle | ImageStyle;
-  labelBefore?: ViewStyle | TextStyle | ImageStyle;
-  labelAfter?: ViewStyle | TextStyle | ImageStyle;
-  labelOptional?: ViewStyle | TextStyle | ImageStyle;
-  contentContainerHorizontal?: ViewStyle | TextStyle | ImageStyle;
-  contentContainerVertical?: ViewStyle | TextStyle | ImageStyle;
-  contentContainerVerticalAlignRight?: ViewStyle | TextStyle | ImageStyle;
-  error?: ViewStyle | TextStyle | ImageStyle;
-  description?: ViewStyle | TextStyle | ImageStyle;
+  root?: ViewStyle;
+  flex?: ViewStyle;
+  flexLeft?: TextStyle;
+  flexRight?: TextStyle;
+  labelContainerHorizontal?: ViewStyle;
+  labelContainerVertical?: ViewStyle;
+  label?: TextStyle;
+  labelBefore?: TextStyle;
+  labelAfter?: TextStyle;
+  labelOptional?: TextStyle;
+  contentContainerHorizontal?: ViewStyle;
+  contentContainerVertical?: ViewStyle;
+  contentContainerVerticalAlignRight?: ViewStyle;
+  error?: TextStyle;
+  description?: TextStyle;
 }
 
 const styles = StyleSheet.create<FormLayoutStyles>({
   root: {
     marginBottom: MarginsPaddings.mp_5,
     height: 'auto',
-    userSelect: 'none',
   },
   flex: {
     display: 'flex',
@@ -41,9 +40,11 @@ const styles = StyleSheet.create<FormLayoutStyles>({
   },
   flexLeft: {
     textAlign: 'left',
+    fontFamily: Globals.font_family,
   },
   flexRight: {
     textAlign: 'right',
+    fontFamily: Globals.font_family,
   },
   labelContainerHorizontal: {},
   labelContainerVertical: {},
@@ -52,18 +53,22 @@ const styles = StyleSheet.create<FormLayoutStyles>({
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
     marginBottom: MarginsPaddings.mp_3,
+    fontFamily: Globals.font_family,
   },
   labelBefore: {
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
+    fontFamily: Globals.font_family,
   },
   labelAfter: {
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
     textAlign: 'right',
+    fontFamily: Globals.font_family,
   },
   labelOptional: {
     paddingBottom: MarginsPaddings.mp_4,
+    fontFamily: Globals.font_family,
   },
   contentContainerHorizontal: {},
   contentContainerVertical: {},
@@ -73,11 +78,13 @@ const styles = StyleSheet.create<FormLayoutStyles>({
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
     color: Colors.red_500,
+    fontFamily: Globals.font_family,
   },
   description: {
     marginTop: MarginsPaddings.mp_2,
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
+    fontFamily: Globals.font_family,
   },
 });
 

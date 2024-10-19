@@ -160,6 +160,7 @@ const inputStyles = StyleSheet.create<InputStyles>({
     borderColor: Colors.red_500,
     borderWidth: 1,
     borderStyle: 'solid',
+    fontFamily: Globals.font_family,
   },
   withIcon: {},
   borderless: {},
@@ -177,6 +178,7 @@ const inputStyles = StyleSheet.create<InputStyles>({
     width: '100%',
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
+    fontFamily: Globals.font_family,
   },
   actionsContainer: {
     position: 'absolute',

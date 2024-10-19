@@ -25,7 +25,7 @@ export interface ButtonStyles {
   loading?: ViewStyle | TextStyle | ImageStyle;
   leftIconContainer?: ViewStyle | TextStyle | ImageStyle;
   rightIconContainer?: ViewStyle | TextStyle | ImageStyle;
-  children?: ViewStyle | TextStyle | ImageStyle;
+  children?: TextStyle;
 }
 
 export interface ButtonProps {
@@ -103,6 +103,7 @@ const styles = StyleSheet.create<ButtonStyles>({
     textTransform: 'capitalize',
     fontSize: Globals.font_size_sm,
     fontWeight: Globals.font_weight_bold,
+    fontFamily: Globals.font_family,
   },
 });
 

@@ -27,6 +27,7 @@ const styles = StyleSheet.create<TextStyles>({
   root: {
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
+    fontFamily: Globals.font_family,
   },
 });
 const lightStyles = StyleSheet.create<TextStyles>({
