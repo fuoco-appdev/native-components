@@ -134,8 +134,9 @@ export interface AuthProps {
   onConfirmPasswordChanged?: (
     e: NativeSyntheticEvent<TextInputChangeEventData>
   ) => void;
-  // onTermsOfServiceRedirect?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
-  // onPrivacyPolicyRedirect?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  onTermsOfServiceRedirect?: (e: GestureResponderEvent) => void;
+  onPrivacyPolicyRedirect?: (e: GestureResponderEvent) => void;
+  onForgotPasswordRedirect?: (e: GestureResponderEvent) => void;
   // onMagicLinkRedirect?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   onSignupRedirect?: () => void;
   onSigninRedirect?: () => void;
@@ -218,8 +219,9 @@ function Auth({
   onEmailChanged,
   onPasswordChanged,
   onConfirmPasswordChanged,
-  // onTermsOfServiceRedirect,
-  // onPrivacyPolicyRedirect,
+  onTermsOfServiceRedirect,
+  onPrivacyPolicyRedirect,
+  onForgotPasswordRedirect,
   // onMagicLinkRedirect,
   onSignupRedirect,
   onSigninRedirect,
@@ -286,6 +288,9 @@ function Auth({
           onConfirmPasswordChanged={onConfirmPasswordChanged}
           onAuthenticating={onAuthenticating}
           onEmailConfirmationSent={onEmailConfirmationSent}
+          onTermsOfServiceRedirect={onTermsOfServiceRedirect}
+          onPrivacyPolicyRedirect={onPrivacyPolicyRedirect}
+          onForgotPasswordRedirect={onForgotPasswordRedirect}
           onSigninError={onSigninError}
           onSignupError={onSignupError}
         />
