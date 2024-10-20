@@ -57,6 +57,8 @@ export default function Link({
   const isDarkTheme = theme === 'dark';
   const onLinkPressed = useCallback(
     async (event: GestureResponderEvent) => {
+      onPress?.(event);
+
       if (!url) {
         return;
       }
