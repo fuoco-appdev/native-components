@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { AuthError, Provider, SupabaseClient } from '@supabase/supabase-js';
 import SocialButton, { SocialButtonStyles } from './SocialButton';
 import MarginsPaddings from '../Themes/margins_paddings';
+import * as WebBrowser from 'expo-web-browser';
 
 export interface SocialAuthStyles {
   buttonRoot?: ViewStyle | TextStyle | ImageStyle;
@@ -99,22 +100,51 @@ export default function SocialAuth({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const createSessionFromUrl = async (urlValue: string) => {
+    const url = new URL(urlValue);
+    const accessToken = url.searchParams.get('access_token');
+    const refreshToken = url.searchParams.get('refresh_token');
+
+    if (!accessToken || !refreshToken) return;
+
+    const { data, error } = await supabaseClient.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+
+    if (error) throw error;
+
+    return data.session;
+  };
+
   const handleProviderSignIn = async (provider: Provider) => {
     setIsLoading(true);
-    const { error } = await supabaseClient.auth.signInWithOAuth({
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo,
+        skipBrowserRedirect: true,
       },
     });
+
     if (error) {
       if (view == 'sign_in') {
         onSigninError?.(error);
       } else if (view === 'sign_up') {
         onSignupError?.(error);
-      } else {
-        onAuthenticating ? onAuthenticating?.() : null;
       }
+    }
+
+    onAuthenticating ? onAuthenticating?.() : null;
+
+    const result = await WebBrowser.openAuthSessionAsync(
+      data?.url ?? '',
+      redirectTo
+    );
+    if (result.type === 'success') {
+      const { url } = result;
+      await createSessionFromUrl(url);
     }
 
     setIsLoading(false);
