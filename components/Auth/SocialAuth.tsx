@@ -19,7 +19,7 @@ import { useState } from 'react';
 import { AuthError, Provider, SupabaseClient } from '@supabase/supabase-js';
 import SocialButton, { SocialButtonStyles } from './SocialButton';
 import MarginsPaddings from '../Themes/margins_paddings';
-import * as WebBrowser from 'expo-web-browser';
+import { openBrowser } from '@swan-io/react-native-browser';
 
 export interface SocialAuthStyles {
   buttonRoot?: ViewStyle | TextStyle | ImageStyle;
@@ -138,16 +138,16 @@ export default function SocialAuth({
 
     onAuthenticating ? onAuthenticating?.() : null;
 
-    const result = await WebBrowser.openAuthSessionAsync(
-      data?.url ?? '',
-      redirectTo
-    );
-    if (result.type === 'success') {
-      const { url } = result;
-      await createSessionFromUrl(url);
-    }
-
-    setIsLoading(false);
+    openBrowser(data?.url ?? '', {
+      onClose: async (url) => {
+        if (url) {
+          await createSessionFromUrl(url);
+          setIsLoading(false);
+        }
+      },
+    }).catch((error) => {
+      console.error(error);
+    });
   };
 
   const signLabel =
