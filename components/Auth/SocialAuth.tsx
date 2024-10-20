@@ -5,6 +5,7 @@ import {
   useColorScheme,
   View,
   ViewStyle,
+  Linking,
 } from 'react-native';
 import Button, { ButtonStyles } from '../Button/Button';
 import Divider, { DividerStyles } from '../Divider/Divider';
@@ -19,7 +20,7 @@ import { useState } from 'react';
 import { AuthError, Provider, SupabaseClient } from '@supabase/supabase-js';
 import SocialButton, { SocialButtonStyles } from './SocialButton';
 import MarginsPaddings from '../Themes/margins_paddings';
-import { openBrowser } from '@swan-io/react-native-browser';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn';
 
 export interface SocialAuthStyles {
   buttonRoot?: ViewStyle | TextStyle | ImageStyle;
@@ -138,16 +139,26 @@ export default function SocialAuth({
 
     onAuthenticating ? onAuthenticating?.() : null;
 
-    openBrowser(data?.url ?? '', {
-      onClose: async (url) => {
-        if (url) {
-          await createSessionFromUrl(url);
-          setIsLoading(false);
-        }
-      },
-    }).catch((error) => {
-      console.error(error);
-    });
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        InAppBrowser.openAuth(data?.url ?? '', redirectTo ?? '', {
+          // iOS Properties
+          ephemeralWebSession: false,
+          // Android Properties
+          showTitle: false,
+          enableUrlBarHiding: true,
+          enableDefaultShare: false,
+        }).then(async (response) => {
+          if (response.type === 'success' && response.url) {
+            Linking.openURL(response.url);
+            await createSessionFromUrl(response.url);
+            setIsLoading(false);
+          }
+        });
+      } else Linking.openURL(data?.url ?? '');
+    } catch (error) {
+      Linking.openURL(data?.url ?? '');
+    }
   };
 
   const signLabel =

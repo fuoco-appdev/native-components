@@ -20,9 +20,9 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
             <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.BROWSABLE" />
             <category android:name="android.intent.category.DEFAULT" />
-            <data android:scheme="com.company.myapp" android:host="close" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="fuocoappdev" android:host="nativecomponents" android:pathPrefix="" />
         </intent-filter>
       </activity>
     </application>
