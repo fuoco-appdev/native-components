@@ -283,6 +283,7 @@ function Auth({
           passwordErrorMessage={passwordErrorMessage}
           confirmPasswordErrorMessage={confirmPasswordErrorMessage}
           magicLink={magicLink}
+          redirectTo={redirectTo}
           onEmailChanged={onEmailChanged}
           onPasswordChanged={onPasswordChanged}
           onConfirmPasswordChanged={onConfirmPasswordChanged}
