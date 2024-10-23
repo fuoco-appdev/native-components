@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Button, { ButtonStyles } from '../Button/Button';
 import Input, { InputStyles } from '../Input/Input';
-import { AuthStrings, VIEWS, ViewType } from './Auth';
+import { AuthStrings, RedirectTo, VIEWS, ViewType } from './Auth';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
 import { useState } from 'react';
 import { Email, Key, Lock } from '../Icon/Icons/Line';
@@ -56,6 +56,7 @@ export interface EmailAuthProps {
   emailErrorMessage?: string;
   passwordErrorMessage?: string;
   confirmPasswordErrorMessage?: string;
+  redirectTo?: RedirectTo;
   onEmailChanged?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
   onPasswordChanged?: (
     e: NativeSyntheticEvent<TextInputChangeEventData>
@@ -102,6 +103,7 @@ export function EmailAuth({
   emailErrorMessage,
   passwordErrorMessage,
   confirmPasswordErrorMessage,
+  redirectTo,
   onEmailChanged,
   onPasswordChanged,
   onConfirmPasswordChanged,
@@ -144,6 +146,9 @@ export function EmailAuth({
         const authSignup = await supabaseClient.auth.signUp({
           email: emailValue ?? '',
           password: passwordValue ?? '',
+          options: {
+            emailRedirectTo: redirectTo,
+          },
         });
         setIsLoading(false);
         if (authSignup.error) onSignupError?.(authSignup.error);

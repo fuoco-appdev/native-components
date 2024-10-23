@@ -39,7 +39,7 @@ export interface ForgottenPasswordProps {
   supabaseClient: SupabaseClient;
   redirectTo?: RedirectTo;
   emailErrorMessage?: string;
-  onEmailChanged?: (email: value) => void;
+  onEmailChanged?: (email: string) => void;
   onSigninRedirect?: () => void;
   onResetPasswordError?: (error: AuthError) => void;
   onResetPasswordSent?: () => void;
@@ -73,9 +73,12 @@ export default function ForgottenPassword({
 
   const handlePasswordResetAsync = async (e: any) => {
     setIsLoading(true);
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo,
-    });
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(
+      email ?? '',
+      {
+        redirectTo,
+      }
+    );
     setIsLoading(false);
     if (error) onResetPasswordError?.(error);
     else onResetPasswordSent?.();
@@ -112,7 +115,7 @@ export default function ForgottenPassword({
           placeholder={strings.yourEmailAddress}
           error={emailErrorMessage}
           icon={<Email size={21} color={isDarkTheme ? '#fff' : '#000'} />}
-          onChange={(e) => onEmailChanged(e.nativeEvent.text)}
+          onChange={(e) => onEmailChanged?.(e.nativeEvent.text)}
         />
         <Button
           customStyles={{
