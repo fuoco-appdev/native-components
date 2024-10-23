@@ -27,6 +27,7 @@ export interface ExtraForgottenPasswordStyles {
 }
 
 export interface ForgottenPasswordProps {
+  email?: string;
   customStyles?: ForgottenPasswordStyles;
   customDarkStyles?: ForgottenPasswordStyles;
   customLightStyles?: ForgottenPasswordStyles;
@@ -38,6 +39,7 @@ export interface ForgottenPasswordProps {
   supabaseClient: SupabaseClient;
   redirectTo?: RedirectTo;
   emailErrorMessage?: string;
+  onEmailChanged?: (email: value) => void;
   onSigninRedirect?: () => void;
   onResetPasswordError?: (error: AuthError) => void;
   onResetPasswordSent?: () => void;
@@ -48,6 +50,7 @@ const lightStyles = StyleSheet.create<ForgottenPasswordStyles>({});
 const darkStyles = StyleSheet.create<ForgottenPasswordStyles>({});
 
 export default function ForgottenPassword({
+  email,
   customStyles,
   customDarkStyles,
   customLightStyles,
@@ -59,6 +62,7 @@ export default function ForgottenPassword({
   supabaseClient,
   redirectTo,
   emailErrorMessage,
+  onEmailChanged,
   onSigninRedirect,
   onResetPasswordError,
   onResetPasswordSent,
@@ -66,7 +70,6 @@ export default function ForgottenPassword({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [email, setEmail] = useState('');
 
   const handlePasswordResetAsync = async (e: any) => {
     setIsLoading(true);
@@ -109,7 +112,7 @@ export default function ForgottenPassword({
           placeholder={strings.yourEmailAddress}
           error={emailErrorMessage}
           icon={<Email size={21} color={isDarkTheme ? '#fff' : '#000'} />}
-          onChange={(e) => setEmail(e.nativeEvent.text)}
+          onChange={(e) => onEmailChanged(e.nativeEvent.text)}
         />
         <Button
           customStyles={{
