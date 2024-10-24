@@ -229,7 +229,15 @@ function DatePicker({
         customLightStyles={customExtraLightStyles.formLayout}
       >
         <Button
-          customStyles={customExtraStyles.button}
+          customStyles={{
+            ...{
+              button: {
+                paddingTop: MarginsPaddings.mp_5,
+                paddingBottom: MarginsPaddings.mp_5,
+              },
+            },
+            ...customExtraStyles.button,
+          }}
           customDarkStyles={customExtraDarkStyles.button}
           customLightStyles={customExtraLightStyles.button}
           type={'default'}
