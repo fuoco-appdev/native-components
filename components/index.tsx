@@ -44,6 +44,7 @@ export * from './Divider';
 // export * from './listbox'
 export * from './Checkbox';
 export * from './Input';
+export * from './DatePicker';
 // export * from './input-number'
 // export * from './input-phone-number'
 // export * from './input-geocoding'
