@@ -100,6 +100,7 @@ const styles = StyleSheet.create<ButtonStyles>({
     width: 'auto',
     height: 'auto',
     textTransform: 'capitalize',
+    minHeight: 21,
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
     fontWeight: Globals.font_weight_bold,
