@@ -409,14 +409,6 @@ export default function Button({
       <Pressable
         disabled={disabled}
         style={[
-          typeStyle,
-          children ? sizeWithChildrenStyle : sizeStyle,
-          rounded && {
-            borderRadius: Globals.rounded_full,
-          },
-          danger && {
-            borderColor: Colors.red_500,
-          },
           ...(isDarkTheme
             ? [
                 {
@@ -433,6 +425,14 @@ export default function Button({
                 },
               ]),
           { ...styles.button, ...customStyles.button },
+          typeStyle,
+          children ? sizeWithChildrenStyle : sizeStyle,
+          rounded && {
+            borderRadius: Globals.rounded_full,
+          },
+          danger && {
+            borderColor: Colors.red_500,
+          },
         ]}
         onPress={onPress}
         android_ripple={{
