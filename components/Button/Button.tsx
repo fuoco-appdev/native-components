@@ -101,6 +101,7 @@ const styles = StyleSheet.create<ButtonStyles>({
     height: 'auto',
     textTransform: 'capitalize',
     fontSize: Globals.font_size_sm,
+    lineHeight: Globals.font_line_height_sm,
     fontWeight: Globals.font_weight_bold,
     fontFamily: Globals.font_family,
   },
@@ -502,6 +503,10 @@ export default function Button({
           {!loading && children && (
             <Text
               style={[
+                textStyle,
+                danger && {
+                  color: Colors.red_500,
+                },
                 ...(isDarkTheme
                   ? [
                       {
@@ -518,10 +523,6 @@ export default function Button({
                       textLightStyle,
                     ]),
                 { ...styles.children, ...(customStyles?.children ?? {}) },
-                textStyle,
-                danger && {
-                  color: Colors.red_500,
-                },
               ]}
             >
               {children}
