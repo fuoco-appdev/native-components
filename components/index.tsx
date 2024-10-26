@@ -3,6 +3,7 @@
 export * from './Button';
 export * from './Typography';
 export * from './Icon';
+export * from './Portal';
 // export * from './image'
 // export * from './avatar'
 // export * from './crop-image'
@@ -27,7 +28,7 @@ export * from './Icon';
 // export * from './overlay'
 // export * from './modal'
 // export * from './side-panel'
-// export * from './dropdown'
+export * from './BottomSheet';
 // export * from './context-menu'
 // export * from './popover'
 // export * from './toast'
@@ -46,7 +47,7 @@ export * from './Checkbox';
 export * from './Input';
 export * from './DatePicker';
 // export * from './input-number'
-// export * from './input-phone-number'
+export * from './InputPhoneNumber';
 // export * from './input-geocoding'
 // export * from './radio'
 // export * from './toggle'

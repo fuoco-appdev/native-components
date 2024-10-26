@@ -13,7 +13,7 @@ export const PortalContext = React.createContext({
   removeComponent: (name: string) => {},
 });
 
-export function PortalProvider({ children }: PortalProviderProps) {
+export default function PortalProvider({ children }: PortalProviderProps) {
   const [components, setComponents] = useState<Record<string, React.ReactNode>>(
     {}
   );

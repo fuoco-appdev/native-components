@@ -6,7 +6,7 @@ export interface PortalProps {
   name: string;
 }
 
-export function Portal({ children, name }: PortalProps) {
+export default function Portal({ children, name }: PortalProps) {
   const { addComponent, removeComponent } = useContext(PortalContext);
   useEffect(() => {
     addComponent({ name, component: children });
