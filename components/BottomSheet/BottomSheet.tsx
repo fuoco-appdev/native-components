@@ -133,7 +133,7 @@ function BottomSheet({
             ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
             : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
           { ...styles.root, ...(customStyles?.root ?? {}) },
-          { zIndex: open ? 999 : -999 },
+          { zIndex: open ? 999 : -999, elevation: open ? 999 : -999 },
         ]}
       >
         <NativeBottomSheet
