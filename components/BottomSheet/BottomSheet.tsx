@@ -59,7 +59,6 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     position: 'absolute',
     height: '100%',
     width: '100%',
-    zIndex: 999,
   },
   sheet: {
     flex: 1,
@@ -134,7 +133,7 @@ function BottomSheet({
             ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
             : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
           { ...styles.root, ...(customStyles?.root ?? {}) },
-          { zIndex: open ? 999 : -1 },
+          { zIndex: open ? 999 : -999 },
         ]}
       >
         <NativeBottomSheet

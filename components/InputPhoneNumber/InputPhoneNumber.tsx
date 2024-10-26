@@ -828,7 +828,7 @@ export default function InputPhoneNumber({
         customDarkStyles={customExtraDarkStyles.bottomSheet}
         customLightStyles={customExtraLightStyles.bottomSheet}
         id={'phone-number'}
-        type={'virtualized-list'}
+        type={'flat-list'}
         snapPoints={['50%', '90%']}
         open={showDropdown}
         onClose={() => {
