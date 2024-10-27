@@ -20,7 +20,13 @@ import NativeBottomSheet, {
   BottomSheetVirtualizedList,
   SNAP_POINT_TYPE,
 } from '@gorhom/bottom-sheet';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Button, ButtonStyles } from '../Button';
 import { Portal } from '../Portal';
 import { SharedValue } from 'react-native-reanimated';
@@ -87,6 +93,7 @@ function BottomSheet({
 }: BottomSheetProps) {
   const bottomSheetRef = useRef<NativeBottomSheet>(null);
   const snapPointsMemo = useMemo(() => snapPoints, []);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
@@ -97,6 +104,19 @@ function BottomSheet({
       bottomSheetRef.current?.close();
     }
   }, [open]);
+
+  const handleOnChange = (
+    index: number,
+    position: number,
+    type: SNAP_POINT_TYPE
+  ) => {
+    onChange?.(index, position, type);
+    if (position > 0) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  };
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
@@ -127,7 +147,7 @@ function BottomSheet({
 
   return (
     <Portal name={id}>
-      {open && (
+      {isOpen && (
         <GestureHandlerRootView
           style={[
             ...(isDarkTheme
@@ -138,7 +158,7 @@ function BottomSheet({
         >
           <NativeBottomSheet
             ref={bottomSheetRef}
-            onChange={onChange}
+            onChange={handleOnChange}
             snapPoints={snapPointsMemo}
             enableDynamicSizing={false}
             backdropComponent={renderBackdrop}
