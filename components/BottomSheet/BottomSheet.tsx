@@ -111,7 +111,7 @@ function BottomSheet({
     type: SNAP_POINT_TYPE
   ) => {
     onChange?.(index, position, type);
-    if (position > 0) {
+    if (index !== -1) {
       setIsOpen(true);
     } else {
       setIsOpen(false);
