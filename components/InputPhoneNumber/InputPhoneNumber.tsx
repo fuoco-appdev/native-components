@@ -17,7 +17,7 @@ import {
 import { CountryData, CountryDataProps } from './CountryData';
 import memoize from 'lodash.memoize';
 import { reduce, startsWith } from 'lodash';
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import CountryFlag from 'react-native-country-flag';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, {
@@ -455,8 +455,12 @@ export default function InputPhoneNumber({
     return formattedNumber;
   };
 
-  const handleInput = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-    const { text } = e.nativeEvent;
+  const getFormattedValue = (
+    value: string
+  ): {
+    newFormattedValue: string;
+    newSelectedCountry: CountryDataProps | null;
+  } => {
     let newFormattedNumber = disableCountryCode ? '' : prefix ?? '';
     let newSelectedCountry: CountryDataProps | null = selectedCountry;
 
@@ -469,39 +473,34 @@ export default function InputPhoneNumber({
         : newSelectedCountry?.dialCode;
 
       const updatedInput = (prefix ?? '') + (mainCode ?? '');
-      if (text.slice(0, updatedInput.length) !== updatedInput) return;
+      if (value.slice(0, updatedInput.length) !== updatedInput)
+        return { newFormattedValue: '', newSelectedCountry: null };
     }
 
-    if (text === prefix) {
+    if (value === prefix) {
       // we should handle change when we delete the last digit
-      onChange?.('', getCountryData(), e, '');
-      setFormattedNumber('');
-      return;
+      return { newFormattedValue: '', newSelectedCountry: newSelectedCountry };
     }
 
     // Does exceed default 15 digit phone number limit
-    if (text.replace(/\D/g, '').length > 15) {
-      if (enableLongNumbers === false) return;
+    if (value.replace(/\D/g, '').length > 15) {
+      if (enableLongNumbers === false)
+        return { newFormattedValue: '', newSelectedCountry: null };
       if (typeof enableLongNumbers === 'number') {
-        if (text.replace(/\D/g, '').length > enableLongNumbers) return;
+        if (value.replace(/\D/g, '').length > enableLongNumbers)
+          return { newFormattedValue: '', newSelectedCountry: null };
       }
     }
 
     // if the input is the same as before, must be some special key like enter etc.
-    if (text === formattedNumber) return;
+    if (value === formattedNumber)
+      return { newFormattedValue: '', newSelectedCountry: null };
 
-    // ie hack
-    if (e.preventDefault) {
-      e.preventDefault();
-    } else {
-      return false;
-    }
+    // if (onChange) e.persist();
 
-    if (onChange) e.persist();
-
-    if (text.length > 0) {
+    if (value.length > 0) {
       // before entering the number in new format, lets check if the dial code now matches some other country
-      const inputNumber = text.replace(/\D/g, '');
+      const inputNumber = value.replace(/\D/g, '');
       // we don't need to send the whole number to guess the country... only the first 6 characters are enough
       // the guess country function can then use memoization much more effectively since the set of input it
       // gets has drastically reduced
@@ -561,15 +560,10 @@ export default function InputPhoneNumber({
       });
     }
 
-    setFormattedNumber(newFormattedNumber);
-    setSelectedCountry(newSelectedCountry);
-
-    onChange?.(
-      newFormattedNumber.replace(/[^0-9]+/g, ''),
-      getCountryData(),
-      e,
-      newFormattedNumber
-    );
+    return {
+      newFormattedValue: newFormattedNumber,
+      newSelectedCountry: newSelectedCountry,
+    };
   };
 
   const handleInputFocus = (
@@ -696,6 +690,21 @@ export default function InputPhoneNumber({
     );
   };
 
+  const handleInput = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    const { newFormattedValue, newSelectedCountry } = getFormattedValue(
+      e.nativeEvent.text
+    );
+    setFormattedNumber(newFormattedValue);
+    setSelectedCountry(newSelectedCountry);
+
+    onChange?.(
+      newFormattedValue.replace(/[^0-9]+/g, ''),
+      getCountryData(),
+      e,
+      newFormattedValue
+    );
+  };
+
   const data = useMemo(() => getSearchFilteredCountries(), []);
   const renderItem = useCallback(({ item, index }: any) => {
     return (
@@ -720,6 +729,14 @@ export default function InputPhoneNumber({
       </BottomSheet.Item>
     );
   }, []);
+
+  useEffect(() => {
+    const { newFormattedValue, newSelectedCountry } =
+      getFormattedValue(defaultValue);
+
+    setFormattedNumber(newFormattedValue);
+    setSelectedCountry(newSelectedCountry);
+  }, [defaultValue]);
 
   return (
     <View
@@ -806,7 +823,6 @@ export default function InputPhoneNumber({
                 ? Colors.gray_400
                 : Colors.gray_600
             }
-            defaultValue={defaultValue}
             editable={!disabled}
             selectTextOnFocus={!disabled}
             onChange={handleInput}
