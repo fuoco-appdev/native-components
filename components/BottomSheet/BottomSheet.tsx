@@ -100,6 +100,7 @@ function BottomSheet({
   useEffect(() => {
     if (open) {
       bottomSheetRef.current?.snapToIndex(snapIndex);
+      setIsOpen(true);
     } else {
       bottomSheetRef.current?.close();
     }
@@ -111,9 +112,7 @@ function BottomSheet({
     type: SNAP_POINT_TYPE
   ) => {
     onChange?.(index, position, type);
-    if (index !== -1) {
-      setIsOpen(true);
-    } else {
+    if (index === -1) {
       setIsOpen(false);
     }
   };
