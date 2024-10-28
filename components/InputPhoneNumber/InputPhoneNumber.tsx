@@ -847,33 +847,32 @@ export default function InputPhoneNumber({
             onFocus={handleInputFocus}
             placeholder={defaultPlaceholder}
             keyboardType={'phone-pad'}
-          >
-            {error && (
-              <View
-                style={[
-                  styles.actionsContainer,
-                  customStyles?.actionsContainer ?? {},
-                  ...(isDarkTheme
-                    ? [
-                        darkStyles?.actionsContainer,
-                        customDarkStyles?.actionsContainer ?? {},
-                      ]
-                    : [
-                        lightStyles?.actionsContainer,
-                        customLightStyles?.actionsContainer ?? {},
-                      ]),
-                ]}
-              >
-                {error && (
-                  <ErrorOutline
-                    size={21}
-                    color={Colors.red_500}
-                    strokeWidth={0}
-                  />
-                )}
-              </View>
-            )}
-          </TextInput>
+          />
+          {error && (
+            <View
+              style={[
+                styles.actionsContainer,
+                customStyles?.actionsContainer ?? {},
+                ...(isDarkTheme
+                  ? [
+                      darkStyles?.actionsContainer,
+                      customDarkStyles?.actionsContainer ?? {},
+                    ]
+                  : [
+                      lightStyles?.actionsContainer,
+                      customLightStyles?.actionsContainer ?? {},
+                    ]),
+              ]}
+            >
+              {error && (
+                <ErrorOutline
+                  size={21}
+                  color={Colors.red_500}
+                  strokeWidth={0}
+                />
+              )}
+            </View>
+          )}
         </View>
       </FormLayout>
       <BottomSheet
