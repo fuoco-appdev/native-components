@@ -28,6 +28,7 @@ import BottomSheet, {
 import { Colors, Globals, MarginsPaddings } from '../Themes';
 import { Typography } from '../Typography';
 import { SharedValue } from 'react-native-reanimated';
+import { ErrorOutline } from '../Icon/Icons/Line';
 
 export interface InputPhoneNumberStyles {
   root?: ViewStyle;
@@ -42,6 +43,7 @@ export interface InputPhoneNumberStyles {
   inputPhoneNumber?: ViewStyle;
   actionsContainer?: TextStyle;
   inputContainer?: ViewStyle;
+  error?: ViewStyle | TextStyle;
   input?: TextStyle;
 }
 
@@ -152,6 +154,12 @@ const styles = StyleSheet.create<InputPhoneNumberStyles>({
     borderRadius: Globals.rounded_md,
     paddingLeft: MarginsPaddings.mp_5,
     paddingRight: MarginsPaddings.mp_5,
+  },
+  error: {
+    borderColor: Colors.red_500,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    fontFamily: Globals.font_family,
   },
   input: {
     overflow: 'hidden',
@@ -766,17 +774,20 @@ export default function InputPhoneNumber({
                     ...darkStyles?.inputContainer,
                     ...(customDarkStyles?.inputContainer ?? {}),
                   },
+                  error ? darkStyles.error : {},
                 ]
               : [
                   {
                     ...lightStyles?.inputContainer,
                     ...(customLightStyles?.inputContainer ?? {}),
                   },
+                  error ? lightStyles.error : {},
                 ]),
             {
               ...styles.inputContainer,
               ...(customStyles?.inputContainer ?? {}),
             },
+            error ? styles.error : {},
           ]}
         >
           <Button
@@ -836,7 +847,33 @@ export default function InputPhoneNumber({
             onFocus={handleInputFocus}
             placeholder={defaultPlaceholder}
             keyboardType={'phone-pad'}
-          />
+          >
+            {error && (
+              <View
+                style={[
+                  styles.actionsContainer,
+                  customStyles?.actionsContainer ?? {},
+                  ...(isDarkTheme
+                    ? [
+                        darkStyles?.actionsContainer,
+                        customDarkStyles?.actionsContainer ?? {},
+                      ]
+                    : [
+                        lightStyles?.actionsContainer,
+                        customLightStyles?.actionsContainer ?? {},
+                      ]),
+                ]}
+              >
+                {error && (
+                  <ErrorOutline
+                    size={21}
+                    color={Colors.red_500}
+                    strokeWidth={0}
+                  />
+                )}
+              </View>
+            )}
+          </TextInput>
         </View>
       </FormLayout>
       <BottomSheet
