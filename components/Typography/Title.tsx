@@ -19,6 +19,7 @@ const styles = StyleSheet.create<TitleStyles>({
     fontSize: Globals.font_size_base,
     lineHeight: Globals.font_line_height_base,
     fontFamily: Globals.font_family,
+    fontWeight: Globals.font_weight_bold,
   },
 });
 const lightStyles = StyleSheet.create<TitleStyles>({
