@@ -16,7 +16,7 @@ export * from './Avatar';
 
 // export * from './card'
 // export * from './badge'
-// export * from './tabs'
+export * from './Tabs';
 // export * from './alert'
 // export * from './accordion'
 
