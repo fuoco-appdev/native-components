@@ -92,7 +92,6 @@ function BottomSheet({
   onChange,
 }: BottomSheetProps) {
   const bottomSheetRef = useRef<NativeBottomSheet>(null);
-  const snapPointsMemo = useMemo(() => snapPoints, []);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
@@ -158,7 +157,7 @@ function BottomSheet({
           <NativeBottomSheet
             ref={bottomSheetRef}
             onChange={handleOnChange}
-            snapPoints={snapPointsMemo}
+            snapPoints={snapPoints}
             enableDynamicSizing={false}
             backdropComponent={renderBackdrop}
             enablePanDownToClose={true}
