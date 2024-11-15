@@ -1,31 +1,19 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   LayoutChangeEvent,
   StyleSheet,
-  Text,
   TextStyle,
   useColorScheme,
   View,
   ViewStyle,
 } from 'react-native';
 import Animated, {
-  Extrapolation,
   interpolate,
-  scrollTo,
-  SharedValue,
   useAnimatedRef,
   useAnimatedScrollHandler,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
-import { MarginsPaddings } from '../Themes';
 import { Button, ButtonStyles } from '../Button';
 
 export interface TabProps {
