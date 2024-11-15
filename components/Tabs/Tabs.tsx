@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   StyleSheet,
   TextStyle,
   useColorScheme,
@@ -121,6 +123,17 @@ function Tabs({
     },
   });
 
+  const onMomentumScrollEnd = (
+    event: NativeSyntheticEvent<NativeScrollEvent>
+  ) => {
+    const scrollX = event.nativeEvent.contentOffset.x;
+    const selectedIndex = Math.floor((tabs.length * rootSize.width) / scrollX);
+    const tab = tabs.find((value, index) => index === selectedIndex);
+    if (tab) {
+      onChange?.(tab.id);
+    }
+  };
+
   const indicatorStyle = useAnimatedStyle(() => {
     if (viewTranslatePoints.length < 2) {
       return {};
@@ -240,6 +253,7 @@ function Tabs({
         <Animated.ScrollView
           ref={scrollRef}
           onScroll={scrollHandler}
+          onMomentumScrollEnd={onMomentumScrollEnd}
           pagingEnabled={true}
           horizontal={true}
           scrollEventThrottle={16}
