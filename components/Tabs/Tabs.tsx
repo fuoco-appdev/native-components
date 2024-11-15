@@ -127,7 +127,7 @@ function Tabs({
     event: NativeSyntheticEvent<NativeScrollEvent>
   ) => {
     const scrollX = event.nativeEvent.contentOffset.x;
-    const selectedIndex = Math.floor((tabs.length * rootSize.width) / scrollX);
+    const selectedIndex = Math.floor(scrollX / rootSize.width);
     const tab = tabs.find((value, index) => index === selectedIndex);
     if (tab) {
       onChange?.(tab.id);
