@@ -67,7 +67,9 @@ const styles = StyleSheet.create<FormLayoutStyles>({
     fontFamily: Globals.font_family,
   },
   labelOptional: {
-    paddingBottom: MarginsPaddings.mp_4,
+    paddingLeft: MarginsPaddings.mp_5,
+    fontSize: Globals.font_size_sm,
+    lineHeight: Globals.font_line_height_sm,
     fontFamily: Globals.font_family,
   },
   contentContainerHorizontal: {},
@@ -255,6 +257,28 @@ export function FormLayout({
             </Text>
           )}
           {label}
+          {labelOptional && (
+            <Text
+              style={[
+                ...(isDarkTheme
+                  ? [
+                      {
+                        ...darkStyles?.labelOptional,
+                        ...(customDarkStyles?.labelOptional ?? {}),
+                      },
+                    ]
+                  : [
+                      {
+                        ...lightStyles?.labelOptional,
+                        ...(customLightStyles?.labelOptional ?? {}),
+                      },
+                    ]),
+                { ...styles.labelOptional, ...customStyles.labelOptional },
+              ]}
+            >
+              {labelOptional}
+            </Text>
+          )}
           {afterLabel && (
             <Text
               style={[
@@ -277,28 +301,6 @@ export function FormLayout({
               {afterLabel}
             </Text>
           )}
-        </Text>
-      )}
-      {labelOptional && (
-        <Text
-          style={[
-            ...(isDarkTheme
-              ? [
-                  {
-                    ...darkStyles?.labelOptional,
-                    ...(customDarkStyles?.labelOptional ?? {}),
-                  },
-                ]
-              : [
-                  {
-                    ...lightStyles?.labelOptional,
-                    ...(customLightStyles?.labelOptional ?? {}),
-                  },
-                ]),
-            { ...styles.labelOptional, ...customStyles.labelOptional },
-          ]}
-        >
-          {labelOptional}
         </Text>
       )}
       {children}
