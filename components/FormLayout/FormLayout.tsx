@@ -67,7 +67,6 @@ const styles = StyleSheet.create<FormLayoutStyles>({
     fontFamily: Globals.font_family,
   },
   labelOptional: {
-    paddingLeft: MarginsPaddings.mp_5,
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
     fontFamily: Globals.font_family,
@@ -276,6 +275,7 @@ export function FormLayout({
                 { ...styles.labelOptional, ...customStyles.labelOptional },
               ]}
             >
+              {' '}
               {labelOptional}
             </Text>
           )}
