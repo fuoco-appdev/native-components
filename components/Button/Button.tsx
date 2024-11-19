@@ -290,8 +290,8 @@ export default function Button({
     sizeStyle = {
       paddingTop: MarginsPaddings.mp_3,
       paddingBottom: MarginsPaddings.mp_3,
-      paddingLeft: MarginsPaddings.mp_4,
-      paddingRight: MarginsPaddings.mp_4,
+      paddingLeft: MarginsPaddings.mp_3,
+      paddingRight: MarginsPaddings.mp_3,
     };
     sizeWithChildrenStyle = {
       paddingTop: MarginsPaddings.mp_2,
