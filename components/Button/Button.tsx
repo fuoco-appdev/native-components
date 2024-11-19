@@ -324,16 +324,16 @@ export default function Button({
     };
   } else if (size === 'medium') {
     sizeStyle = {
-      paddingTop: MarginsPaddings.mp_7,
-      paddingBottom: MarginsPaddings.mp_7,
-      paddingLeft: MarginsPaddings.mp_7,
-      paddingRight: MarginsPaddings.mp_7,
+      paddingTop: MarginsPaddings.mp_5,
+      paddingBottom: MarginsPaddings.mp_5,
+      paddingLeft: MarginsPaddings.mp_5,
+      paddingRight: MarginsPaddings.mp_5,
     };
     sizeWithChildrenStyle = {
       paddingTop: MarginsPaddings.mp_4,
       paddingBottom: MarginsPaddings.mp_4,
-      paddingLeft: MarginsPaddings.mp_7,
-      paddingRight: MarginsPaddings.mp_7,
+      paddingLeft: MarginsPaddings.mp_5,
+      paddingRight: MarginsPaddings.mp_5,
     };
     textStyle = {
       ...textStyle,
