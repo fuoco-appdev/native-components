@@ -302,20 +302,20 @@ export default function Button({
     textStyle = {
       ...textStyle,
       fontSize: Globals.font_size_xs,
-      lineHeight: Globals.font_line_height_xs,
+      lineHeight: Globals.font_size_xs,
     };
   } else if (size === 'small') {
     sizeStyle = {
-      paddingTop: MarginsPaddings.mp_5,
-      paddingBottom: MarginsPaddings.mp_5,
-      paddingLeft: MarginsPaddings.mp_5,
-      paddingRight: MarginsPaddings.mp_5,
-    };
-    sizeWithChildrenStyle = {
       paddingTop: MarginsPaddings.mp_4,
       paddingBottom: MarginsPaddings.mp_4,
-      paddingLeft: MarginsPaddings.mp_6,
-      paddingRight: MarginsPaddings.mp_6,
+      paddingLeft: MarginsPaddings.mp_4,
+      paddingRight: MarginsPaddings.mp_4,
+    };
+    sizeWithChildrenStyle = {
+      paddingTop: MarginsPaddings.mp_3,
+      paddingBottom: MarginsPaddings.mp_3,
+      paddingLeft: MarginsPaddings.mp_5,
+      paddingRight: MarginsPaddings.mp_5,
     };
     textStyle = {
       ...textStyle,
