@@ -288,21 +288,21 @@ export default function Button({
   let sizeWithChildrenStyle: TextStyle = {};
   if (size === 'tiny') {
     sizeStyle = {
-      paddingTop: MarginsPaddings.mp_4,
-      paddingBottom: MarginsPaddings.mp_4,
+      paddingTop: MarginsPaddings.mp_3,
+      paddingBottom: MarginsPaddings.mp_3,
       paddingLeft: MarginsPaddings.mp_4,
       paddingRight: MarginsPaddings.mp_4,
     };
     sizeWithChildrenStyle = {
       paddingTop: MarginsPaddings.mp_3,
       paddingBottom: MarginsPaddings.mp_3,
-      paddingLeft: MarginsPaddings.mp_5,
-      paddingRight: MarginsPaddings.mp_5,
+      paddingLeft: MarginsPaddings.mp_4,
+      paddingRight: MarginsPaddings.mp_4,
     };
     textStyle = {
       ...textStyle,
       fontSize: Globals.font_size_xs,
-      lineHeight: Globals.font_size_xs,
+      lineHeight: Globals.font_line_height_sm,
     };
   } else if (size === 'small') {
     sizeStyle = {
