@@ -148,7 +148,7 @@ export default function Button({
   iconRight,
   loading = false,
   loadingComponent,
-  size = 'tiny',
+  size = 'small',
   rounded = false,
   type = 'primary',
   textAlign = 'center',
@@ -301,8 +301,8 @@ export default function Button({
     };
     textStyle = {
       ...textStyle,
-      fontSize: Globals.font_size_sm,
-      lineHeight: Globals.font_line_height_sm,
+      fontSize: Globals.font_size_xs,
+      lineHeight: Globals.font_line_height_xs,
     };
   } else if (size === 'small') {
     sizeStyle = {
