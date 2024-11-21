@@ -52,7 +52,7 @@ export interface ExtraInputPhoneNumberStyles {
   formLayout?: FormLayoutStyles;
   bottomSheet?: BottomSheetStyles;
   bottomSheetItem?: BottomSheetItemStyles;
-  extraButtomSheetItem?: ExtraBottomSheetItemStyles;
+  extraBottomSheetItem?: ExtraBottomSheetItemStyles;
 }
 
 export interface InputPhoneNumberProps {
@@ -717,12 +717,12 @@ export default function InputPhoneNumber({
   const renderItem = useCallback(({ item, index }: any) => {
     return (
       <BottomSheet.Item
-        customStyles={customExtraStyles.bottomSheet}
-        customDarkStyles={customExtraDarkStyles.bottomSheet}
-        customLightStyles={customExtraLightStyles.bottomSheet}
-        customExtraDarkStyles={customExtraDarkStyles.extraButtomSheetItem}
-        customExtraLightStyles={customExtraLightStyles.extraButtomSheetItem}
-        customExtraStyles={customExtraStyles.extraButtomSheetItem}
+        customStyles={customExtraStyles.bottomSheetItem}
+        customDarkStyles={customExtraDarkStyles.bottomSheetItem}
+        customLightStyles={customExtraLightStyles.bottomSheetItem}
+        customExtraDarkStyles={customExtraDarkStyles.extraBottomSheetItem}
+        customExtraLightStyles={customExtraLightStyles.extraBottomSheetItem}
+        customExtraStyles={customExtraStyles.extraBottomSheetItem}
         key={item.name}
         icon={
           <CountryFlag isoCode={item?.iso2?.toUpperCase() ?? 'ca'} size={21} />
