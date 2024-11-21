@@ -112,6 +112,7 @@ export default function ResetPassword({
         ]}
       >
         <Input
+          value={password}
           customStyles={extraCustomStyles?.input}
           customDarkStyles={extraCustomDarkStyles?.input}
           customLightStyles={extraCustomLightStyles?.input}
@@ -124,6 +125,7 @@ export default function ResetPassword({
           onChange={(e) => setPassword(e.nativeEvent.text)}
         />
         <Input
+          value={confirmPassword}
           customStyles={extraCustomStyles?.input}
           customDarkStyles={extraCustomDarkStyles?.input}
           customLightStyles={extraCustomLightStyles?.input}
