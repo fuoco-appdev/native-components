@@ -82,6 +82,9 @@ export default function ResetPassword({
     setIsLoading(false);
     if (error) onResetPasswordError?.(error);
     else onPasswordUpdated?.(e);
+
+    setPassword('');
+    setConfirmPassword('');
   };
 
   strings = { ...defaultStrings, ...strings };
