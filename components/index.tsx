@@ -8,7 +8,7 @@ export * from './Avatar';
 // export * from './image'
 // export * from './avatar'
 // export * from './crop-image'
-// export * from './language-switch'
+export * from './LanguageSwitch';
 // export * from './scroll'
 // export * from './schedule'
 
