@@ -161,7 +161,6 @@ export default function LanguageSwitch({
 
   const renderItem = useCallback(
     ({ item, index }: any) => {
-      console.log(languagesInfo[item.isoCode]);
       return (
         <BottomSheet.Item
           customStyles={customExtraStyles?.bottomSheetItem}
