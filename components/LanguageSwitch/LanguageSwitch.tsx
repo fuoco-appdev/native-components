@@ -198,7 +198,8 @@ export default function LanguageSwitch({
           customLightStyles={customExtraLightStyles?.button}
           customDarkStyles={customExtraDarkStyles?.button}
           type={'text'}
-          size={'small'}
+          block={true}
+          size={'full'}
           icon={
             <View
               style={[
