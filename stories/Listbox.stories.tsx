@@ -39,7 +39,10 @@ export const Default: Story = {
           }) => (
             <BottomSheet.Item
               key={item.id}
-              onPress={() => setSelectedIndex(index)}
+              onPress={() => {
+                setSelectedIndex(index);
+                setIsOpen(false);
+              }}
             >
               {item.value}
             </BottomSheet.Item>
