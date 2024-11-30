@@ -99,7 +99,7 @@ function BottomSheet({
 
   useEffect(() => {
     if (open && !isOpen && selectedIndex === -1) {
-      bottomSheetRef.current?.snapToIndex(snapIndex);
+      //bottomSheetRef.current?.snapToIndex(snapIndex);
       setIsOpen(true);
       setSelectedIndex(snapIndex);
     } else if (!open && isOpen && selectedIndex > -1) {
