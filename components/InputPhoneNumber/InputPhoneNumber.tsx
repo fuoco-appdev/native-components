@@ -1,11 +1,11 @@
-import { Button, ButtonStyles } from '../Button';
-import { FormLayout, FormLayoutStyles } from '../FormLayout';
+import { reduce, startsWith } from 'lodash';
+import memoize from 'lodash.memoize';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  FlatList,
   GestureResponderEvent,
-  ListRenderItem,
   NativeSyntheticEvent,
   StyleSheet,
-  Text,
   TextInput,
   TextInputChangeEventData,
   TextInputFocusEventData,
@@ -14,21 +14,17 @@ import {
   ViewStyle,
   useColorScheme,
 } from 'react-native';
-import { CountryData, CountryDataProps } from './CountryData';
-import memoize from 'lodash.memoize';
-import { reduce, startsWith } from 'lodash';
-import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import CountryFlag from 'react-native-country-flag';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, {
   BottomSheetItemStyles,
   BottomSheetStyles,
   ExtraBottomSheetItemStyles,
 } from '../BottomSheet/BottomSheet';
-import { Colors, Globals, MarginsPaddings } from '../Themes';
-import { Typography } from '../Typography';
-import { SharedValue } from 'react-native-reanimated';
+import { Button, ButtonStyles } from '../Button';
+import { FormLayout, FormLayoutStyles } from '../FormLayout';
 import { ErrorOutline } from '../Icon/Icons/Line';
+import { Colors, Globals, MarginsPaddings } from '../Themes';
+import { CountryData, CountryDataProps } from './CountryData';
 
 export interface InputPhoneNumberStyles {
   root?: ViewStyle;
@@ -880,16 +876,17 @@ export default function InputPhoneNumber({
         customDarkStyles={customExtraDarkStyles.bottomSheet}
         customLightStyles={customExtraLightStyles.bottomSheet}
         id={'phone-number'}
-        type={'flat-list'}
-        snapPoints={['50%', '90%']}
         open={showDropdown}
         onClose={() => {
           setShowDropdown(false);
         }}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item: any) => item.iso2}
-      />
+      >
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item: any) => item.iso2}
+        />
+      </BottomSheet>
     </View>
   );
 }

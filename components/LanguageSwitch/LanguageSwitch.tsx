@@ -1,8 +1,8 @@
 import * as countriesList from 'countries-list';
 import ISO6391, { LanguageCode } from 'iso-639-1';
-import { FormLayout, FormLayoutStyles } from '../FormLayout';
-import { Button, ButtonStyles } from '../Button';
+import { useCallback, useEffect, useState } from 'react';
 import {
+  FlatList,
   GestureResponderEvent,
   StyleSheet,
   TouchableOpacity,
@@ -11,15 +11,16 @@ import {
   ViewStyle,
 } from 'react-native';
 import CountryFlag from 'react-native-country-flag';
-import { useCallback, useEffect, useState } from 'react';
-import { Typography, TypographyStyles } from '../Typography';
-import { ChevronRight } from '../Icon/Icons/Line';
 import {
   BottomSheet,
   BottomSheetItemStyles,
   BottomSheetStyles,
   ExtraBottomSheetItemStyles,
 } from '../BottomSheet';
+import { Button, ButtonStyles } from '../Button';
+import { FormLayout, FormLayoutStyles } from '../FormLayout';
+import { ChevronRight } from '../Icon/Icons/Line';
+import { Typography, TypographyStyles } from '../Typography';
 
 export function getCountriesInfo(): { [isoCode: string]: string[] } {
   const countriesInfo: { [isoCode: string]: string[] } = {};
@@ -374,14 +375,15 @@ export default function LanguageSwitch({
         customDarkStyles={customExtraDarkStyles?.bottomSheet}
         customLightStyles={customExtraLightStyles?.bottomSheet}
         id={`language-switch-${id}`}
-        type={'flat-list'}
-        snapPoints={snapPoints}
         open={open}
         onClose={onClose}
-        data={supportedLanguages}
-        renderItem={renderItem}
-        keyExtractor={(item: any) => item.iso2}
-      />
+      >
+        <FlatList
+          data={supportedLanguages}
+          renderItem={renderItem}
+          keyExtractor={(item: any) => item.iso2}
+        />
+      </BottomSheet>
     </View>
   );
 }

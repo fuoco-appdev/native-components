@@ -1,22 +1,20 @@
 import {
+  FlatList,
   GestureResponderEvent,
   ListRenderItem,
   Pressable,
   StyleSheet,
-  TextStyle,
-  TouchableOpacity,
   useColorScheme,
   View,
   ViewStyle,
 } from 'react-native';
-import { FormLayout } from '../FormLayout';
 import { BottomSheet, BottomSheetStyles } from '../BottomSheet';
-import { SharedValue } from 'react-native-reanimated';
+import { FormLayout } from '../FormLayout';
 // import { ArrowDropDown } from '../Icon/Icons/Line';
-import { Typography, TypographyStyles } from '../Typography';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { ArrowDropDown } from '../Icon/Icons/Line';
 import { Colors, Globals, MarginsPaddings } from '../Themes';
+import { Typography, TypographyStyles } from '../Typography';
 
 export interface ListboxProps {
   id?: string;
@@ -34,11 +32,8 @@ export interface ListboxProps {
   customExtraStyles?: ExtraListboxStyles;
   customExtraLightStyles?: ExtraListboxStyles;
   customExtraDarkStyles?: ExtraListboxStyles;
-  data?: ArrayLike<any> | SharedValue<ArrayLike<any> | null | undefined>;
-  renderBottomSheetItem?:
-    | ListRenderItem<any>
-    | SharedValue<ListRenderItem<any> | null | undefined>
-    | null;
+  data?: ArrayLike<any> | null;
+  renderBottomSheetItem?: ListRenderItem<any> | null;
   keyExtractor?: ((item: any, index: number) => string) | undefined;
   onOpen?: (event: GestureResponderEvent) => void;
   onClose?: () => void;
@@ -272,14 +267,15 @@ function Listbox({
         customDarkStyles={customExtraDarkStyles?.bottomSheet}
         customLightStyles={customExtraLightStyles?.bottomSheet}
         id={`language-switch-${id}`}
-        type={'flat-list'}
-        snapPoints={snapPoints}
         open={open}
         onClose={onClose}
-        data={data}
-        renderItem={renderBottomSheetItem}
-        keyExtractor={keyExtractor}
-      />
+      >
+        <FlatList
+          data={data}
+          renderItem={renderBottomSheetItem}
+          keyExtractor={keyExtractor}
+        />
+      </BottomSheet>
     </View>
   );
 }
