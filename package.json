@@ -1,6 +1,6 @@
 {
   "name": "@fuoco.appdev/native-components",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
@@ -17,7 +17,6 @@
     "prepare": "bob build"
   },
   "dependencies": {
-    "@gorhom/bottom-sheet": "^5.0.4",
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-community/datetimepicker": "^7.6.2",
     "@react-native-community/slider": "^4.5.0",
