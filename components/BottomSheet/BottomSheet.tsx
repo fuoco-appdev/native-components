@@ -48,7 +48,7 @@ export interface BottomSheetStyles {
 export interface BottomSheetProps {
   id: string;
   open: boolean;
-  duration: number;
+  duration?: number;
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
   customLightStyles?: BottomSheetStyles;
