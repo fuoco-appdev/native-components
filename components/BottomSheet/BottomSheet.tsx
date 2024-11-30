@@ -112,12 +112,8 @@ function BottomSheet({
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const screenHeight = Dimensions.get('screen').height;
   const translateY = useSharedValue(0);
   const sheetHeight = useSharedValue(0);
-  const context = useSharedValue({
-    y: 0,
-  });
 
   useEffect(() => {
     if (open && !isOpen) {
@@ -141,11 +137,6 @@ function BottomSheet({
   }));
 
   const onGestureEvent = Gesture.Pan()
-    .onStart(() => {
-      context.value = {
-        y: translateY.value,
-      };
-    })
     .onUpdate((event) => {
       translateY.value = Math.max(
         Math.min(event.translationY, sheetHeight.value),
@@ -156,7 +147,10 @@ function BottomSheet({
       if (translateY.value < sheetHeight.value / 1.5) {
         translateY.value = withSpring(0, springConfig);
       } else if (translateY.value > sheetHeight.value / 2) {
-        translateY.value = withSpring(sheetHeight.value, springConfig);
+        onClose?.();
+        translateY.value = withSpring(sheetHeight.value, springConfig, () => {
+          setIsOpen(false);
+        });
       }
     });
 
