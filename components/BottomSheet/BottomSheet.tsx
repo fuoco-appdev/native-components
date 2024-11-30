@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   GestureResponderEvent,
   ListRenderItem,
   StyleProp,
@@ -9,7 +10,10 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {
+  GestureHandlerRootView,
+  PanGestureHandler,
+} from 'react-native-gesture-handler';
 import NativeBottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -32,13 +36,18 @@ import { Button, ButtonStyles } from '../Button';
 import { Portal } from '../Portal';
 import Animated, {
   SharedValue,
+  useAnimatedGestureHandler,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
   withDelay,
+  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { Colors, Globals } from '../Themes';
+import { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/springUtils';
+
+export type SheetPositions = 'minimised' | 'maximised' | 'expanded';
 
 export interface BottomSheetStyles {
   root?: ViewStyle;
@@ -49,6 +58,11 @@ export interface BottomSheetStyles {
 export interface BottomSheetProps {
   id: string;
   open: boolean;
+  minHeight?: number;
+  maxHeight?: number;
+  expandedHeight?: number;
+  springConfig?: SpringConfig;
+  dragBuffer?: number;
   duration?: number;
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
@@ -97,6 +111,18 @@ function BottomSheet({
   customStyles,
   customDarkStyles,
   customLightStyles,
+  minHeight = 120,
+  maxHeight = Dimensions.get('screen').height,
+  expandedHeight = Dimensions.get('screen').height * 0.6,
+  springConfig = {
+    damping: 50,
+    mass: 0.3,
+    stiffness: 120,
+    overshootClamping: true,
+    restSpeedThreshold: 0.3,
+    restDisplacementThreshold: 0.3,
+  },
+  dragBuffer = 40,
   duration = 150,
   id,
   open = false,
@@ -114,23 +140,74 @@ function BottomSheet({
   }, [open]);
 
   const onAnimatedClose = () => {
+    sheetHeight.value = withSpring(-expandedHeight, springConfig, () => {
+      setIsOpen(false);
+    });
+    position.value = 'expanded';
     onClose?.();
-    setTimeout(() => setIsOpen(false), duration);
   };
 
-  const height = useSharedValue(0);
-  const progress = useDerivedValue(() =>
-    withTiming(open ? 0 : 1, { duration })
-  );
+  const sheetHeight = useSharedValue(0);
+  const position = useSharedValue<SheetPositions>('minimised');
 
-  const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: progress.value * 2 * height.value }],
+  const sheetAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: -sheetHeight.value }],
   }));
 
   const backdropStyle = useAnimatedStyle(() => ({
-    opacity: 1 - progress.value,
     zIndex: open ? 1 : withDelay(duration, withTiming(-1, { duration: 0 })),
   }));
+
+  const onGestureEvent = useAnimatedGestureHandler({
+    // Set the context value to the sheet's current height value
+    onStart: (_ev, ctx: any) => {
+      ctx.offsetY = sheetHeight.value;
+    },
+    // Update the sheet's height value based on the gesture
+    onActive: (ev, ctx: any) => {
+      sheetHeight.value = ctx.offsetY + ev.translationY;
+    },
+    // Snap the sheet to the correct position once the gesture ends
+    onEnd: () => {
+      // 'worklet' directive is required for animations to work based on shared values
+      'worklet';
+      // Snap to expanded position if the sheet is dragged up from minimised position
+      // or dragged down from maximised position
+      const shouldExpand =
+        (position.value === 'maximised' &&
+          -sheetHeight.value < maxHeight - dragBuffer) ||
+        (position.value === 'minimised' &&
+          -sheetHeight.value > minHeight + dragBuffer);
+      // Snap to minimised position if the sheet is dragged down from expanded position
+      const shouldMinimise =
+        position.value === 'expanded' &&
+        -sheetHeight.value < expandedHeight - dragBuffer;
+      // Snap to maximised position if the sheet is dragged up from expanded position
+      const shouldMaximise =
+        position.value === 'expanded' &&
+        -sheetHeight.value > expandedHeight + dragBuffer;
+      // Update the sheet's position with spring animation
+      if (shouldExpand) {
+        sheetHeight.value = withSpring(-expandedHeight, springConfig);
+        position.value = 'expanded';
+      } else if (shouldMaximise) {
+        sheetHeight.value = withSpring(-maxHeight, springConfig);
+        position.value = 'maximised';
+      } else if (shouldMinimise) {
+        sheetHeight.value = withSpring(-minHeight, springConfig);
+        position.value = 'minimised';
+      } else {
+        sheetHeight.value = withSpring(
+          position.value === 'expanded'
+            ? -expandedHeight
+            : position.value === 'maximised'
+            ? -maxHeight
+            : -minHeight,
+          springConfig
+        );
+      }
+    },
+  });
 
   return (
     <Portal name={id}>
@@ -174,30 +251,32 @@ function BottomSheet({
           >
             <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
           </Animated.View>
-          <Animated.View
-            onLayout={(e) => {
-              height.value = e.nativeEvent.layout.height;
-            }}
-            style={[
-              ...(isDarkTheme
-                ? [
-                    {
-                      ...darkStyles?.sheet,
-                      ...(customDarkStyles?.sheet ?? {}),
-                    },
-                  ]
-                : [
-                    {
-                      ...lightStyles?.sheet,
-                      ...(customLightStyles?.sheet ?? {}),
-                    },
-                  ]),
-              { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
-              sheetStyle,
-            ]}
-          >
-            {children}
-          </Animated.View>
+          <PanGestureHandler onGestureEvent={onGestureEvent}>
+            <Animated.View
+              onLayout={(e) => {
+                sheetHeight.value = e.nativeEvent.layout.height;
+              }}
+              style={[
+                ...(isDarkTheme
+                  ? [
+                      {
+                        ...darkStyles?.sheet,
+                        ...(customDarkStyles?.sheet ?? {}),
+                      },
+                    ]
+                  : [
+                      {
+                        ...lightStyles?.sheet,
+                        ...(customLightStyles?.sheet ?? {}),
+                      },
+                    ]),
+                { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
+                sheetAnimatedStyle,
+              ]}
+            >
+              {children}
+            </Animated.View>
+          </PanGestureHandler>
         </View>
       )}
     </Portal>
