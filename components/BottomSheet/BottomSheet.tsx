@@ -17,6 +17,7 @@ import React, {
 import { Button, ButtonStyles } from '../Button';
 import { Portal } from '../Portal';
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -124,7 +125,7 @@ function BottomSheet({
   const onAnimatedClose = () => {
     onClose?.();
     translateY.value = withSpring(sheetHeight.value, springConfig, () => {
-      setIsOpen(false);
+      runOnJS(setIsOpen)(false);
     });
   };
 
@@ -149,7 +150,7 @@ function BottomSheet({
       } else if (translateY.value > sheetHeight.value / 2) {
         onClose?.();
         translateY.value = withSpring(sheetHeight.value, springConfig, () => {
-          setIsOpen(false);
+          runOnJS(setIsOpen)(false);
         });
       }
     });
