@@ -10,10 +10,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {
-  GestureHandlerRootView,
-  PanGestureHandler,
-} from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import NativeBottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -158,17 +155,17 @@ function BottomSheet({
     zIndex: open ? 1 : withDelay(duration, withTiming(-1, { duration: 0 })),
   }));
 
-  const onGestureEvent = useAnimatedGestureHandler({
-    // Set the context value to the sheet's current height value
-    onStart: (_ev, ctx: any) => {
-      ctx.offsetY = sheetHeight.value;
-    },
-    // Update the sheet's height value based on the gesture
-    onActive: (ev, ctx: any) => {
-      sheetHeight.value = ctx.offsetY + ev.translationY;
-    },
-    // Snap the sheet to the correct position once the gesture ends
-    onEnd: () => {
+  const onGestureEvent = Gesture.Pan()
+    .onStart((e) => {
+      // Set the context value to the sheet's current height value
+      e.y = sheetHeight.value;
+    })
+    .onUpdate((e) => {
+      // Update the sheet's height value based on the gesture
+      sheetHeight.value = e.x + e.translationY;
+    })
+    .onEnd(() => {
+      // Snap the sheet to the correct position once the gesture ends
       // 'worklet' directive is required for animations to work based on shared values
       'worklet';
       // Snap to expanded position if the sheet is dragged up from minimised position
@@ -206,8 +203,7 @@ function BottomSheet({
           springConfig
         );
       }
-    },
-  });
+    });
 
   return (
     <Portal name={id}>
@@ -251,7 +247,7 @@ function BottomSheet({
           >
             <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
           </Animated.View>
-          <PanGestureHandler onGestureEvent={onGestureEvent}>
+          <GestureDetector gesture={onGestureEvent}>
             <Animated.View
               onLayout={(e) => {
                 sheetHeight.value = e.nativeEvent.layout.height;
@@ -276,7 +272,7 @@ function BottomSheet({
             >
               {children}
             </Animated.View>
-          </PanGestureHandler>
+          </GestureDetector>
         </View>
       )}
     </Portal>
