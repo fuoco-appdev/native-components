@@ -99,11 +99,9 @@ function BottomSheet({
 
   useEffect(() => {
     if (open && !isOpen && selectedIndex === -1) {
-      //bottomSheetRef.current?.snapToIndex(snapIndex);
       setIsOpen(true);
       setSelectedIndex(snapIndex);
     } else if (!open && isOpen && selectedIndex > -1) {
-      //bottomSheetRef.current?.close();
       setSelectedIndex(-1);
     }
   }, [open]);
@@ -165,6 +163,7 @@ function BottomSheet({
             enableDynamicSizing={false}
             backdropComponent={renderBackdrop}
             enablePanDownToClose={true}
+            animateOnMount={false}
             onClose={onClose}
             style={[
               ...(isDarkTheme
