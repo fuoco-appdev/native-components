@@ -59,9 +59,9 @@ export interface BottomSheetProps {
 
 const styles = StyleSheet.create<BottomSheetStyles>({
   root: {
-    position: 'relative',
     height: '100%',
     width: '100%',
+    ...StyleSheet.absoluteFillObject,
   },
   sheet: {
     width: '100%',
@@ -71,9 +71,7 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     borderTopLeftRadius: Globals.rounded_md,
     zIndex: 2,
   },
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-  },
+  backdrop: {},
 });
 const lightStyles = StyleSheet.create<BottomSheetStyles>({
   sheet: {
@@ -171,7 +169,7 @@ function BottomSheet({
               backdropStyle,
             ]}
           >
-            <TouchableOpacity onPress={onAnimatedClose} />
+            <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
           </Animated.View>
           <Animated.View
             onLayout={(e) => {
