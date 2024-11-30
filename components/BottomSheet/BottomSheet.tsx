@@ -119,6 +119,7 @@ function BottomSheet({
   useEffect(() => {
     if (open && !isOpen) {
       setIsOpen(true);
+      translateY.value = withSpring(0, springConfig);
     }
   }, [open]);
 
