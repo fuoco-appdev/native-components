@@ -38,11 +38,7 @@ export interface BottomSheetStyles {
 export interface BottomSheetProps {
   id: string;
   open: boolean;
-  minHeight?: number;
-  maxHeight?: number;
-  expandedHeight?: number;
   springConfig?: SpringConfig;
-  dragBuffer?: number;
   duration?: number;
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
@@ -91,9 +87,6 @@ function BottomSheet({
   customStyles,
   customDarkStyles,
   customLightStyles,
-  minHeight = 120,
-  maxHeight = Dimensions.get('screen').height,
-  expandedHeight = Dimensions.get('screen').height * 0.6,
   springConfig = {
     damping: 50,
     mass: 0.3,
@@ -102,13 +95,13 @@ function BottomSheet({
     restSpeedThreshold: 0.3,
     restDisplacementThreshold: 0.3,
   },
-  dragBuffer = 40,
   duration = 150,
   id,
   open = false,
   children,
   onClose,
 }: BottomSheetProps) {
+  springConfig.duration = duration;
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
