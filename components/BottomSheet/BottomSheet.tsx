@@ -115,6 +115,7 @@ function BottomSheet({
   const screenHeight = Dimensions.get('screen').height;
   const maxTranslateY = -screenHeight + 100;
   const translateY = useSharedValue(0);
+  const sheetHeight = useSharedValue(0);
   const context = useSharedValue({
     y: 0,
   });
@@ -126,7 +127,7 @@ function BottomSheet({
   }, [open]);
 
   const onAnimatedClose = () => {
-    translateY.value = withSpring(-expandedHeight, springConfig, () => {
+    translateY.value = withSpring(0, springConfig, () => {
       setIsOpen(false);
     });
     onClose?.();
@@ -147,8 +148,9 @@ function BottomSheet({
       };
     })
     .onUpdate((event) => {
-      translateY.value = event.translationY + context.value.y;
-      translateY.value = Math.max(translateY.value, maxTranslateY);
+      translateY.value = Math.min(
+        Math.max(event.translationY + context.value.y, maxTranslateY)
+      );
     })
     .onEnd(() => {
       if (translateY.value < -screenHeight / 1.6) {
@@ -202,7 +204,9 @@ function BottomSheet({
           </Animated.View>
           <GestureDetector gesture={onGestureEvent}>
             <Animated.View
-              onLayout={(e) => {}}
+              onLayout={(e) => {
+                sheetHeight.value = e.nativeEvent.layout.height;
+              }}
               style={[
                 ...(isDarkTheme
                   ? [
