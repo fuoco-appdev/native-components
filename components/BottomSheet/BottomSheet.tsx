@@ -161,6 +161,7 @@ function BottomSheet({
           backdropComponent={renderBackdrop}
           enablePanDownToClose={true}
           onClose={onClose}
+          index={selectedIndex}
           style={[
             ...(isDarkTheme
               ? [{ ...darkStyles?.sheet, ...(customDarkStyles?.sheet ?? {}) }]
