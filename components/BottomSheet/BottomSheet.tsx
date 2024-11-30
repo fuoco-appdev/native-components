@@ -148,7 +148,7 @@ function BottomSheet({
     })
     .onUpdate((event) => {
       translateY.value = Math.max(
-        Math.min(event.translationY + context.value.y, 0),
+        Math.min(event.translationY + context.value.y, sheetHeight.value),
         -sheetHeight.value
       );
     })
