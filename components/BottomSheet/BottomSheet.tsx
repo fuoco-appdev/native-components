@@ -127,7 +127,7 @@ function BottomSheet({
 
   const onAnimatedClose = () => {
     onClose?.();
-    translateY.value = withSpring(0, springConfig, () => {
+    translateY.value = withSpring(sheetHeight.value, springConfig, () => {
       setIsOpen(false);
     });
   };
@@ -153,10 +153,10 @@ function BottomSheet({
       );
     })
     .onEnd(() => {
-      if (translateY.value < -sheetHeight.value / 1.5) {
-        translateY.value = withSpring(-sheetHeight.value, springConfig);
-      } else if (translateY.value > -sheetHeight.value / 2) {
+      if (translateY.value < sheetHeight.value / 1.5) {
         translateY.value = withSpring(0, springConfig);
+      } else if (translateY.value > sheetHeight.value / 2) {
+        translateY.value = withSpring(sheetHeight.value, springConfig);
       }
     });
 
