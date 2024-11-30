@@ -93,15 +93,18 @@ function BottomSheet({
 }: BottomSheetProps) {
   const bottomSheetRef = useRef<NativeBottomSheet>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
   useEffect(() => {
-    if (open) {
+    if (open && selectedIndex === -1) {
       bottomSheetRef.current?.snapToIndex(snapIndex);
       setIsOpen(true);
-    } else {
+      setSelectedIndex(snapIndex);
+    } else if (!open && selectedIndex > -1) {
       bottomSheetRef.current?.close();
+      setSelectedIndex(-1);
     }
   }, [open]);
 
@@ -162,7 +165,6 @@ function BottomSheet({
             backdropComponent={renderBackdrop}
             enablePanDownToClose={true}
             onClose={onClose}
-            index={-1}
             style={[
               ...(isDarkTheme
                 ? [{ ...darkStyles?.sheet, ...(customDarkStyles?.sheet ?? {}) }]
