@@ -41,6 +41,7 @@ import Animated, {
 import { Colors, Globals } from '../Themes';
 
 export interface BottomSheetStyles {
+  root?: ViewStyle;
   sheet?: ViewStyle;
   backdrop?: ViewStyle;
 }
@@ -57,6 +58,11 @@ export interface BottomSheetProps {
 }
 
 const styles = StyleSheet.create<BottomSheetStyles>({
+  root: {
+    position: 'relative',
+    height: '100%',
+    width: '100%',
+  },
   sheet: {
     width: '100%',
     position: 'absolute',
@@ -98,6 +104,18 @@ function BottomSheet({
 }: BottomSheetProps) {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (open && !isOpen) {
+      setIsOpen(true);
+    }
+  }, [open]);
+
+  const onAnimatedClose = () => {
+    onClose?.();
+    setTimeout(() => setIsOpen(false), duration);
+  };
 
   const height = useSharedValue(0);
   const progress = useDerivedValue(() =>
@@ -115,51 +133,72 @@ function BottomSheet({
 
   return (
     <Portal name={id}>
-      <Animated.View
-        style={[
-          ...(isDarkTheme
-            ? [
-                {
-                  ...darkStyles?.backdrop,
-                  ...(customDarkStyles?.backdrop ?? {}),
-                },
-              ]
-            : [
-                {
-                  ...lightStyles?.backdrop,
-                  ...(customLightStyles?.backdrop ?? {}),
-                },
-              ]),
-          { ...styles.backdrop, ...(customStyles?.backdrop ?? {}) },
-          backdropStyle,
-        ]}
-      >
-        <TouchableOpacity onPress={onClose} />
-      </Animated.View>
-      <Animated.View
-        onLayout={(e) => {
-          height.value = e.nativeEvent.layout.height;
-        }}
-        style={[
-          ...(isDarkTheme
-            ? [
-                {
-                  ...darkStyles?.sheet,
-                  ...(customDarkStyles?.sheet ?? {}),
-                },
-              ]
-            : [
-                {
-                  ...lightStyles?.sheet,
-                  ...(customLightStyles?.sheet ?? {}),
-                },
-              ]),
-          { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
-          sheetStyle,
-        ]}
-      >
-        {children}
-      </Animated.View>
+      {isOpen && (
+        <View
+          style={[
+            ...(isDarkTheme
+              ? [
+                  {
+                    ...darkStyles?.root,
+                    ...(customDarkStyles?.root ?? {}),
+                  },
+                ]
+              : [
+                  {
+                    ...lightStyles?.root,
+                    ...(customLightStyles?.root ?? {}),
+                  },
+                ]),
+            { ...styles.root, ...(customStyles?.root ?? {}) },
+          ]}
+        >
+          <Animated.View
+            style={[
+              ...(isDarkTheme
+                ? [
+                    {
+                      ...darkStyles?.backdrop,
+                      ...(customDarkStyles?.backdrop ?? {}),
+                    },
+                  ]
+                : [
+                    {
+                      ...lightStyles?.backdrop,
+                      ...(customLightStyles?.backdrop ?? {}),
+                    },
+                  ]),
+              { ...styles.backdrop, ...(customStyles?.backdrop ?? {}) },
+              backdropStyle,
+            ]}
+          >
+            <TouchableOpacity onPress={onAnimatedClose} />
+          </Animated.View>
+          <Animated.View
+            onLayout={(e) => {
+              height.value = e.nativeEvent.layout.height;
+            }}
+            style={[
+              ...(isDarkTheme
+                ? [
+                    {
+                      ...darkStyles?.sheet,
+                      ...(customDarkStyles?.sheet ?? {}),
+                    },
+                  ]
+                : [
+                    {
+                      ...lightStyles?.sheet,
+                      ...(customLightStyles?.sheet ?? {}),
+                    },
+                  ]),
+              { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
+              sheetStyle,
+            ]}
+          >
+            {children}
+          </Animated.View>
+        </View>
+      )}
     </Portal>
   );
 }
