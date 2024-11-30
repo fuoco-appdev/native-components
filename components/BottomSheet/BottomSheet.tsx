@@ -103,10 +103,6 @@ function BottomSheet({
   useEffect(() => {
     if (open && !isOpen) {
       setIsOpen(true);
-      translateY.value = withTiming(0, {
-        easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-        duration: duration,
-      });
     }
   }, [open]);
 
@@ -125,11 +121,13 @@ function BottomSheet({
     transform: [{ translateY: translateY.value }],
   }));
 
-  const backdropStyle = useAnimatedStyle(() => ({
-    zIndex: open ? 1 : withDelay(duration, withTiming(-1, { duration: 0 })),
-  }));
-
   const onGestureEvent = Gesture.Pan()
+    .onStart(() => {
+      translateY.value = withTiming(0, {
+        easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+        duration: duration,
+      });
+    })
     .onUpdate((event) => {
       translateY.value = Math.max(
         Math.min(event.translationY, sheetHeight.value),
@@ -193,7 +191,6 @@ function BottomSheet({
                     },
                   ]),
               { ...styles.backdrop, ...(customStyles?.backdrop ?? {}) },
-              backdropStyle,
             ]}
           >
             <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
