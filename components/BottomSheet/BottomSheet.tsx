@@ -8,7 +8,12 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import React, { useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { Button, ButtonStyles } from '../Button';
 import { Portal } from '../Portal';
 import Animated, {
@@ -107,6 +112,13 @@ function BottomSheet({
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const screenHeight = Dimensions.get('screen').height;
+  const maxTranslateY = -screenHeight + 100;
+  const translateY = useSharedValue(0);
+  const context = useSharedValue({
+    y: 0,
+  });
+
   useEffect(() => {
     if (open && !isOpen) {
       setIsOpen(true);
@@ -114,18 +126,14 @@ function BottomSheet({
   }, [open]);
 
   const onAnimatedClose = () => {
-    sheetHeight.value = withSpring(-expandedHeight, springConfig, () => {
+    translateY.value = withSpring(-expandedHeight, springConfig, () => {
       setIsOpen(false);
     });
-    position.value = 'expanded';
     onClose?.();
   };
 
-  const sheetHeight = useSharedValue(0);
-  const position = useSharedValue<SheetPositions>('minimised');
-
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: sheetHeight.value }],
+    transform: [{ translateY: translateY.value }],
   }));
 
   const backdropStyle = useAnimatedStyle(() => ({
@@ -133,48 +141,20 @@ function BottomSheet({
   }));
 
   const onGestureEvent = Gesture.Pan()
-    .onUpdate((e) => {
-      // Update the sheet's height value based on the gesture
-      sheetHeight.value = e.y + e.translationY;
+    .onStart(() => {
+      context.value = {
+        y: translateY.value,
+      };
+    })
+    .onUpdate((event) => {
+      translateY.value = event.translationY + context.value.y;
+      translateY.value = Math.max(translateY.value, maxTranslateY);
     })
     .onEnd(() => {
-      // Snap the sheet to the correct position once the gesture ends
-      // 'worklet' directive is required for animations to work based on shared values
-      'worklet';
-      // Snap to expanded position if the sheet is dragged up from minimised position
-      // or dragged down from maximised position
-      const shouldExpand =
-        (position.value === 'maximised' &&
-          -sheetHeight.value < maxHeight - dragBuffer) ||
-        (position.value === 'minimised' &&
-          -sheetHeight.value > minHeight + dragBuffer);
-      // Snap to minimised position if the sheet is dragged down from expanded position
-      const shouldMinimise =
-        position.value === 'expanded' &&
-        -sheetHeight.value < expandedHeight - dragBuffer;
-      // Snap to maximised position if the sheet is dragged up from expanded position
-      const shouldMaximise =
-        position.value === 'expanded' &&
-        -sheetHeight.value > expandedHeight + dragBuffer;
-      // Update the sheet's position with spring animation
-      if (shouldExpand) {
-        sheetHeight.value = withSpring(-expandedHeight, springConfig);
-        position.value = 'expanded';
-      } else if (shouldMaximise) {
-        sheetHeight.value = withSpring(-maxHeight, springConfig);
-        position.value = 'maximised';
-      } else if (shouldMinimise) {
-        sheetHeight.value = withSpring(-minHeight, springConfig);
-        position.value = 'minimised';
-      } else {
-        sheetHeight.value = withSpring(
-          position.value === 'expanded'
-            ? -expandedHeight
-            : position.value === 'maximised'
-            ? -maxHeight
-            : -minHeight,
-          springConfig
-        );
+      if (translateY.value < -screenHeight / 1.6) {
+        translateY.value = withSpring(maxTranslateY, springConfig);
+      } else if (translateY.value > -screenHeight / 4.5) {
+        translateY.value = withSpring(0, springConfig);
       }
     });
 
@@ -222,9 +202,7 @@ function BottomSheet({
           </Animated.View>
           <GestureDetector gesture={onGestureEvent}>
             <Animated.View
-              onLayout={(e) => {
-                sheetHeight.value = e.nativeEvent.layout.height;
-              }}
+              onLayout={(e) => {}}
               style={[
                 ...(isDarkTheme
                   ? [
