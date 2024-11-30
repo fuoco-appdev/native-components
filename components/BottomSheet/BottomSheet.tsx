@@ -149,7 +149,9 @@ function BottomSheet({
       if (translateY.value < sheetHeight.value / 1.5) {
         translateY.value = withSpring(0, springConfig);
       } else if (translateY.value > sheetHeight.value / 2) {
-        onClose?.();
+        if (onClose) {
+          runOnJS(onClose)();
+        }
         translateY.value = withSpring(sheetHeight.value, springConfig, () => {
           runOnJS(setIsOpen)(false);
         });
