@@ -113,7 +113,6 @@ function BottomSheet({
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const screenHeight = Dimensions.get('screen').height;
-  const maxTranslateY = -screenHeight;
   const translateY = useSharedValue(0);
   const sheetHeight = useSharedValue(0);
   const context = useSharedValue({
@@ -149,14 +148,14 @@ function BottomSheet({
     })
     .onUpdate((event) => {
       translateY.value = Math.max(
-        Math.min(event.translationY + context.value.y, sheetHeight.value),
-        maxTranslateY
+        event.translationY + context.value.y,
+        sheetHeight.value
       );
     })
     .onEnd(() => {
-      if (translateY.value < -screenHeight / 1.5) {
-        translateY.value = withSpring(maxTranslateY, springConfig);
-      } else if (translateY.value > -screenHeight / 2) {
+      if (translateY.value < -sheetHeight.value / 1.5) {
+        translateY.value = withSpring(-sheetHeight.value, springConfig);
+      } else if (translateY.value > -sheetHeight.value / 2) {
         translateY.value = withSpring(0, springConfig);
       }
     });
