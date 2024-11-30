@@ -1,47 +1,24 @@
 import {
   Dimensions,
   GestureResponderEvent,
-  ListRenderItem,
-  StyleProp,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useColorScheme,
   View,
   ViewStyle,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import NativeBottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetFlatList,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetScrollView,
-  BottomSheetView,
-  BottomSheetVirtualizedList,
-  SNAP_POINT_TYPE,
-} from '@gorhom/bottom-sheet';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, ButtonStyles } from '../Button';
 import { Portal } from '../Portal';
 import Animated, {
-  SharedValue,
-  useAnimatedGestureHandler,
   useAnimatedStyle,
-  useDerivedValue,
   useSharedValue,
   withDelay,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { Colors, Globals } from '../Themes';
+import { Globals } from '../Themes';
 import { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/springUtils';
 
 export type SheetPositions = 'minimised' | 'maximised' | 'expanded';
@@ -148,7 +125,7 @@ function BottomSheet({
   const position = useSharedValue<SheetPositions>('minimised');
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: -sheetHeight.value }],
+    transform: [{ translateY: sheetHeight.value }],
   }));
 
   const backdropStyle = useAnimatedStyle(() => ({
@@ -156,13 +133,9 @@ function BottomSheet({
   }));
 
   const onGestureEvent = Gesture.Pan()
-    .onStart((e) => {
-      // Set the context value to the sheet's current height value
-      e.y = sheetHeight.value;
-    })
     .onUpdate((e) => {
       // Update the sheet's height value based on the gesture
-      sheetHeight.value = e.x + e.translationY;
+      sheetHeight.value = e.y + e.translationY;
     })
     .onEnd(() => {
       // Snap the sheet to the correct position once the gesture ends
