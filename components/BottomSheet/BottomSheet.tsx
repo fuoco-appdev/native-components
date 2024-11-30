@@ -71,7 +71,10 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     borderTopLeftRadius: Globals.rounded_md,
     zIndex: 2,
   },
-  backdrop: {},
+  backdrop: {
+    height: '100%',
+    width: '100%',
+  },
 });
 const lightStyles = StyleSheet.create<BottomSheetStyles>({
   sheet: {
