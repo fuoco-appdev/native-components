@@ -98,13 +98,12 @@ function BottomSheet({
   const isDarkTheme = theme === 'dark';
 
   useEffect(() => {
-    if (open && selectedIndex === -1) {
+    if (open && !isOpen && selectedIndex === -1) {
       bottomSheetRef.current?.snapToIndex(snapIndex);
       setIsOpen(true);
       setSelectedIndex(snapIndex);
-    } else if (!open && selectedIndex > -1) {
+    } else if (!open && isOpen && selectedIndex > -1) {
       bottomSheetRef.current?.close();
-      setSelectedIndex(-1);
     }
   }, [open]);
 
@@ -116,6 +115,7 @@ function BottomSheet({
     onChange?.(index, position, type);
     if (index === -1) {
       setIsOpen(false);
+      setSelectedIndex(-1);
     }
   };
 
