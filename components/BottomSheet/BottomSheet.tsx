@@ -101,6 +101,7 @@ function BottomSheet({
     if (open && !isOpen && selectedIndex === -1) {
       bottomSheetRef.current?.snapToIndex(snapIndex);
       setIsOpen(true);
+      setSelectedIndex(snapIndex);
     } else if (!open && isOpen && selectedIndex > -1) {
       bottomSheetRef.current?.close();
     }
@@ -112,9 +113,9 @@ function BottomSheet({
     type: SNAP_POINT_TYPE
   ) => {
     onChange?.(index, position, type);
-    setSelectedIndex(index);
     if (index === -1) {
       setIsOpen(false);
+      setSelectedIndex(-1);
     }
   };
 
