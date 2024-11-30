@@ -17,6 +17,7 @@ import React, {
 import { Button, ButtonStyles } from '../Button';
 import { Portal } from '../Portal';
 import Animated, {
+  Easing,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -38,7 +39,6 @@ export interface BottomSheetStyles {
 export interface BottomSheetProps {
   id: string;
   open: boolean;
-  springConfig?: SpringConfig;
   duration?: number;
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
@@ -87,21 +87,12 @@ function BottomSheet({
   customStyles,
   customDarkStyles,
   customLightStyles,
-  springConfig = {
-    damping: 50,
-    mass: 0.3,
-    stiffness: 120,
-    overshootClamping: true,
-    restSpeedThreshold: 0.3,
-    restDisplacementThreshold: 0.3,
-  },
   duration = 150,
   id,
   open = false,
   children,
   onClose,
 }: BottomSheetProps) {
-  springConfig.duration = duration;
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -112,15 +103,22 @@ function BottomSheet({
   useEffect(() => {
     if (open && !isOpen) {
       setIsOpen(true);
-      translateY.value = withSpring(0, springConfig);
+      translateY.value = withTiming(0, {
+        easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+        duration: duration,
+      });
     }
   }, [open]);
 
   const onAnimatedClose = () => {
     onClose?.();
-    translateY.value = withSpring(sheetHeight.value, springConfig, () => {
-      runOnJS(setIsOpen)(false);
-    });
+    translateY.value = withTiming(
+      sheetHeight.value,
+      { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
+      () => {
+        runOnJS(setIsOpen)(false);
+      }
+    );
   };
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
@@ -140,14 +138,21 @@ function BottomSheet({
     })
     .onEnd(() => {
       if (translateY.value < sheetHeight.value / 1.5) {
-        translateY.value = withSpring(0, springConfig);
+        translateY.value = withTiming(0, {
+          easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+          duration: duration,
+        });
       } else if (translateY.value > sheetHeight.value / 2) {
         if (onClose) {
           runOnJS(onClose)();
         }
-        translateY.value = withSpring(sheetHeight.value, springConfig, () => {
-          runOnJS(setIsOpen)(false);
-        });
+        translateY.value = withTiming(
+          sheetHeight.value,
+          { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
+          () => {
+            runOnJS(setIsOpen)(false);
+          }
+        );
       }
     });
 
