@@ -92,15 +92,16 @@ function BottomSheet({
   onChange,
 }: BottomSheetProps) {
   const bottomSheetRef = useRef<NativeBottomSheet>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
   useEffect(() => {
-    if (open && selectedIndex === -1) {
+    if (open && !isOpen && selectedIndex === -1) {
       bottomSheetRef.current?.snapToIndex(snapIndex);
-      setSelectedIndex(snapIndex);
-    } else if (!open && selectedIndex > -1) {
+      setIsOpen(true);
+    } else if (!open && isOpen && selectedIndex > -1) {
       bottomSheetRef.current?.close();
     }
   }, [open]);
@@ -111,8 +112,9 @@ function BottomSheet({
     type: SNAP_POINT_TYPE
   ) => {
     onChange?.(index, position, type);
+    setSelectedIndex(index);
     if (index === -1) {
-      setSelectedIndex(-1);
+      setIsOpen(false);
     }
   };
 
@@ -145,114 +147,116 @@ function BottomSheet({
 
   return (
     <Portal name={id}>
-      <GestureHandlerRootView
-        style={[
-          ...(isDarkTheme
-            ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
-            : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
-          { ...styles.root, ...(customStyles?.root ?? {}) },
-        ]}
-      >
-        <NativeBottomSheet
-          ref={bottomSheetRef}
-          onChange={handleOnChange}
-          snapPoints={snapPoints}
-          enableDynamicSizing={false}
-          backdropComponent={renderBackdrop}
-          enablePanDownToClose={true}
-          onClose={onClose}
-          index={selectedIndex}
+      {isOpen && (
+        <GestureHandlerRootView
           style={[
             ...(isDarkTheme
-              ? [{ ...darkStyles?.sheet, ...(customDarkStyles?.sheet ?? {}) }]
-              : [
-                  {
-                    ...lightStyles?.sheet,
-                    ...(customLightStyles?.sheet ?? {}),
-                  },
-                ]),
-            { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
+              ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
+              : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
+            { ...styles.root, ...(customStyles?.root ?? {}) },
           ]}
         >
-          {type === 'view' && (
-            <BottomSheetView
-              style={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.container,
-                        ...(customDarkStyles?.container ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.container,
-                        ...(customLightStyles?.container ?? {}),
-                      },
-                    ]),
-                { ...styles.container, ...(customStyles?.container ?? {}) },
-              ]}
-            >
-              {children}
-            </BottomSheetView>
-          )}
-          {type === 'scroll-view' && (
-            <BottomSheetScrollView
-              contentContainerStyle={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.container,
-                        ...(customDarkStyles?.container ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.container,
-                        ...(customLightStyles?.container ?? {}),
-                      },
-                    ]),
-                { ...styles.container, ...(customStyles?.container ?? {}) },
-              ]}
-            >
-              {children}
-            </BottomSheetScrollView>
-          )}
-          {type === 'flat-list' && (
-            <BottomSheetFlatList
-              contentContainerStyle={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.container,
-                        ...(customDarkStyles?.container ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.container,
-                        ...(customLightStyles?.container ?? {}),
-                      },
-                    ]),
-                { ...styles.container, ...(customStyles?.container ?? {}) },
-              ]}
-              keyExtractor={keyExtractor}
-              maxToRenderPerBatch={20}
-              data={data}
-              renderItem={renderItem}
-            />
-          )}
-          {type === 'virtualized-list' && (
-            <BottomSheetVirtualizedList
-              data={data}
-              keyExtractor={keyExtractor}
-              getItemCount={(data) => data.length}
-              getItem={(data, index) => data[index]}
-              renderItem={renderItem}
-            />
-          )}
-        </NativeBottomSheet>
-      </GestureHandlerRootView>
+          <NativeBottomSheet
+            ref={bottomSheetRef}
+            onChange={handleOnChange}
+            index={selectedIndex}
+            snapPoints={snapPoints}
+            enableDynamicSizing={false}
+            backdropComponent={renderBackdrop}
+            enablePanDownToClose={true}
+            onClose={onClose}
+            style={[
+              ...(isDarkTheme
+                ? [{ ...darkStyles?.sheet, ...(customDarkStyles?.sheet ?? {}) }]
+                : [
+                    {
+                      ...lightStyles?.sheet,
+                      ...(customLightStyles?.sheet ?? {}),
+                    },
+                  ]),
+              { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
+            ]}
+          >
+            {type === 'view' && (
+              <BottomSheetView
+                style={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.container,
+                          ...(customDarkStyles?.container ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.container,
+                          ...(customLightStyles?.container ?? {}),
+                        },
+                      ]),
+                  { ...styles.container, ...(customStyles?.container ?? {}) },
+                ]}
+              >
+                {children}
+              </BottomSheetView>
+            )}
+            {type === 'scroll-view' && (
+              <BottomSheetScrollView
+                contentContainerStyle={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.container,
+                          ...(customDarkStyles?.container ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.container,
+                          ...(customLightStyles?.container ?? {}),
+                        },
+                      ]),
+                  { ...styles.container, ...(customStyles?.container ?? {}) },
+                ]}
+              >
+                {children}
+              </BottomSheetScrollView>
+            )}
+            {type === 'flat-list' && (
+              <BottomSheetFlatList
+                contentContainerStyle={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.container,
+                          ...(customDarkStyles?.container ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.container,
+                          ...(customLightStyles?.container ?? {}),
+                        },
+                      ]),
+                  { ...styles.container, ...(customStyles?.container ?? {}) },
+                ]}
+                keyExtractor={keyExtractor}
+                maxToRenderPerBatch={20}
+                data={data}
+                renderItem={renderItem}
+              />
+            )}
+            {type === 'virtualized-list' && (
+              <BottomSheetVirtualizedList
+                data={data}
+                keyExtractor={keyExtractor}
+                getItemCount={(data) => data.length}
+                getItem={(data, index) => data[index]}
+                renderItem={renderItem}
+              />
+            )}
+          </NativeBottomSheet>
+        </GestureHandlerRootView>
+      )}
     </Portal>
   );
 }
