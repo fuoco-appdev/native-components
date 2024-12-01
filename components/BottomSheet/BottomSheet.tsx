@@ -215,15 +215,6 @@ function BottomSheet({
           </Animated.View>
           <SafeAreaView>
             <Animated.View
-              onLayout={(e) => {
-                sheetHeight.value = e.nativeEvent.layout.height;
-                setTimeout(() => {
-                  translateY.value = withTiming(0, {
-                    easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                    duration: duration,
-                  });
-                }, 75);
-              }}
               style={[
                 ...(isDarkTheme
                   ? [
@@ -269,7 +260,19 @@ function BottomSheet({
                   ]}
                 >
                   <GestureDetector gesture={onGestureEvent}>
-                    <View>{children}</View>
+                    <View
+                      onLayout={(e) => {
+                        sheetHeight.value = e.nativeEvent.layout.height;
+                        setTimeout(() => {
+                          translateY.value = withTiming(0, {
+                            easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                            duration: duration,
+                          });
+                        }, 75);
+                      }}
+                    >
+                      {children}
+                    </View>
                   </GestureDetector>
                 </ScrollView>
               )}
