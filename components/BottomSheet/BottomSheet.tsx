@@ -275,7 +275,7 @@ function BottomSheet({
                         }, 75);
                       }}
                     >
-                      <KeyboardAvoidingView behavior={'position'}>
+                      <KeyboardAvoidingView behavior={'height'}>
                         {children}
                       </KeyboardAvoidingView>
                     </View>
