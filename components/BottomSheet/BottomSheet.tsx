@@ -238,7 +238,7 @@ function BottomSheet({
             {type === 'scroll-view' && (
               <ScrollView
                 simultaneousHandlers={[panGestureRef]}
-                style={[
+                contentContainerStyle={[
                   ...(isDarkTheme
                     ? [
                         {
