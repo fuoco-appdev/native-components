@@ -11,13 +11,13 @@ import {
   useColorScheme,
   View,
   ViewStyle,
+  ScrollView,
 } from 'react-native';
 import {
   FlatList,
   Gesture,
   GestureDetector,
   GestureType,
-  ScrollView,
 } from 'react-native-gesture-handler';
 import React, {
   useCallback,
@@ -37,7 +37,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Globals } from '../Themes';
-import { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/springUtils';
 
 export type SheetPositions = 'minimised' | 'maximised' | 'expanded';
 
@@ -243,7 +242,7 @@ function BottomSheet({
                   {type === 'scroll-view' && (
                     <ScrollView
                       keyboardShouldPersistTaps={'always'}
-                      simultaneousHandlers={[panGestureRef]}
+                      //simultaneousHandlers={[panGestureRef]}
                       contentContainerStyle={[
                         ...(isDarkTheme
                           ? [
