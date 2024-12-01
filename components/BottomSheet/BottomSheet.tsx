@@ -271,7 +271,9 @@ function BottomSheet({
                       }, 75);
                     }}
                   >
-                    <KeyboardAvoidingView>{children}</KeyboardAvoidingView>
+                    <KeyboardAvoidingView behavior={'position'}>
+                      {children}
+                    </KeyboardAvoidingView>
                   </View>
                 </ScrollView>
               )}
