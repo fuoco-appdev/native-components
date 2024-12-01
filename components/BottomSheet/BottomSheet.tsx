@@ -66,6 +66,8 @@ export interface BottomSheetProps {
 const styles = StyleSheet.create<BottomSheetStyles>({
   root: {
     position: 'absolute',
+    height: '100%',
+    width: '100%',
   },
   sheet: {
     width: '100%',
@@ -192,8 +194,6 @@ function BottomSheet({
             {
               ...styles.root,
               ...(customStyles?.root ?? {}),
-              height: Dimensions.get('window').height,
-              width: Dimensions.get('window').width,
             },
           ]}
         >
