@@ -238,76 +238,74 @@ function BottomSheet({
                 sheetAnimatedStyle,
               ]}
             >
-              <KeyboardAvoidingView behavior={'height'}>
-                <SafeAreaView>
-                  {type === 'scroll-view' && (
-                    <ScrollView
-                      keyboardShouldPersistTaps={'always'}
-                      simultaneousHandlers={[panGestureRef]}
-                      contentContainerStyle={[
-                        ...(isDarkTheme
-                          ? [
-                              {
-                                ...darkStyles?.scrollView,
-                                ...(customDarkStyles?.scrollView ?? {}),
-                              },
-                            ]
-                          : [
-                              {
-                                ...lightStyles?.scrollView,
-                                ...(customLightStyles?.scrollView ?? {}),
-                              },
-                            ]),
-                        {
-                          ...styles.scrollView,
-                          ...(customStyles?.scrollView ?? {}),
-                        },
-                      ]}
+              <SafeAreaView>
+                {type === 'scroll-view' && (
+                  <ScrollView
+                    keyboardShouldPersistTaps={'always'}
+                    simultaneousHandlers={[panGestureRef]}
+                    contentContainerStyle={[
+                      ...(isDarkTheme
+                        ? [
+                            {
+                              ...darkStyles?.scrollView,
+                              ...(customDarkStyles?.scrollView ?? {}),
+                            },
+                          ]
+                        : [
+                            {
+                              ...lightStyles?.scrollView,
+                              ...(customLightStyles?.scrollView ?? {}),
+                            },
+                          ]),
+                      {
+                        ...styles.scrollView,
+                        ...(customStyles?.scrollView ?? {}),
+                      },
+                    ]}
+                  >
+                    <View
+                      onLayout={(e) => {
+                        sheetHeight.value = e.nativeEvent.layout.height;
+                        setTimeout(() => {
+                          translateY.value = withTiming(0, {
+                            easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                            duration: duration,
+                          });
+                        }, 75);
+                      }}
                     >
-                      <View
-                        onLayout={(e) => {
-                          sheetHeight.value = e.nativeEvent.layout.height;
-                          setTimeout(() => {
-                            translateY.value = withTiming(0, {
-                              easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                              duration: duration,
-                            });
-                          }, 75);
-                        }}
-                      >
-                        {children}
-                      </View>
-                    </ScrollView>
-                  )}
-                  {type === 'flat-list' && (
-                    <FlatList
-                      simultaneousHandlers={[panGestureRef]}
-                      contentContainerStyle={[
-                        ...(isDarkTheme
-                          ? [
-                              {
-                                ...darkStyles?.scrollView,
-                                ...(customDarkStyles?.scrollView ?? {}),
-                              },
-                            ]
-                          : [
-                              {
-                                ...lightStyles?.scrollView,
-                                ...(customLightStyles?.scrollView ?? {}),
-                              },
-                            ]),
-                        {
-                          ...styles.scrollView,
-                          ...(customStyles?.scrollView ?? {}),
-                        },
-                      ]}
-                      data={data}
-                      renderItem={renderItem}
-                      keyExtractor={keyExtractor}
-                    />
-                  )}
-                </SafeAreaView>
-              </KeyboardAvoidingView>
+                      {children}
+                    </View>
+                  </ScrollView>
+                )}
+                {type === 'flat-list' && (
+                  <FlatList
+                    simultaneousHandlers={[panGestureRef]}
+                    contentContainerStyle={[
+                      ...(isDarkTheme
+                        ? [
+                            {
+                              ...darkStyles?.scrollView,
+                              ...(customDarkStyles?.scrollView ?? {}),
+                            },
+                          ]
+                        : [
+                            {
+                              ...lightStyles?.scrollView,
+                              ...(customLightStyles?.scrollView ?? {}),
+                            },
+                          ]),
+                      {
+                        ...styles.scrollView,
+                        ...(customStyles?.scrollView ?? {}),
+                      },
+                    ]}
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                  />
+                )}
+              </SafeAreaView>
             </Animated.View>
           </GestureDetector>
         </View>
