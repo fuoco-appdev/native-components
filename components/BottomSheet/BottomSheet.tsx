@@ -278,7 +278,7 @@ function BottomSheet({
                     {
                       ...styles.scrollView,
                       ...(customStyles?.scrollView ?? {}),
-                      height: sheetHeight.value - keyboardHeight,
+                      minHeight: sheetHeight.value - keyboardHeight,
                     },
                   ]}
                 >
@@ -317,7 +317,7 @@ function BottomSheet({
                     {
                       ...styles.scrollView,
                       ...(customStyles?.scrollView ?? {}),
-                      height: sheetHeight.value - keyboardHeight,
+                      minHeight: sheetHeight.value - keyboardHeight,
                     },
                   ]}
                   data={data}
