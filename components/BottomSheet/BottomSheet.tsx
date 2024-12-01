@@ -213,31 +213,71 @@ function BottomSheet({
           >
             <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
           </Animated.View>
-          <SafeAreaView>
-            <Animated.View
-              style={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.sheet,
-                        ...(customDarkStyles?.sheet ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.sheet,
-                        ...(customLightStyles?.sheet ?? {}),
-                      },
-                    ]),
-                {
-                  ...styles.sheet,
-                  ...(customStyles?.sheet ?? {}),
-                },
-                sheetAnimatedStyle,
-              ]}
-            >
-              {type === 'scroll-view' && (
-                <ScrollView
+          <Animated.View
+            style={[
+              ...(isDarkTheme
+                ? [
+                    {
+                      ...darkStyles?.sheet,
+                      ...(customDarkStyles?.sheet ?? {}),
+                    },
+                  ]
+                : [
+                    {
+                      ...lightStyles?.sheet,
+                      ...(customLightStyles?.sheet ?? {}),
+                    },
+                  ]),
+              {
+                ...styles.sheet,
+                ...(customStyles?.sheet ?? {}),
+              },
+              sheetAnimatedStyle,
+            ]}
+          >
+            {type === 'scroll-view' && (
+              <ScrollView
+                simultaneousHandlers={[panGestureRef]}
+                style={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.scrollView,
+                          ...(customDarkStyles?.scrollView ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.scrollView,
+                          ...(customLightStyles?.scrollView ?? {}),
+                        },
+                      ]),
+                  {
+                    ...styles.scrollView,
+                    ...(customStyles?.scrollView ?? {}),
+                  },
+                ]}
+              >
+                <GestureDetector gesture={onGestureEvent}>
+                  <View
+                    onLayout={(e) => {
+                      sheetHeight.value = e.nativeEvent.layout.height;
+                      setTimeout(() => {
+                        translateY.value = withTiming(0, {
+                          easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                          duration: duration,
+                        });
+                      }, 75);
+                    }}
+                  >
+                    {children}
+                  </View>
+                </GestureDetector>
+              </ScrollView>
+            )}
+            {type === 'flat-list' && (
+              <GestureDetector gesture={onGestureEvent}>
+                <FlatList
                   simultaneousHandlers={[panGestureRef]}
                   style={[
                     ...(isDarkTheme
@@ -258,55 +298,13 @@ function BottomSheet({
                       ...(customStyles?.scrollView ?? {}),
                     },
                   ]}
-                >
-                  <GestureDetector gesture={onGestureEvent}>
-                    <View
-                      onLayout={(e) => {
-                        sheetHeight.value = e.nativeEvent.layout.height;
-                        setTimeout(() => {
-                          translateY.value = withTiming(0, {
-                            easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                            duration: duration,
-                          });
-                        }, 75);
-                      }}
-                    >
-                      {children}
-                    </View>
-                  </GestureDetector>
-                </ScrollView>
-              )}
-              {type === 'flat-list' && (
-                <GestureDetector gesture={onGestureEvent}>
-                  <FlatList
-                    simultaneousHandlers={[panGestureRef]}
-                    style={[
-                      ...(isDarkTheme
-                        ? [
-                            {
-                              ...darkStyles?.scrollView,
-                              ...(customDarkStyles?.scrollView ?? {}),
-                            },
-                          ]
-                        : [
-                            {
-                              ...lightStyles?.scrollView,
-                              ...(customLightStyles?.scrollView ?? {}),
-                            },
-                          ]),
-                      {
-                        ...styles.scrollView,
-                        ...(customStyles?.scrollView ?? {}),
-                      },
-                    ]}
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={keyExtractor}
-                  />
-                </GestureDetector>
-              )}
-            </Animated.View>
-          </SafeAreaView>
+                  data={data}
+                  renderItem={renderItem}
+                  keyExtractor={keyExtractor}
+                />
+              </GestureDetector>
+            )}
+          </Animated.View>
         </View>
       )}
     </Portal>
