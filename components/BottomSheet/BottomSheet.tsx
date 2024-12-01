@@ -280,7 +280,7 @@ function BottomSheet({
                       ...(customStyles?.scrollView ?? {}),
                     },
                   ]}
-                  style={[{ minHeight: sheetHeight.value - keyboardHeight }]}
+                  style={[{ height: sheetHeight.value - keyboardHeight }]}
                 >
                   <View
                     onLayout={(e) => {
@@ -319,7 +319,7 @@ function BottomSheet({
                       ...(customStyles?.scrollView ?? {}),
                     },
                   ]}
-                  style={[{ minHeight: sheetHeight.value - keyboardHeight }]}
+                  style={[{ height: sheetHeight.value - keyboardHeight }]}
                   data={data}
                   renderItem={renderItem}
                   keyExtractor={keyExtractor}
