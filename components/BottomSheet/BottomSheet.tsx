@@ -116,7 +116,6 @@ function BottomSheet({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const panGestureRef = React.useRef<GestureType>(Gesture.Pan());
 
   const translateY = useSharedValue(0);
@@ -127,24 +126,6 @@ function BottomSheet({
       setIsOpen(true);
     }
   }, [open]);
-
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener(
-      'keyboardDidShow',
-      (event) => {
-        setKeyboardHeight(event.endCoordinates.height);
-      }
-    );
-
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardHeight(0);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
 
   const onAnimatedClose = () => {
     onClose?.();
@@ -281,7 +262,6 @@ function BottomSheet({
                       ...(customStyles?.scrollView ?? {}),
                     },
                   ]}
-                  style={[{ height: sheetHeight.value - keyboardHeight }]}
                 >
                   <View
                     onLayout={(e) => {
@@ -320,7 +300,6 @@ function BottomSheet({
                       ...(customStyles?.scrollView ?? {}),
                     },
                   ]}
-                  style={[{ height: sheetHeight.value - keyboardHeight }]}
                   data={data}
                   renderItem={renderItem}
                   keyExtractor={keyExtractor}
