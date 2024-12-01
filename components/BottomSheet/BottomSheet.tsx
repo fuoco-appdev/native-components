@@ -269,7 +269,7 @@ function BottomSheet({
                   ]}
                 >
                   <GestureDetector gesture={onGestureEvent}>
-                    {children}
+                    <View>{children}</View>
                   </GestureDetector>
                 </ScrollView>
               )}
