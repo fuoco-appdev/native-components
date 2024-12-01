@@ -12,9 +12,9 @@ import {
   View,
   ViewStyle,
   ScrollView,
+  FlatList,
 } from 'react-native';
 import {
-  FlatList,
   Gesture,
   GestureDetector,
   GestureType,
@@ -242,7 +242,6 @@ function BottomSheet({
                   {type === 'scroll-view' && (
                     <ScrollView
                       keyboardShouldPersistTaps={'always'}
-                      //simultaneousHandlers={[panGestureRef]}
                       contentContainerStyle={[
                         ...(isDarkTheme
                           ? [
@@ -280,7 +279,6 @@ function BottomSheet({
                   )}
                   {type === 'flat-list' && (
                     <FlatList
-                      simultaneousHandlers={[panGestureRef]}
                       contentContainerStyle={[
                         ...(isDarkTheme
                           ? [
