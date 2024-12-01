@@ -65,9 +65,7 @@ export interface BottomSheetProps {
 
 const styles = StyleSheet.create<BottomSheetStyles>({
   root: {
-    height: '100%',
-    width: '100%',
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
   },
   sheet: {
     width: '100%',
