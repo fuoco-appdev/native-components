@@ -166,7 +166,12 @@ function BottomSheet({
                     ...(customLightStyles?.root ?? {}),
                   },
                 ]),
-            { ...styles.root, ...(customStyles?.root ?? {}) },
+            {
+              ...styles.root,
+              ...(customStyles?.root ?? {}),
+              height: Dimensions.get('screen').height,
+              width: Dimensions.get('screen').width,
+            },
           ]}
         >
           <Animated.View
