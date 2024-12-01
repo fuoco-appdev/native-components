@@ -374,6 +374,7 @@ export default function LanguageSwitch({
         customStyles={customExtraStyles?.bottomSheet}
         customDarkStyles={customExtraDarkStyles?.bottomSheet}
         customLightStyles={customExtraLightStyles?.bottomSheet}
+        id={`language-switch-${id}`}
         open={open}
         type={'flat-list'}
         onClose={onClose}

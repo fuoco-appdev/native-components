@@ -3,13 +3,17 @@ import { PortalContext } from './PortalProvider';
 
 export interface PortalProps {
   children: React.ReactNode;
+  name: string;
 }
 
-export default function Portal({ children }: PortalProps) {
-  const { addComponent } = useContext(PortalContext);
+export default function Portal({ children, name }: PortalProps) {
+  const { addComponent, removeComponent } = useContext(PortalContext);
   useEffect(() => {
-    addComponent({ component: children });
-  }, [children]);
+    addComponent({ name, component: children });
+    return () => {
+      removeComponent(name);
+    };
+  }, []);
 
   return null;
 }
