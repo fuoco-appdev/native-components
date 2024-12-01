@@ -13,6 +13,7 @@ import {
   ViewStyle,
   ScrollView,
   FlatList,
+  Modal,
 } from 'react-native';
 import {
   Gesture,
@@ -261,20 +262,23 @@ function BottomSheet({
                           ...(customStyles?.scrollView ?? {}),
                         },
                       ]}
+                      removeClippedSubviews={false}
                     >
-                      <View
-                        onLayout={(e) => {
-                          sheetHeight.value = e.nativeEvent.layout.height;
-                          setTimeout(() => {
-                            translateY.value = withTiming(0, {
-                              easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                              duration: duration,
-                            });
-                          }, 75);
-                        }}
-                      >
-                        {children}
-                      </View>
+                      <Modal>
+                        <View
+                          onLayout={(e) => {
+                            sheetHeight.value = e.nativeEvent.layout.height;
+                            setTimeout(() => {
+                              translateY.value = withTiming(0, {
+                                easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                                duration: duration,
+                              });
+                            }, 75);
+                          }}
+                        >
+                          {children}
+                        </View>
+                      </Modal>
                     </ScrollView>
                   )}
                   {type === 'flat-list' && (
