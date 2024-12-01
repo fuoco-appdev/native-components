@@ -220,33 +220,30 @@ function BottomSheet({
             <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
           </Animated.View>
           <GestureDetector gesture={onGestureEvent}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Adjust based on platform
-              keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // Adjust offset if necessary
+            <Animated.View
+              style={[
+                ...(isDarkTheme
+                  ? [
+                      {
+                        ...darkStyles?.sheet,
+                        ...(customDarkStyles?.sheet ?? {}),
+                      },
+                    ]
+                  : [
+                      {
+                        ...lightStyles?.sheet,
+                        ...(customLightStyles?.sheet ?? {}),
+                      },
+                    ]),
+                {
+                  ...styles.sheet,
+                  ...(customStyles?.sheet ?? {}),
+                  height: sheetHeight.value,
+                },
+                sheetAnimatedStyle,
+              ]}
             >
-              <Animated.View
-                style={[
-                  ...(isDarkTheme
-                    ? [
-                        {
-                          ...darkStyles?.sheet,
-                          ...(customDarkStyles?.sheet ?? {}),
-                        },
-                      ]
-                    : [
-                        {
-                          ...lightStyles?.sheet,
-                          ...(customLightStyles?.sheet ?? {}),
-                        },
-                      ]),
-                  {
-                    ...styles.sheet,
-                    ...(customStyles?.sheet ?? {}),
-                    height: sheetHeight.value,
-                  },
-                  sheetAnimatedStyle,
-                ]}
-              >
+              <KeyboardAvoidingView behavior={'position'}>
                 {type === 'scroll-view' && (
                   <ScrollView
                     simultaneousHandlers={[panGestureRef]}
@@ -312,8 +309,8 @@ function BottomSheet({
                     keyExtractor={keyExtractor}
                   />
                 )}
-              </Animated.View>
-            </KeyboardAvoidingView>
+              </KeyboardAvoidingView>
+            </Animated.View>
           </GestureDetector>
         </View>
       )}
