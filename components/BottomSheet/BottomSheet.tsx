@@ -82,7 +82,7 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     width: '100%',
   },
   scrollView: {
-    flex: 1,
+    flexGrow: 1,
   },
 });
 const lightStyles = StyleSheet.create<BottomSheetStyles>({
