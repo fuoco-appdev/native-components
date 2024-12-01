@@ -241,7 +241,6 @@ function BottomSheet({
                 {
                   ...styles.sheet,
                   ...(customStyles?.sheet ?? {}),
-                  minHeight: sheetHeight.value,
                 },
                 sheetAnimatedStyle,
               ]}
