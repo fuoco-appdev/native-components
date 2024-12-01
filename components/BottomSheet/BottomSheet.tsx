@@ -278,9 +278,9 @@ function BottomSheet({
                     {
                       ...styles.scrollView,
                       ...(customStyles?.scrollView ?? {}),
-                      minHeight: sheetHeight.value - keyboardHeight,
                     },
                   ]}
+                  style={[{ minHeight: sheetHeight.value - keyboardHeight }]}
                 >
                   <View
                     onLayout={(e) => {
@@ -300,7 +300,7 @@ function BottomSheet({
               {type === 'flat-list' && (
                 <FlatList
                   simultaneousHandlers={[panGestureRef]}
-                  style={[
+                  contentContainerStyle={[
                     ...(isDarkTheme
                       ? [
                           {
@@ -317,9 +317,9 @@ function BottomSheet({
                     {
                       ...styles.scrollView,
                       ...(customStyles?.scrollView ?? {}),
-                      minHeight: sheetHeight.value - keyboardHeight,
                     },
                   ]}
+                  style={[{ minHeight: sheetHeight.value - keyboardHeight }]}
                   data={data}
                   renderItem={renderItem}
                   keyExtractor={keyExtractor}
