@@ -246,32 +246,32 @@ function BottomSheet({
               ]}
             >
               {type === 'scroll-view' && (
-                <GestureDetector gesture={onGestureEvent}>
-                  <ScrollView
-                    simultaneousHandlers={[panGestureRef]}
-                    style={[
-                      ...(isDarkTheme
-                        ? [
-                            {
-                              ...darkStyles?.scrollView,
-                              ...(customDarkStyles?.scrollView ?? {}),
-                            },
-                          ]
-                        : [
-                            {
-                              ...lightStyles?.scrollView,
-                              ...(customLightStyles?.scrollView ?? {}),
-                            },
-                          ]),
-                      {
-                        ...styles.scrollView,
-                        ...(customStyles?.scrollView ?? {}),
-                      },
-                    ]}
-                  >
+                <ScrollView
+                  simultaneousHandlers={[panGestureRef]}
+                  style={[
+                    ...(isDarkTheme
+                      ? [
+                          {
+                            ...darkStyles?.scrollView,
+                            ...(customDarkStyles?.scrollView ?? {}),
+                          },
+                        ]
+                      : [
+                          {
+                            ...lightStyles?.scrollView,
+                            ...(customLightStyles?.scrollView ?? {}),
+                          },
+                        ]),
+                    {
+                      ...styles.scrollView,
+                      ...(customStyles?.scrollView ?? {}),
+                    },
+                  ]}
+                >
+                  <GestureDetector gesture={onGestureEvent}>
                     {children}
-                  </ScrollView>
-                </GestureDetector>
+                  </GestureDetector>
+                </ScrollView>
               )}
               {type === 'flat-list' && (
                 <GestureDetector gesture={onGestureEvent}>
