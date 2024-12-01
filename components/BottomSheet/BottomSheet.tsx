@@ -221,7 +221,11 @@ function BottomSheet({
                           ...(customLightStyles?.sheet ?? {}),
                         },
                       ]),
-                  { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
+                  {
+                    ...styles.sheet,
+                    ...(customStyles?.sheet ?? {}),
+                    minHeight: sheetHeight.value,
+                  },
                   sheetAnimatedStyle,
                 ]}
               >
