@@ -1,6 +1,7 @@
 import {
   Dimensions,
   GestureResponderEvent,
+  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
@@ -195,36 +196,38 @@ function BottomSheet({
             <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
           </Animated.View>
           <GestureDetector gesture={onGestureEvent}>
-            <Animated.View
-              onLayout={(e) => {
-                sheetHeight.value = e.nativeEvent.layout.height;
-                setTimeout(() => {
-                  translateY.value = withTiming(0, {
-                    easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                    duration: duration,
-                  });
-                }, 75);
-              }}
-              style={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.sheet,
-                        ...(customDarkStyles?.sheet ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.sheet,
-                        ...(customLightStyles?.sheet ?? {}),
-                      },
-                    ]),
-                { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
-                sheetAnimatedStyle,
-              ]}
-            >
-              {children}
-            </Animated.View>
+            <SafeAreaView>
+              <Animated.View
+                onLayout={(e) => {
+                  sheetHeight.value = e.nativeEvent.layout.height;
+                  setTimeout(() => {
+                    translateY.value = withTiming(0, {
+                      easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                      duration: duration,
+                    });
+                  }, 75);
+                }}
+                style={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.sheet,
+                          ...(customDarkStyles?.sheet ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.sheet,
+                          ...(customLightStyles?.sheet ?? {}),
+                        },
+                      ]),
+                  { ...styles.sheet, ...(customStyles?.sheet ?? {}) },
+                  sheetAnimatedStyle,
+                ]}
+              >
+                {children}
+              </Animated.View>
+            </SafeAreaView>
           </GestureDetector>
         </View>
       )}
