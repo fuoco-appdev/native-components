@@ -260,7 +260,7 @@ function BottomSheet({
                     },
                   ]}
                 >
-                  <KeyboardAvoidingView
+                  <View
                     onLayout={(e) => {
                       sheetHeight.value = e.nativeEvent.layout.height;
                       setTimeout(() => {
@@ -271,8 +271,8 @@ function BottomSheet({
                       }, 75);
                     }}
                   >
-                    {children}
-                  </KeyboardAvoidingView>
+                    <KeyboardAvoidingView>{children}</KeyboardAvoidingView>
+                  </View>
                 </ScrollView>
               )}
               {type === 'flat-list' && (
