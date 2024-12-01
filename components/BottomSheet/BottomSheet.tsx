@@ -254,6 +254,7 @@ function BottomSheet({
                 {
                   ...styles.sheet,
                   ...(customStyles?.sheet ?? {}),
+                  height: sheetHeight.value,
                 },
                 sheetAnimatedStyle,
               ]}
