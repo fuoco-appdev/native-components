@@ -877,16 +877,14 @@ export default function InputPhoneNumber({
         customLightStyles={customExtraLightStyles.bottomSheet}
         id={'phone-number'}
         open={showDropdown}
+        type={'flat-list'}
         onClose={() => {
           setShowDropdown(false);
         }}
-      >
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item: any) => item.iso2}
-        />
-      </BottomSheet>
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item: any) => item.iso2}
+      />
     </View>
   );
 }

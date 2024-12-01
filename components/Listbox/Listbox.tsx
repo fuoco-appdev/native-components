@@ -267,15 +267,13 @@ function Listbox({
         customDarkStyles={customExtraDarkStyles?.bottomSheet}
         customLightStyles={customExtraLightStyles?.bottomSheet}
         id={`language-switch-${id}`}
+        type={'flat-list'}
         open={open}
         onClose={onClose}
-      >
-        <FlatList
-          data={data}
-          renderItem={renderBottomSheetItem}
-          keyExtractor={keyExtractor}
-        />
-      </BottomSheet>
+        data={data}
+        renderItem={renderBottomSheetItem}
+        keyExtractor={keyExtractor}
+      />
     </View>
   );
 }

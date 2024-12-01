@@ -376,14 +376,12 @@ export default function LanguageSwitch({
         customLightStyles={customExtraLightStyles?.bottomSheet}
         id={`language-switch-${id}`}
         open={open}
+        type={'flat-list'}
         onClose={onClose}
-      >
-        <FlatList
-          data={supportedLanguages}
-          renderItem={renderItem}
-          keyExtractor={(item: any) => item.iso2}
-        />
-      </BottomSheet>
+        data={supportedLanguages}
+        renderItem={renderItem}
+        keyExtractor={(item: any) => item.iso2}
+      />
     </View>
   );
 }
