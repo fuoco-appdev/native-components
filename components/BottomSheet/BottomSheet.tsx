@@ -42,6 +42,7 @@ export interface BottomSheetStyles {
   root?: ViewStyle;
   sheet?: ViewStyle;
   backdrop?: ViewStyle;
+  scrollView?: ViewStyle;
 }
 
 export interface BottomSheetProps {
@@ -247,7 +248,28 @@ function BottomSheet({
             >
               {type === 'scroll-view' && (
                 <GestureDetector gesture={onGestureEvent}>
-                  <ScrollView simultaneousHandlers={[panGestureRef]}>
+                  <ScrollView
+                    simultaneousHandlers={[panGestureRef]}
+                    style={[
+                      ...(isDarkTheme
+                        ? [
+                            {
+                              ...darkStyles?.scrollView,
+                              ...(customDarkStyles?.scrollView ?? {}),
+                            },
+                          ]
+                        : [
+                            {
+                              ...lightStyles?.scrollView,
+                              ...(customLightStyles?.scrollView ?? {}),
+                            },
+                          ]),
+                      {
+                        ...styles.scrollView,
+                        ...(customStyles?.scrollView ?? {}),
+                      },
+                    ]}
+                  >
                     {children}
                   </ScrollView>
                 </GestureDetector>
@@ -256,6 +278,25 @@ function BottomSheet({
                 <GestureDetector gesture={onGestureEvent}>
                   <FlatList
                     simultaneousHandlers={[panGestureRef]}
+                    style={[
+                      ...(isDarkTheme
+                        ? [
+                            {
+                              ...darkStyles?.scrollView,
+                              ...(customDarkStyles?.scrollView ?? {}),
+                            },
+                          ]
+                        : [
+                            {
+                              ...lightStyles?.scrollView,
+                              ...(customLightStyles?.scrollView ?? {}),
+                            },
+                          ]),
+                      {
+                        ...styles.scrollView,
+                        ...(customStyles?.scrollView ?? {}),
+                      },
+                    ]}
                     data={data}
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
