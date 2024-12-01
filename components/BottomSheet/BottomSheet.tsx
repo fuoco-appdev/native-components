@@ -241,7 +241,7 @@ function BottomSheet({
               <SafeAreaView>
                 {type === 'scroll-view' && (
                   <ScrollView
-                    keyboardShouldPersistTaps={'handled'}
+                    keyboardShouldPersistTaps={'always'}
                     simultaneousHandlers={[panGestureRef]}
                     contentContainerStyle={[
                       ...(isDarkTheme
