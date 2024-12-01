@@ -875,7 +875,6 @@ export default function InputPhoneNumber({
         customStyles={customExtraStyles.bottomSheet}
         customDarkStyles={customExtraDarkStyles.bottomSheet}
         customLightStyles={customExtraLightStyles.bottomSheet}
-        id={'phone-number'}
         open={showDropdown}
         type={'flat-list'}
         onClose={() => {

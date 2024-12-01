@@ -48,7 +48,6 @@ export interface BottomSheetStyles {
 }
 
 export interface BottomSheetProps {
-  id: string;
   open: boolean;
   type?: 'scroll-view' | 'flat-list';
   duration?: number;
@@ -105,7 +104,6 @@ function BottomSheet({
   customLightStyles,
   type = 'scroll-view',
   duration = 150,
-  id,
   open = false,
   data,
   renderItem,
@@ -171,7 +169,7 @@ function BottomSheet({
     .withRef(panGestureRef);
 
   return (
-    <Portal name={id}>
+    <Portal>
       {isOpen && (
         <View
           style={[

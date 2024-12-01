@@ -266,7 +266,6 @@ function Listbox({
         customStyles={customExtraStyles?.bottomSheet}
         customDarkStyles={customExtraDarkStyles?.bottomSheet}
         customLightStyles={customExtraLightStyles?.bottomSheet}
-        id={`language-switch-${id}`}
         type={'flat-list'}
         open={open}
         onClose={onClose}
