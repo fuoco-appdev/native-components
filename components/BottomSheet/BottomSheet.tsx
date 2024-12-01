@@ -188,8 +188,6 @@ function BottomSheet({
             {
               ...styles.root,
               ...(customStyles?.root ?? {}),
-              height: Dimensions.get('screen').height,
-              width: Dimensions.get('screen').width,
             },
           ]}
         >
