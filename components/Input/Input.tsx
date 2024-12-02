@@ -20,7 +20,6 @@ import {
   TextInputFocusEventData,
   KeyboardTypeOptions,
   ColorValue,
-  TextInputEndEditingEventData,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { animated, useSpring } from '@react-spring/native';
@@ -114,7 +113,7 @@ export interface InputProps {
     | 'username-new'
     | 'off';
   autoFocus?: boolean;
-  onChange?: (e: NativeSyntheticEvent<TextInputEndEditingEventData>) => void;
+  onChange?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
   onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   placeholder?: string;
@@ -379,7 +378,7 @@ function Input({
             defaultValue={defaultValue}
             editable={!disabled}
             selectTextOnFocus={!disabled}
-            onEndEditing={onChange ? (event) => onChange(event) : undefined}
+            onChange={onChange ? (event) => onChange(event) : undefined}
             onFocus={onFocus ? (event) => onFocus(event) : undefined}
             onBlur={onBlur ? (event) => onBlur(event) : undefined}
             placeholder={placeholder}

@@ -10,7 +10,11 @@ export interface PortalProps {
 export default function Portal({ children, name, visible }: PortalProps) {
   const { addComponent, removeComponent } = useContext(PortalContext);
   useEffect(() => {
-    addComponent({ name, component: children });
+    if (visible) {
+      addComponent({ name, component: children });
+    } else {
+      removeComponent(name);
+    }
     return () => {
       removeComponent(name);
     };
