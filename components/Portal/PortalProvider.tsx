@@ -30,6 +30,7 @@ export default function PortalProvider({ children }: PortalProviderProps) {
       return newComponents;
     });
   };
+
   return (
     <PortalContext.Provider value={{ addComponent, removeComponent }}>
       {children}

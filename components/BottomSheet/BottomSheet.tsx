@@ -171,142 +171,140 @@ function BottomSheet({
     .withRef(panGestureRef);
 
   return (
-    <Portal name={id}>
-      {isOpen && (
-        <View
+    <Portal name={id} visible={isOpen}>
+      <View
+        style={[
+          ...(isDarkTheme
+            ? [
+                {
+                  ...darkStyles?.root,
+                  ...(customDarkStyles?.root ?? {}),
+                },
+              ]
+            : [
+                {
+                  ...lightStyles?.root,
+                  ...(customLightStyles?.root ?? {}),
+                },
+              ]),
+          {
+            ...styles.root,
+            ...(customStyles?.root ?? {}),
+          },
+        ]}
+      >
+        <Animated.View
           style={[
             ...(isDarkTheme
               ? [
                   {
-                    ...darkStyles?.root,
-                    ...(customDarkStyles?.root ?? {}),
+                    ...darkStyles?.backdrop,
+                    ...(customDarkStyles?.backdrop ?? {}),
                   },
                 ]
               : [
                   {
-                    ...lightStyles?.root,
-                    ...(customLightStyles?.root ?? {}),
+                    ...lightStyles?.backdrop,
+                    ...(customLightStyles?.backdrop ?? {}),
                   },
                 ]),
-            {
-              ...styles.root,
-              ...(customStyles?.root ?? {}),
-            },
+            { ...styles.backdrop, ...(customStyles?.backdrop ?? {}) },
           ]}
         >
+          <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
+        </Animated.View>
+        <GestureDetector gesture={onGestureEvent}>
           <Animated.View
             style={[
               ...(isDarkTheme
                 ? [
                     {
-                      ...darkStyles?.backdrop,
-                      ...(customDarkStyles?.backdrop ?? {}),
+                      ...darkStyles?.sheet,
+                      ...(customDarkStyles?.sheet ?? {}),
                     },
                   ]
                 : [
                     {
-                      ...lightStyles?.backdrop,
-                      ...(customLightStyles?.backdrop ?? {}),
+                      ...lightStyles?.sheet,
+                      ...(customLightStyles?.sheet ?? {}),
                     },
                   ]),
-              { ...styles.backdrop, ...(customStyles?.backdrop ?? {}) },
+              {
+                ...styles.sheet,
+                ...(customStyles?.sheet ?? {}),
+              },
+              sheetAnimatedStyle,
             ]}
           >
-            <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
-          </Animated.View>
-          <GestureDetector gesture={onGestureEvent}>
-            <Animated.View
-              style={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.sheet,
-                        ...(customDarkStyles?.sheet ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.sheet,
-                        ...(customLightStyles?.sheet ?? {}),
-                      },
-                    ]),
-                {
-                  ...styles.sheet,
-                  ...(customStyles?.sheet ?? {}),
-                },
-                sheetAnimatedStyle,
-              ]}
-            >
-              <KeyboardAvoidingView behavior={'height'}>
-                {type === 'scroll-view' && (
-                  <ScrollView
-                    keyboardShouldPersistTaps={'always'}
-                    contentContainerStyle={[
-                      ...(isDarkTheme
-                        ? [
-                            {
-                              ...darkStyles?.scrollView,
-                              ...(customDarkStyles?.scrollView ?? {}),
-                            },
-                          ]
-                        : [
-                            {
-                              ...lightStyles?.scrollView,
-                              ...(customLightStyles?.scrollView ?? {}),
-                            },
-                          ]),
-                      {
-                        ...styles.scrollView,
-                        ...(customStyles?.scrollView ?? {}),
-                      },
-                    ]}
+            <KeyboardAvoidingView behavior={'height'}>
+              {type === 'scroll-view' && (
+                <ScrollView
+                  keyboardShouldPersistTaps={'always'}
+                  contentContainerStyle={[
+                    ...(isDarkTheme
+                      ? [
+                          {
+                            ...darkStyles?.scrollView,
+                            ...(customDarkStyles?.scrollView ?? {}),
+                          },
+                        ]
+                      : [
+                          {
+                            ...lightStyles?.scrollView,
+                            ...(customLightStyles?.scrollView ?? {}),
+                          },
+                        ]),
+                    {
+                      ...styles.scrollView,
+                      ...(customStyles?.scrollView ?? {}),
+                    },
+                  ]}
+                >
+                  <View
+                    onLayout={(e) => {
+                      sheetHeight.value = e.nativeEvent.layout.height;
+                      setTimeout(() => {
+                        translateY.value = withTiming(0, {
+                          easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                          duration: duration,
+                        });
+                      }, 75);
+                    }}
                   >
-                    <View
-                      onLayout={(e) => {
-                        sheetHeight.value = e.nativeEvent.layout.height;
-                        setTimeout(() => {
-                          translateY.value = withTiming(0, {
-                            easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                            duration: duration,
-                          });
-                        }, 75);
-                      }}
-                    >
-                      {children}
-                    </View>
-                  </ScrollView>
-                )}
-                {type === 'flat-list' && (
-                  <FlatList
-                    contentContainerStyle={[
-                      ...(isDarkTheme
-                        ? [
-                            {
-                              ...darkStyles?.scrollView,
-                              ...(customDarkStyles?.scrollView ?? {}),
-                            },
-                          ]
-                        : [
-                            {
-                              ...lightStyles?.scrollView,
-                              ...(customLightStyles?.scrollView ?? {}),
-                            },
-                          ]),
-                      {
-                        ...styles.scrollView,
-                        ...(customStyles?.scrollView ?? {}),
-                      },
-                    ]}
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={keyExtractor}
-                  />
-                )}
-              </KeyboardAvoidingView>
-            </Animated.View>
-          </GestureDetector>
-        </View>
-      )}
+                    {children}
+                  </View>
+                </ScrollView>
+              )}
+              {type === 'flat-list' && (
+                <FlatList
+                  contentContainerStyle={[
+                    ...(isDarkTheme
+                      ? [
+                          {
+                            ...darkStyles?.scrollView,
+                            ...(customDarkStyles?.scrollView ?? {}),
+                          },
+                        ]
+                      : [
+                          {
+                            ...lightStyles?.scrollView,
+                            ...(customLightStyles?.scrollView ?? {}),
+                          },
+                        ]),
+                    {
+                      ...styles.scrollView,
+                      ...(customStyles?.scrollView ?? {}),
+                    },
+                  ]}
+                  data={data}
+                  renderItem={renderItem}
+                  keyExtractor={keyExtractor}
+                />
+              )}
+            </KeyboardAvoidingView>
+          </Animated.View>
+        </GestureDetector>
+      </View>
     </Portal>
   );
 }
