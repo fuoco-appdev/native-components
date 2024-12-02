@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
 import { PortalContext } from './PortalProvider';
-import { observer } from 'mobx-react-lite';
 
 export interface PortalProps {
   children: React.ReactNode;
@@ -8,7 +7,7 @@ export interface PortalProps {
   visible: boolean;
 }
 
-function Portal({ children, name, visible }: PortalProps) {
+export default function Portal({ children, name, visible }: PortalProps) {
   const { addComponent, removeComponent } = useContext(PortalContext);
   useEffect(() => {
     if (visible) {
@@ -23,5 +22,3 @@ function Portal({ children, name, visible }: PortalProps) {
 
   return null;
 }
-
-export default observer(Portal);

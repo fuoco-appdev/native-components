@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react-lite';
 
 export interface PortalProviderProps {
   children: React.ReactNode;
@@ -14,7 +13,7 @@ export const PortalContext = React.createContext({
   removeComponent: (name: string) => {},
 });
 
-function PortalProvider({ children }: PortalProviderProps) {
+export default function PortalProvider({ children }: PortalProviderProps) {
   const [components, setComponents] = useState<Record<string, React.ReactNode>>(
     {}
   );
@@ -39,5 +38,3 @@ function PortalProvider({ children }: PortalProviderProps) {
     </PortalContext.Provider>
   );
 }
-
-export default observer(PortalProvider);
