@@ -430,6 +430,9 @@ export default function Button({
           rounded && {
             borderRadius: Globals.rounded_full,
           },
+          disabled && {
+            opacity: 0.55,
+          },
           danger && {
             borderColor: Colors.red_500,
           },
