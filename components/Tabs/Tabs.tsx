@@ -39,7 +39,7 @@ export interface ExtraTabsStyles {
 }
 
 export interface TabsProps {
-  defaultId?: string;
+  id?: string;
   tabs?: TabProps[];
   children?: React.ReactNode;
   customStyles?: TabsStyles;
@@ -93,7 +93,7 @@ const darkStyles = StyleSheet.create<TabsStyles>({
 const TabsContext = createContext<{ width: number }>({ width: 0 });
 
 function Tabs({
-  defaultId,
+  id,
   tabs = [],
   children,
   customStyles,
@@ -159,9 +159,17 @@ function Tabs({
   };
 
   useEffect(() => {
-    const index = tabs.findIndex((value) => value.id === defaultId);
-    scrollRef.current?.scrollTo({ x: rootSize.width * index }, 0, false);
-  }, [defaultId, rootSize]);
+    const index = tabs.findIndex((value) => value.id === id);
+    const scrollPosition = rootSize.width * index;
+    if (scrollValue.value !== scrollPosition) {
+      scrollRef.current?.scrollTo({
+        x: rootSize.width * index,
+        y: 0,
+        animated: false,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, rootSize, scrollRef, tabs]);
 
   return (
     <TabsContext.Provider value={{ width: rootSize.width }}>
@@ -222,11 +230,11 @@ function Tabs({
                     size={'full'}
                     icon={value.icon}
                     onPress={() => {
-                      scrollRef.current?.scrollTo(
-                        { x: rootSize.width * index },
-                        0,
-                        true
-                      );
+                      scrollRef.current?.scrollTo({
+                        x: rootSize.width * index,
+                        y: 0,
+                        animated: true,
+                      });
                       onChange?.(value.id);
                     }}
                   >
