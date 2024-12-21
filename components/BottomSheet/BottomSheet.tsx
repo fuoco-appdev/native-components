@@ -127,7 +127,7 @@ function BottomSheet({
     } else if (!open && isOpen) {
       onAnimatedClose();
     }
-  }, [open]);
+  }, [open, isOpen]);
 
   const onAnimatedClose = () => {
     onClose?.();
