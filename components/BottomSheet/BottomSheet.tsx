@@ -130,11 +130,11 @@ function BottomSheet({
   }, [open, isOpen]);
 
   const onAnimatedClose = () => {
-    onClose?.();
     translateY.value = withTiming(
       sheetHeight.value,
       { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
       () => {
+        runOnJS(onClose)();
         runOnJS(setIsOpen)(false);
       }
     );
