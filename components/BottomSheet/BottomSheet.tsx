@@ -130,7 +130,6 @@ function BottomSheet({
         { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
         () => {
           runOnJS(setIsOpen)(false);
-          runOnJS(onClose)();
         }
       );
     }
