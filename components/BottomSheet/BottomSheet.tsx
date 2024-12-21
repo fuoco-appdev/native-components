@@ -124,6 +124,8 @@ function BottomSheet({
   useEffect(() => {
     if (open && !isOpen) {
       setIsOpen(true);
+    } else if (!open && isOpen) {
+      onAnimatedClose();
     }
   }, [open, isOpen]);
 
