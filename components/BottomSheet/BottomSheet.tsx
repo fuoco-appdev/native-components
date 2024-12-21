@@ -124,14 +124,6 @@ function BottomSheet({
   useEffect(() => {
     if (open && !isOpen) {
       setIsOpen(true);
-    } else if (!open && isOpen) {
-      translateY.value = withTiming(
-        sheetHeight.value,
-        { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
-        () => {
-          runOnJS(setIsOpen)(false);
-        }
-      );
     }
   }, [open, isOpen]);
 
