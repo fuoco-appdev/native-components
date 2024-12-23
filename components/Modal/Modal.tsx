@@ -1,6 +1,7 @@
 import {
   GestureResponderEvent,
   StyleSheet,
+  TouchableWithoutFeedback,
   useColorScheme,
   View,
   ViewStyle,
@@ -17,6 +18,7 @@ export interface ModalStyles {
   container?: ViewStyle;
   contentContainer?: ViewStyle;
   footerContainer?: ViewStyle;
+  backdrop?: ViewStyle;
 }
 
 export interface ExtraModalStyles {
@@ -43,8 +45,6 @@ export interface ModalProps {
   title?: string;
   description?: string;
   children?: React.ReactNode;
-  backdropOpacity?: number;
-  backdropColor?: string;
   onClose?: () => void;
   hideFooter?: boolean;
 }
@@ -66,6 +66,10 @@ const styles = StyleSheet.create<ModalStyles>({
     justifyContent: 'flex-end',
     flexDirection: 'row',
     gap: MarginsPaddings.mp_4,
+  },
+  backdrop: {
+    backgroundColor: '#000',
+    opacity: 0.34,
   },
 });
 const lightStyles = StyleSheet.create<ModalStyles>({});
@@ -89,8 +93,6 @@ export default function Modal({
   title,
   description,
   children,
-  backdropOpacity = 0.34,
-  backdropColor = '#000',
   hideFooter = false,
 }: ModalProps) {
   const theme = useColorScheme();
@@ -152,9 +154,28 @@ export default function Modal({
   return (
     <NativeModal
       isVisible={isVisible}
-      backdropOpacity={backdropOpacity}
-      backdropColor={backdropColor}
-      onModalHide={onClose}
+      customBackdrop={
+        <TouchableWithoutFeedback onPress={onClose}>
+          <View
+            style={[
+              ...(isDarkTheme
+                ? [
+                    {
+                      ...darkStyles?.backdrop,
+                      ...(customDarkStyles?.backdrop ?? {}),
+                    },
+                  ]
+                : [
+                    {
+                      ...lightStyles?.backdrop,
+                      ...(customLightStyles?.backdrop ?? {}),
+                    },
+                  ]),
+              { ...styles.backdrop, ...(customStyles?.backdrop ?? {}) },
+            ]}
+          />
+        </TouchableWithoutFeedback>
+      }
     >
       <View
         style={[
