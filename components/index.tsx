@@ -30,6 +30,7 @@ export * from './Tabs';
 // export * from './modal'
 // export * from './side-panel'
 export * from './BottomSheet';
+export * from './Modal';
 // export * from './context-menu'
 // export * from './popover'
 // export * from './toast'
