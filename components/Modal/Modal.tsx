@@ -70,6 +70,9 @@ const styles = StyleSheet.create<ModalStyles>({
   backdrop: {
     backgroundColor: '#000',
     opacity: 0.34,
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
 });
 const lightStyles = StyleSheet.create<ModalStyles>({});
