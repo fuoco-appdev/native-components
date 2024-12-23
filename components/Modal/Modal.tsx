@@ -44,6 +44,8 @@ export interface ModalProps {
   description?: string;
   children?: React.ReactNode;
   backdropOpacity?: number;
+  backdropColor?: string;
+  onClose?: () => void;
   hideFooter?: boolean;
 }
 
@@ -82,11 +84,13 @@ export default function Modal({
   confirmText = 'Confirm',
   onConfirm,
   onCancel,
+  onClose,
   variant,
   title,
   description,
   children,
-  backdropOpacity = 0.55,
+  backdropOpacity = 0.34,
+  backdropColor = '#000',
   hideFooter = false,
 }: ModalProps) {
   const theme = useColorScheme();
@@ -146,7 +150,12 @@ export default function Modal({
     </View>
   );
   return (
-    <NativeModal isVisible={isVisible} backdropOpacity={backdropOpacity}>
+    <NativeModal
+      isVisible={isVisible}
+      backdropOpacity={backdropOpacity}
+      backdropColor={backdropColor}
+      onModalHide={onClose}
+    >
       <View
         style={[
           ...(isDarkTheme
