@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Modal from '../components/Modal/Modal';
+import { useState } from 'react';
 
 const meta = {
   title: 'Overlay/Modal',
@@ -15,6 +16,18 @@ export const Default: Story = {
     isVisible: true,
   },
   render: (args) => {
-    return <Modal {...args} title={'test'} description={'this is a test'} />;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    return (
+      <Modal
+        {...args}
+        isVisible={isOpen}
+        title={'test'}
+        description={'this is a test'}
+        onClose={() => setIsOpen(false)}
+        onCancel={() => setIsOpen(false)}
+        onConfirm={() => setIsOpen(false)}
+      />
+    );
   },
 };
