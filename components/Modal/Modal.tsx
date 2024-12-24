@@ -37,6 +37,10 @@ export interface ModalProps {
   customExtraLightStyles?: ExtraModalStyles;
   customExtraDarkStyles?: ExtraModalStyles;
   customFooter?: React.ReactNode;
+  confirmLoading?: boolean;
+  cancelLoading?: boolean;
+  confirmLoadingComponent?: React.ReactNode;
+  cancelLoadingComponent?: React.ReactNode;
   cancelText?: string;
   confirmText?: string;
   onConfirm?: (event: GestureResponderEvent) => void;
@@ -89,6 +93,10 @@ export default function Modal({
   customFooter,
   cancelText = 'Cancel',
   confirmText = 'Confirm',
+  confirmLoading,
+  cancelLoading,
+  confirmLoadingComponent,
+  cancelLoadingComponent,
   onConfirm,
   onCancel,
   onClose,
@@ -134,6 +142,8 @@ export default function Modal({
         type={'default'}
         size={'full'}
         onPress={onCancel}
+        loading={confirmLoading}
+        loadingComponent={confirmLoadingComponent}
       >
         {cancelText}
       </Button>
@@ -149,6 +159,8 @@ export default function Modal({
         onPress={onConfirm}
         size={'full'}
         danger={variant === 'danger'}
+        loading={cancelLoading}
+        loadingComponent={cancelLoadingComponent}
       >
         {confirmText}
       </Button>

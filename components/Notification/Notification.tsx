@@ -3,6 +3,7 @@ import {
   Dimensions,
   StyleSheet,
   useColorScheme,
+  View,
   ViewProps,
   ViewStyle,
 } from 'react-native';
@@ -21,6 +22,7 @@ import NotificationManager, { useNotification } from './NotificationManager';
 export interface NotificationProps {
   title: string;
   message: string;
+  icon?: React.ReactNode;
   top?: number;
   parentTop?: number;
   customStyles?: NotificationStyles;
@@ -35,10 +37,14 @@ export interface NotificationProps {
 
 export interface NotificationStyles {
   root?: ViewStyle;
+  iconContainer?: ViewStyle;
+  contentContainer?: ViewStyle;
 }
 
 const styles = StyleSheet.create<NotificationStyles>({
   root: {
+    display: 'flex',
+    flexDirection: 'row',
     position: 'absolute',
     top: 0,
     left: MarginsPaddings.mp_5,
@@ -47,6 +53,14 @@ const styles = StyleSheet.create<NotificationStyles>({
     borderRadius: Globals.rounded_lg,
     borderWidth: 1,
     elevation: 1,
+  },
+  iconContainer: {
+    width: 34,
+    height: 34,
+  },
+  contentContainer: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 });
 const lightStyles = StyleSheet.create<NotificationStyles>({
@@ -65,6 +79,7 @@ const darkStyles = StyleSheet.create<NotificationStyles>({
 function Notification({
   title,
   message,
+  icon,
   top = 0,
   parentTop = -1,
   customStyles,
@@ -155,8 +170,43 @@ function Notification({
         animatedStyles,
       ]}
     >
-      <Typography.Title level={4}>{title}</Typography.Title>
-      <Typography.Text>{message}</Typography.Text>
+      {icon && (
+        <View
+          style={[
+            styles.iconContainer,
+            customStyles?.iconContainer ?? {},
+            ...(isDarkTheme
+              ? [
+                  darkStyles?.iconContainer,
+                  customDarkStyles?.iconContainer ?? {},
+                ]
+              : [
+                  lightStyles?.iconContainer,
+                  customLightStyles?.iconContainer ?? {},
+                ]),
+          ]}
+        >
+          {icon}
+        </View>
+      )}
+      <View
+        style={[
+          styles.contentContainer,
+          customStyles?.contentContainer ?? {},
+          ...(isDarkTheme
+            ? [
+                darkStyles?.contentContainer,
+                customDarkStyles?.contentContainer ?? {},
+              ]
+            : [
+                lightStyles?.contentContainer,
+                customLightStyles?.contentContainer ?? {},
+              ]),
+        ]}
+      >
+        <Typography.Title level={4}>{title}</Typography.Title>
+        <Typography.Text>{message}</Typography.Text>
+      </View>
     </Animated.View>
   );
 }
