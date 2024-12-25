@@ -142,8 +142,8 @@ export default function Modal({
         type={'default'}
         size={'full'}
         onPress={onCancel}
-        loading={confirmLoading}
-        loadingComponent={confirmLoadingComponent}
+        loading={cancelLoading}
+        loadingComponent={cancelLoadingComponent}
       >
         {cancelText}
       </Button>
@@ -159,8 +159,8 @@ export default function Modal({
         onPress={onConfirm}
         size={'full'}
         danger={variant === 'danger'}
-        loading={cancelLoading}
-        loadingComponent={cancelLoadingComponent}
+        loading={confirmLoading}
+        loadingComponent={confirmLoadingComponent}
       >
         {confirmText}
       </Button>
