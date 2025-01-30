@@ -103,6 +103,20 @@ function Notification({
     error: { borderColor: Colors.red_900 },
   };
 
+  const lightStylesTitleByType = {
+    info: { color: Colors.brand_900 },
+    success: { color: Colors.green_900 },
+    warning: { color: Colors.yellow_900 },
+    error: { color: Colors.red_900 },
+  };
+
+  const darkStylesTitleByType = {
+    info: { color: Colors.brand_100 },
+    success: { color: Colors.green_100 },
+    warning: { color: Colors.yellow_100 },
+    error: { color: Colors.red_100 },
+  };
+
   useEffect(() => {
     if (currentIndex !== index) {
       const topWithPadding = top + MarginsPaddings.mp_5;
@@ -204,7 +218,17 @@ function Notification({
               ]),
         ]}
       >
-        <Typography.Title level={4}>{title}</Typography.Title>
+        <Typography.Title
+          level={4}
+          customLightStyles={{
+            root: lightStylesTitleByType[type],
+          }}
+          customDarkStyles={{
+            root: darkStylesTitleByType[type],
+          }}
+        >
+          {title}
+        </Typography.Title>
         <Typography.Text>{message}</Typography.Text>
       </View>
     </Animated.View>
