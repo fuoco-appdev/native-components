@@ -69,6 +69,8 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     width: '100%',
   },
   sheet: {
+    display: 'flex',
+    flexDirection: 'column',
     width: '100%',
     position: 'absolute',
     bottom: 0,
@@ -280,30 +282,33 @@ function BottomSheet({
                 </ScrollView>
               )}
               {type === 'flat-list' && (
-                <FlatList
-                  contentContainerStyle={[
-                    ...(isDarkTheme
-                      ? [
-                          {
-                            ...darkStyles?.scrollView,
-                            ...(customDarkStyles?.scrollView ?? {}),
-                          },
-                        ]
-                      : [
-                          {
-                            ...lightStyles?.scrollView,
-                            ...(customLightStyles?.scrollView ?? {}),
-                          },
-                        ]),
-                    {
-                      ...styles.scrollView,
-                      ...(customStyles?.scrollView ?? {}),
-                    },
-                  ]}
-                  data={data}
-                  renderItem={renderItem}
-                  keyExtractor={keyExtractor}
-                />
+                <>
+                  {children}
+                  <FlatList
+                    contentContainerStyle={[
+                      ...(isDarkTheme
+                        ? [
+                            {
+                              ...darkStyles?.scrollView,
+                              ...(customDarkStyles?.scrollView ?? {}),
+                            },
+                          ]
+                        : [
+                            {
+                              ...lightStyles?.scrollView,
+                              ...(customLightStyles?.scrollView ?? {}),
+                            },
+                          ]),
+                      {
+                        ...styles.scrollView,
+                        ...(customStyles?.scrollView ?? {}),
+                      },
+                    ]}
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                  />
+                </>
               )}
             </KeyboardAvoidingView>
           </Animated.View>
