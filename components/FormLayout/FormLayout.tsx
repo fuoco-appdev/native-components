@@ -231,7 +231,7 @@ export function FormLayout({
     };
 
     if (error) {
-      Vibration.vibrate([0, 500, 200, 500]);
+      Vibration.vibrate([0, 377, 233]);
       triggerShake();
     }
   }, [error, shakeAnimation]);
