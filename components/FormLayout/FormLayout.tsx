@@ -1,15 +1,24 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   ImageStyle,
   StyleSheet,
   Text,
   TextStyle,
   useColorScheme,
+  Vibration,
   View,
   ViewStyle,
 } from 'react-native';
 import Colors from '../Themes/colors';
 import MarginsPaddings from '../Themes/margins_paddings';
 import Globals from '../Themes/globals';
+import { useEffect } from 'react';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 
 export interface FormLayoutStyles {
   root?: ViewStyle;
@@ -180,6 +189,7 @@ export function FormLayout({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const labelled = Boolean(label || beforeLabel || afterLabel);
+  const shakeAnimation = useSharedValue(0);
 
   let textSizeStyle: TextStyle = {};
   if (size === 'tiny') {
@@ -209,9 +219,31 @@ export function FormLayout({
     };
   }
 
+  useEffect(() => {
+    const triggerShake = () => {
+      shakeAnimation.value = withSequence(
+        withTiming(-10, { duration: 50 }), // Move left
+        withTiming(10, { duration: 50 }), // Move right
+        withTiming(-10, { duration: 50 }), // Move left
+        withTiming(10, { duration: 50 }), // Move right
+        withTiming(0, { duration: 50 }) // Return to center
+      );
+    };
+
+    Vibration.vibrate([0, 500, 200, 500]);
+    triggerShake();
+  }, [error, shakeAnimation]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: shakeAnimation.value }],
+    };
+  });
+
   return (
-    <View
+    <Animated.View
       style={[
+        animatedStyle,
         ...(isDarkTheme
           ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
           : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
@@ -343,6 +375,6 @@ export function FormLayout({
           {descriptionText}
         </Text>
       )}
-    </View>
+    </Animated.View>
   );
 }

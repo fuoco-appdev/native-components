@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   FlexStyle,
   GestureResponderEvent,
@@ -36,6 +37,12 @@ import {
 } from '../Icon/Icons/Line';
 import { useState } from 'react';
 import Typography from '../Typography/Typography';
+import {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 
 export interface InputStyles {
   root?: ViewStyle;
@@ -253,28 +260,18 @@ function Input({
   disabled,
   error,
   icon,
-  inputRef,
   label,
   afterLabel,
   beforeLabel,
   labelOptional,
   reveal = false,
   actions,
-  borderless = false,
-  shakeInterpolationCount = 3,
-  shakeDistance = 6,
   textInputProps,
 }: InputProps) {
   const theme = useColorScheme();
   const [copyLabel, setCopyLabel] = useState('Copy');
   const [isHidden, setIsHidden] = useState(password);
   const isDarkTheme = theme === 'dark';
-
-  const { x } = useSpring({
-    from: { x: 0 },
-    to: error ? { x: 1 } : { x: 0 },
-    config: { mass: 1, tension: 500, friction: 100 },
-  });
 
   const onCopy = (value: any) => {
     Clipboard.setString(value);
@@ -288,29 +285,7 @@ function Input({
     setIsHidden(!isHidden);
   };
 
-  const interpolation: number[] = [];
-  interpolation.push(0);
-
-  for (let i = 0; i < shakeInterpolationCount; i++) {
-    interpolation.push(-shakeDistance);
-    interpolation.push(shakeDistance);
-  }
-
-  interpolation.push(0);
-
   return (
-    <animated.View
-      style={[
-        {
-          x: x.to([0, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1], interpolation),
-        },
-        inputStyles.root as any,
-        customStyles?.root ?? {},
-        ...(isDarkTheme
-          ? [inputDarkStyles?.root, customDarkStyles?.root ?? {}]
-          : [inputLightStyles?.root, customLightStyles?.root ?? {}]),
-      ]}
-    >
       <FormLayout
         label={label}
         afterLabel={afterLabel}
@@ -562,8 +537,6 @@ export interface TextAreaProps {
   limit?: number;
   size?: 'tiny' | 'small' | 'medium' | 'large' | 'xlarge';
   borderless?: boolean;
-  shakeInterpolationCount?: number;
-  shakeDistance?: number;
   textInputProps?: TextInputProps;
 }
 
@@ -669,26 +642,16 @@ function TextArea({
   descriptionText,
   disabled,
   error,
-  icon,
   limit,
   label,
   afterLabel,
   beforeLabel,
   labelOptional,
-  borderless = false,
-  shakeInterpolationCount = 3,
-  shakeDistance = 6,
   textInputProps,
 }: TextAreaProps) {
   const [charLength, setCharLength] = useState(0);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
-
-  const { x } = useSpring({
-    from: { x: 0 },
-    to: error ? { x: 1 } : { x: 0 },
-    config: { mass: 1, tension: 500, friction: 100 },
-  });
 
   const onInputChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setCharLength(e.nativeEvent.text.length);
@@ -697,29 +660,7 @@ function TextArea({
     }
   };
 
-  const interpolation: number[] = [];
-  interpolation.push(0);
-
-  for (let i = 0; i < shakeInterpolationCount; i++) {
-    interpolation.push(-shakeDistance);
-    interpolation.push(shakeDistance);
-  }
-
-  interpolation.push(0);
-
   return (
-    <animated.View
-      style={[
-        {
-          x: x.to([0, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1], interpolation),
-        },
-        textAreaStyles.root as any,
-        customStyles?.root ?? {},
-        ...(isDarkTheme
-          ? [textAreaDarkStyles?.root, customDarkStyles?.root ?? {}]
-          : [textAreaLightStyles?.root, customLightStyles?.root ?? {}]),
-      ]}
-    >
       <FormLayout
         label={label}
         afterLabel={afterLabel}
@@ -805,7 +746,6 @@ function TextArea({
           </Typography.Text>
         )}
       </FormLayout>
-    </animated.View>
   );
 }
 
