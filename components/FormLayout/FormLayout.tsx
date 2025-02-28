@@ -230,8 +230,10 @@ export function FormLayout({
       );
     };
 
-    Vibration.vibrate([0, 500, 200, 500]);
-    triggerShake();
+    if (error) {
+      Vibration.vibrate([0, 500, 200, 500]);
+      triggerShake();
+    }
   }, [error, shakeAnimation]);
 
   const animatedStyle = useAnimatedStyle(() => {
