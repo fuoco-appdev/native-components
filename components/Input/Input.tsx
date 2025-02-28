@@ -1,16 +1,8 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {
-  FlexStyle,
-  GestureResponderEvent,
   ImageStyle,
-  Pressable,
-  PressableProps,
   StyleSheet,
-  Text,
   TextStyle,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  TouchableOpacityProps,
   View,
   ViewStyle,
   useColorScheme,
@@ -23,7 +15,6 @@ import {
   ColorValue,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { animated, useSpring } from '@react-spring/native';
 import Colors from '../Themes/colors';
 import MarginsPaddings from '../Themes/margins_paddings';
 import Globals from '../Themes/globals';
@@ -37,15 +28,8 @@ import {
 } from '../Icon/Icons/Line';
 import { useState } from 'react';
 import Typography from '../Typography/Typography';
-import {
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
 
 export interface InputStyles {
-  root?: ViewStyle;
   container?: ViewStyle | TextStyle | ImageStyle;
   error?: ViewStyle | TextStyle | ImageStyle;
   withIcon?: ViewStyle | TextStyle | ImageStyle;
@@ -154,7 +138,6 @@ export interface InputProps {
 }
 
 const inputStyles = StyleSheet.create<InputStyles>({
-  root: {},
   container: {
     position: 'relative',
     display: 'flex',
@@ -532,6 +515,8 @@ export interface TextAreaProps {
   limit?: number;
   size?: 'tiny' | 'small' | 'medium' | 'large' | 'xlarge';
   borderless?: boolean;
+  shakeInterpolationCount?: number;
+  shakeDistance?: number;
   textInputProps?: TextInputProps;
 }
 
