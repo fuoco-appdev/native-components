@@ -286,150 +286,145 @@ function Input({
   };
 
   return (
-      <FormLayout
-        label={label}
-        afterLabel={afterLabel}
-        beforeLabel={beforeLabel}
-        labelOptional={labelOptional}
-        error={error}
-        descriptionText={descriptionText}
-        customStyles={customExtraStyles.formLayout}
-        customDarkStyles={customExtraDarkStyles.formLayout}
-        customLightStyles={customExtraLightStyles.formLayout}
+    <FormLayout
+      label={label}
+      afterLabel={afterLabel}
+      beforeLabel={beforeLabel}
+      labelOptional={labelOptional}
+      error={error}
+      descriptionText={descriptionText}
+      customStyles={customExtraStyles.formLayout}
+      customDarkStyles={customExtraDarkStyles.formLayout}
+      customLightStyles={customExtraLightStyles.formLayout}
+    >
+      <View
+        style={[
+          inputStyles.container,
+          customStyles?.container ?? {},
+          error ? inputStyles.error : {},
+          ...(isDarkTheme
+            ? [
+                inputDarkStyles?.container,
+                error ? inputDarkStyles.error : {},
+                customDarkStyles?.container ?? {},
+              ]
+            : [
+                inputLightStyles?.container,
+                error ? inputLightStyles.error : {},
+                customLightStyles?.container ?? {},
+              ]),
+        ]}
       >
-        <View
-          style={[
-            inputStyles.container,
-            customStyles?.container ?? {},
-            error ? inputStyles.error : {},
-            ...(isDarkTheme
-              ? [
-                  inputDarkStyles?.container,
-                  error ? inputDarkStyles.error : {},
-                  customDarkStyles?.container ?? {},
-                ]
-              : [
-                  inputLightStyles?.container,
-                  error ? inputLightStyles.error : {},
-                  customLightStyles?.container ?? {},
-                ]),
-          ]}
-        >
-          {icon && (
-            <View
-              style={[
-                inputStyles.iconContainer,
-                customStyles?.iconContainer ?? {},
-                ...(isDarkTheme
-                  ? [
-                      inputDarkStyles?.iconContainer,
-                      customDarkStyles?.iconContainer ?? {},
-                    ]
-                  : [
-                      inputLightStyles?.iconContainer,
-                      customLightStyles?.iconContainer ?? {},
-                    ]),
-              ]}
-            >
-              {icon}
-            </View>
-          )}
-          <TextInput
+        {icon && (
+          <View
             style={[
-              inputStyles.input,
-              customStyles?.input ?? {},
+              inputStyles.iconContainer,
+              customStyles?.iconContainer ?? {},
               ...(isDarkTheme
-                ? [inputDarkStyles?.input, customDarkStyles?.input ?? {}]
-                : [inputLightStyles?.input, customLightStyles?.input ?? {}]),
+                ? [
+                    inputDarkStyles?.iconContainer,
+                    customDarkStyles?.iconContainer ?? {},
+                  ]
+                : [
+                    inputLightStyles?.iconContainer,
+                    customLightStyles?.iconContainer ?? {},
+                  ]),
             ]}
-            value={value}
-            autoComplete={autoComplete}
-            autoFocus={autoFocus}
-            placeholderTextColor={
-              placeholderTextColor ?? isDarkTheme
-                ? Colors.gray_400
-                : Colors.gray_600
-            }
-            defaultValue={defaultValue}
-            editable={!disabled}
-            selectTextOnFocus={!disabled}
-            onChange={onChange ? (event) => onChange(event) : undefined}
-            onFocus={onFocus ? (event) => onFocus(event) : undefined}
-            onBlur={onBlur ? (event) => onBlur(event) : undefined}
-            placeholder={placeholder}
-            secureTextEntry={isHidden}
-            keyboardType={type}
-            {...textInputProps}
-          />
-          {copy || error || actions || password ? (
-            <View
-              style={[
-                inputStyles.actionsContainer,
-                customStyles?.actionsContainer ?? {},
-                ...(isDarkTheme
-                  ? [
-                      inputDarkStyles?.actionsContainer,
-                      customDarkStyles?.actionsContainer ?? {},
-                    ]
-                  : [
-                      inputLightStyles?.actionsContainer,
-                      customLightStyles?.actionsContainer ?? {},
-                    ]),
-              ]}
-            >
-              {reveal ? (
-                <Button
-                  customStyles={customExtraStyles.revealButton}
-                  customDarkStyles={customExtraDarkStyles.revealButton}
-                  customLightStyles={customExtraLightStyles.revealButton}
-                  size={'tiny'}
-                  type={'text'}
-                  rounded={true}
-                  icon={
-                    isHidden ? (
-                      <Visibility
-                        size={21}
-                        color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
-                      />
-                    ) : (
-                      <VisibilityOff
-                        size={21}
-                        color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
-                      />
-                    )
-                  }
-                  onPress={onReveal}
-                />
-              ) : null}
-              {error && (
-                <ErrorOutline
-                  size={21}
-                  color={Colors.red_500}
-                  strokeWidth={0}
-                />
-              )}
-              {copy && (
-                <Button
-                  size={'tiny'}
-                  type={'default'}
-                  rounded={true}
-                  onPress={() => onCopy(value)}
-                  icon={
-                    <ContentCopy
+          >
+            {icon}
+          </View>
+        )}
+        <TextInput
+          style={[
+            inputStyles.input,
+            customStyles?.input ?? {},
+            ...(isDarkTheme
+              ? [inputDarkStyles?.input, customDarkStyles?.input ?? {}]
+              : [inputLightStyles?.input, customLightStyles?.input ?? {}]),
+          ]}
+          value={value}
+          autoComplete={autoComplete}
+          autoFocus={autoFocus}
+          placeholderTextColor={
+            placeholderTextColor ?? isDarkTheme
+              ? Colors.gray_400
+              : Colors.gray_600
+          }
+          defaultValue={defaultValue}
+          editable={!disabled}
+          selectTextOnFocus={!disabled}
+          onChange={onChange ? (event) => onChange(event) : undefined}
+          onFocus={onFocus ? (event) => onFocus(event) : undefined}
+          onBlur={onBlur ? (event) => onBlur(event) : undefined}
+          placeholder={placeholder}
+          secureTextEntry={isHidden}
+          keyboardType={type}
+          {...textInputProps}
+        />
+        {copy || error || actions || password ? (
+          <View
+            style={[
+              inputStyles.actionsContainer,
+              customStyles?.actionsContainer ?? {},
+              ...(isDarkTheme
+                ? [
+                    inputDarkStyles?.actionsContainer,
+                    customDarkStyles?.actionsContainer ?? {},
+                  ]
+                : [
+                    inputLightStyles?.actionsContainer,
+                    customLightStyles?.actionsContainer ?? {},
+                  ]),
+            ]}
+          >
+            {reveal ? (
+              <Button
+                customStyles={customExtraStyles.revealButton}
+                customDarkStyles={customExtraDarkStyles.revealButton}
+                customLightStyles={customExtraLightStyles.revealButton}
+                size={'tiny'}
+                type={'text'}
+                rounded={true}
+                icon={
+                  isHidden ? (
+                    <Visibility
                       size={21}
                       color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
                     />
-                  }
-                >
-                  {copyLabel}
-                </Button>
-              )}
-              {actions && actions}
-            </View>
-          ) : null}
-        </View>
-      </FormLayout>
-    </animated.View>
+                  ) : (
+                    <VisibilityOff
+                      size={21}
+                      color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
+                    />
+                  )
+                }
+                onPress={onReveal}
+              />
+            ) : null}
+            {error && (
+              <ErrorOutline size={21} color={Colors.red_500} strokeWidth={0} />
+            )}
+            {copy && (
+              <Button
+                size={'tiny'}
+                type={'default'}
+                rounded={true}
+                onPress={() => onCopy(value)}
+                icon={
+                  <ContentCopy
+                    size={21}
+                    color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
+                  />
+                }
+              >
+                {copyLabel}
+              </Button>
+            )}
+            {actions && actions}
+          </View>
+        ) : null}
+      </View>
+    </FormLayout>
   );
 }
 
@@ -661,91 +656,91 @@ function TextArea({
   };
 
   return (
-      <FormLayout
-        label={label}
-        afterLabel={afterLabel}
-        beforeLabel={beforeLabel}
-        labelOptional={labelOptional}
-        error={error}
-        descriptionText={descriptionText}
-        customStyles={customExtraStyles.formLayoutStyles}
-        customDarkStyles={customExtraStyles.formLayoutDarkStyles}
-        customLightStyles={customExtraStyles.formLayoutLightStyles}
+    <FormLayout
+      label={label}
+      afterLabel={afterLabel}
+      beforeLabel={beforeLabel}
+      labelOptional={labelOptional}
+      error={error}
+      descriptionText={descriptionText}
+      customStyles={customExtraStyles.formLayoutStyles}
+      customDarkStyles={customExtraStyles.formLayoutDarkStyles}
+      customLightStyles={customExtraStyles.formLayoutLightStyles}
+    >
+      <View
+        style={[
+          textAreaStyles.container,
+          customStyles?.container ?? {},
+          error ? textAreaStyles.error : {},
+          ...(isDarkTheme
+            ? [
+                textAreaDarkStyles?.container,
+                error ? textAreaDarkStyles.error : {},
+                customDarkStyles?.container ?? {},
+              ]
+            : [
+                textAreaLightStyles?.container,
+                error ? textAreaLightStyles.error : {},
+                customLightStyles?.container ?? {},
+              ]),
+        ]}
       >
-        <View
+        <TextInput
           style={[
-            textAreaStyles.container,
-            customStyles?.container ?? {},
-            error ? textAreaStyles.error : {},
+            textAreaStyles.input,
+            customStyles?.input ?? {},
             ...(isDarkTheme
-              ? [
-                  textAreaDarkStyles?.container,
-                  error ? textAreaDarkStyles.error : {},
-                  customDarkStyles?.container ?? {},
-                ]
-              : [
-                  textAreaLightStyles?.container,
-                  error ? textAreaLightStyles.error : {},
-                  customLightStyles?.container ?? {},
-                ]),
+              ? [textAreaDarkStyles?.input, customDarkStyles?.input ?? {}]
+              : [textAreaLightStyles?.input, customLightStyles?.input ?? {}]),
           ]}
-        >
-          <TextInput
+          multiline={true}
+          value={value}
+          autoComplete={autoComplete}
+          autoFocus={autoFocus}
+          textAlignVertical={'top'}
+          placeholderTextColor={
+            placeholderTextColor ?? isDarkTheme
+              ? Colors.gray_400
+              : Colors.gray_600
+          }
+          numberOfLines={numberOfLines}
+          maxLength={limit}
+          defaultValue={defaultValue}
+          editable={!disabled}
+          selectTextOnFocus={!disabled}
+          onChange={(event) => onInputChange(event)}
+          onFocus={onFocus ? (event) => onFocus(event) : undefined}
+          onBlur={onBlur ? (event) => onBlur(event) : undefined}
+          placeholder={placeholder}
+          keyboardType={type}
+          {...textInputProps}
+        />
+        {error && (
+          <View
             style={[
-              textAreaStyles.input,
-              customStyles?.input ?? {},
+              textAreaStyles.actionsContainer,
+              customStyles?.actionsContainer ?? {},
               ...(isDarkTheme
-                ? [textAreaDarkStyles?.input, customDarkStyles?.input ?? {}]
-                : [textAreaLightStyles?.input, customLightStyles?.input ?? {}]),
+                ? [
+                    textAreaDarkStyles?.actionsContainer,
+                    customDarkStyles?.actionsContainer ?? {},
+                  ]
+                : [
+                    textAreaLightStyles?.actionsContainer,
+                    customLightStyles?.actionsContainer ?? {},
+                  ]),
             ]}
-            multiline={true}
-            value={value}
-            autoComplete={autoComplete}
-            autoFocus={autoFocus}
-            textAlignVertical={'top'}
-            placeholderTextColor={
-              placeholderTextColor ?? isDarkTheme
-                ? Colors.gray_400
-                : Colors.gray_600
-            }
-            numberOfLines={numberOfLines}
-            maxLength={limit}
-            defaultValue={defaultValue}
-            editable={!disabled}
-            selectTextOnFocus={!disabled}
-            onChange={(event) => onInputChange(event)}
-            onFocus={onFocus ? (event) => onFocus(event) : undefined}
-            onBlur={onBlur ? (event) => onBlur(event) : undefined}
-            placeholder={placeholder}
-            keyboardType={type}
-            {...textInputProps}
-          />
-          {error && (
-            <View
-              style={[
-                textAreaStyles.actionsContainer,
-                customStyles?.actionsContainer ?? {},
-                ...(isDarkTheme
-                  ? [
-                      textAreaDarkStyles?.actionsContainer,
-                      customDarkStyles?.actionsContainer ?? {},
-                    ]
-                  : [
-                      textAreaLightStyles?.actionsContainer,
-                      customLightStyles?.actionsContainer ?? {},
-                    ]),
-              ]}
-            >
-              <ErrorOutline size={21} color={Colors.red_500} />
-            </View>
-          )}
-        </View>
-        {limit && (
-          <Typography.Text>
-            {charLength}/{limit}
-          </Typography.Text>
+          >
+            <ErrorOutline size={21} color={Colors.red_500} />
+          </View>
         )}
-      </FormLayout>
+      </View>
+      {limit && (
+        <Typography.Text>
+          {charLength}/{limit}
+        </Typography.Text>
+      )}
+    </FormLayout>
   );
 }
 
