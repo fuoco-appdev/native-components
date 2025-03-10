@@ -120,7 +120,10 @@ const darkStyles = StyleSheet.create<TabsStyles>({
 });
 
 function Tabs({
-  context,
+  context = {
+    tabs: [],
+    rootSize: { x: 0, y: 0, width: 0, height: 0, pageX: 0, pageY: 0 },
+  },
   customStyles,
   customDarkStyles,
   customLightStyles,
