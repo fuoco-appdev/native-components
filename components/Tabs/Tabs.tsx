@@ -120,10 +120,7 @@ const darkStyles = StyleSheet.create<TabsStyles>({
 });
 
 function Tabs({
-  context = {
-    tabs: [],
-    rootSize: { x: 0, y: 0, width: 0, height: 0, pageX: 0, pageY: 0 },
-  },
+  context,
   customStyles,
   customDarkStyles,
   customLightStyles,
@@ -131,7 +128,20 @@ function Tabs({
   customExtraLightStyles,
   customExtraDarkStyles,
 }: TabsProps) {
-  const tabsContext = context ?? useContext(TabsContext);
+  const tabsContext = context
+    ? {
+        ...context,
+        tabs: context.tabs ?? [],
+        rootSize: context.rootSize ?? {
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+          pageX: 0,
+          pageY: 0,
+        },
+      }
+    : useContext(TabsContext);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
