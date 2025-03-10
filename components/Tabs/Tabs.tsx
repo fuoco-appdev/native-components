@@ -1,5 +1,8 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {
+  LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   StyleSheet,
   TextStyle,
   useColorScheme,
@@ -7,9 +10,10 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Button, ButtonStyles } from '../Button';
-import Animated from 'react-native-reanimated';
-import { useContext } from 'react';
-import { TabsContext } from './TabsProvider';
+import Animated, {
+  AnimatedRef,
+  ScrollHandlerProcessed,
+} from 'react-native-reanimated';
 
 export interface TabProps {
   id: string;
@@ -31,6 +35,41 @@ export interface ExtraTabsStyles {
 }
 
 export interface TabsProps {
+  tabsContext: {
+    tabs: TabProps[];
+    rootSize: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      pageX: number;
+      pageY: number;
+    };
+    setRootSize?: (value: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      pageX: number;
+      pageY: number;
+    }) => void;
+    indicatorStyle?:
+      | {
+          transform?: undefined;
+        }
+      | {
+          transform: {
+            translateX: number;
+          }[];
+        };
+    handleViewLayout?: (event: LayoutChangeEvent, index: number) => void;
+    scrollRef?: AnimatedRef<Animated.ScrollView>;
+    scrollHandler?: ScrollHandlerProcessed<Record<string, unknown>>;
+    onMomentumScrollEnd?: (
+      event: NativeSyntheticEvent<NativeScrollEvent>
+    ) => void;
+    onChange?: (id: string) => void;
+  };
   customStyles?: TabsStyles;
   customLightStyles?: TabsStyles;
   customDarkStyles?: TabsStyles;
@@ -78,6 +117,7 @@ const darkStyles = StyleSheet.create<TabsStyles>({
 });
 
 function Tabs({
+  tabsContext,
   customStyles,
   customDarkStyles,
   customLightStyles,
@@ -87,7 +127,6 @@ function Tabs({
 }: TabsProps) {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
-  const tabsContext = useContext(TabsContext);
 
   return (
     <View
