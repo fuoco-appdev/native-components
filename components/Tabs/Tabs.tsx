@@ -14,9 +14,10 @@ import { Button, ButtonStyles } from '../Button';
 import Animated, {
   AnimatedRef,
   ScrollHandlerProcessed,
-  runOnJS,
+  interpolate,
+  useAnimatedStyle,
 } from 'react-native-reanimated';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { TabsContext } from './TabsProvider';
 
 export interface TabProps {
@@ -129,6 +130,7 @@ function Tabs({
   customExtraLightStyles,
   customExtraDarkStyles,
 }: TabsProps) {
+  const [viewTranslatePoints, setViewTranslatePoints] = useState<number[]>([]);
   const tabsContext = context
     ? {
         ...context,
@@ -146,6 +148,32 @@ function Tabs({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
+  const handleViewLayout = (event: LayoutChangeEvent, index: number) => {
+    const { x } = event.nativeEvent.layout;
+    const currentPoints = [...viewTranslatePoints];
+    currentPoints[index] = x;
+    setViewTranslatePoints(currentPoints);
+  };
+
+  const indicatorStyle = useAnimatedStyle(() => {
+    if (viewTranslatePoints.length < 2) {
+      return {};
+    }
+    return {
+      transform: [
+        {
+          translateX: interpolate(
+            tabsContext.scrollValue?.value ?? 0,
+            tabsContext.tabs.map(
+              (value, index) => index * tabsContext.rootSize.width
+            ),
+            viewTranslatePoints
+          ),
+        },
+      ],
+    };
+  });
+
   return (
     <View
       style={[
@@ -159,7 +187,7 @@ function Tabs({
         event.currentTarget.measure(
           (x, y, width, height, pageX, pageY) =>
             tabsContext.setRootSize &&
-            runOnJS(tabsContext.setRootSize)({
+            tabsContext.setRootSize({
               x,
               y,
               width,
@@ -198,7 +226,7 @@ function Tabs({
                     ? [darkStyles?.tabItem, customDarkStyles?.tabItem ?? {}]
                     : [lightStyles?.tabItem, customLightStyles?.tabItem ?? {}]),
                 ]}
-                onLayout={(e) => tabsContext.handleViewLayout?.(e, index)}
+                onLayout={(e) => handleViewLayout(e, index)}
                 key={value.id}
               >
                 <Button
@@ -211,13 +239,12 @@ function Tabs({
                   icon={value.icon}
                   onPress={() => {
                     tabsContext.scrollRef?.current?.scrollTo &&
-                      runOnJS(tabsContext.scrollRef.current.scrollTo)({
+                      tabsContext.scrollRef.current.scrollTo({
                         x: tabsContext.rootSize?.width * index,
                         y: 0,
                         animated: true,
                       });
-                    tabsContext.onChange &&
-                      runOnJS(tabsContext.onChange)(value.id);
+                    tabsContext.onChange && tabsContext.onChange(value.id);
                   }}
                 >
                   {value.label}
@@ -228,7 +255,7 @@ function Tabs({
         </View>
         <Animated.View
           style={[
-            tabsContext.indicatorStyle,
+            indicatorStyle,
             {
               width: tabsContext.rootSize.width / tabsContext.tabs.length,
             },
