@@ -1,7 +1,13 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useContext } from 'react';
-import { StyleSheet, useColorScheme, ViewStyle } from 'react-native';
-import Animated from 'react-native-reanimated';
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleSheet,
+  useColorScheme,
+  ViewStyle,
+} from 'react-native';
+import Animated, { useAnimatedScrollHandler } from 'react-native-reanimated';
 import { TabsContext } from './TabsProvider';
 
 export interface TabsScrollViewStyles {
@@ -32,11 +38,35 @@ function TabsScrollView({
   const tabsContext = useContext(TabsContext);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      if (!tabsContext.scrollValue) {
+        return;
+      }
+
+      tabsContext.scrollValue.value = event.contentOffset.x;
+    },
+  });
+
+  const onMomentumScrollEnd = (
+    event: NativeSyntheticEvent<NativeScrollEvent>
+  ) => {
+    const scrollX = event.nativeEvent.contentOffset.x;
+    const selectedIndex = Math.floor(scrollX / tabsContext.rootSize.width);
+    const tab = tabsContext.tabs.find(
+      (value, index) => index === selectedIndex
+    );
+    if (tab) {
+      tabsContext.onChange?.(tab.id);
+    }
+  };
+
   return (
     <Animated.ScrollView
       ref={tabsContext.scrollRef}
-      onScroll={tabsContext.scrollHandler}
-      onMomentumScrollEnd={tabsContext.onMomentumScrollEnd}
+      onScroll={scrollHandler}
+      onMomentumScrollEnd={onMomentumScrollEnd}
       pagingEnabled={true}
       horizontal={true}
       scrollEventThrottle={16}

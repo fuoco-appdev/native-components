@@ -2,8 +2,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {
   LayoutChangeEvent,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   StyleSheet,
   TextStyle,
   useColorScheme,
@@ -13,7 +11,6 @@ import {
 import { Button, ButtonStyles } from '../Button';
 import Animated, {
   AnimatedRef,
-  ScrollHandlerProcessed,
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
@@ -58,21 +55,7 @@ export interface TabsProps {
       pageX: number;
       pageY: number;
     }) => void;
-    indicatorStyle?:
-      | {
-          transform?: undefined;
-        }
-      | {
-          transform: {
-            translateX: number;
-          }[];
-        };
-    handleViewLayout?: (event: LayoutChangeEvent, index: number) => void;
     scrollRef?: AnimatedRef<Animated.ScrollView>;
-    scrollHandler?: ScrollHandlerProcessed<Record<string, unknown>>;
-    onMomentumScrollEnd?: (
-      event: NativeSyntheticEvent<NativeScrollEvent>
-    ) => void;
     onChange?: (id: string) => void;
   };
   customStyles?: TabsStyles;

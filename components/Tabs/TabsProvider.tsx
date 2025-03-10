@@ -1,11 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import Animated, {
   AnimatedRef,
-  ScrollHandlerProcessed,
   SharedValue,
   useAnimatedRef,
-  useAnimatedScrollHandler,
   useSharedValue,
 } from 'react-native-reanimated';
 import { TabProps } from './Tabs';
@@ -30,10 +27,6 @@ export const TabsContext = createContext<{
   }) => void;
   scrollRef?: AnimatedRef<Animated.ScrollView>;
   scrollValue?: SharedValue<number>;
-  scrollHandler?: ScrollHandlerProcessed<Record<string, unknown>>;
-  onMomentumScrollEnd?: (
-    event: NativeSyntheticEvent<NativeScrollEvent>
-  ) => void;
   onChange?: (id: string) => void;
 }>({
   tabs: [],
@@ -78,23 +71,6 @@ function TabsProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, rootSize, scrollRef, tabs]);
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollValue.value = event.contentOffset.x;
-    },
-  });
-
-  const onMomentumScrollEnd = (
-    event: NativeSyntheticEvent<NativeScrollEvent>
-  ) => {
-    const scrollX = event.nativeEvent.contentOffset.x;
-    const selectedIndex = Math.floor(scrollX / rootSize.width);
-    const tab = tabs.find((value, index) => index === selectedIndex);
-    if (tab) {
-      onChange?.(tab.id);
-    }
-  };
-
   useEffect(() => {
     const index = tabs.findIndex((value) => value.id === id);
     const scrollPosition = rootSize.width * index;
@@ -116,8 +92,6 @@ function TabsProvider({
         scrollRef: scrollRef,
         scrollValue: scrollValue,
         setRootSize: setRootSize,
-        scrollHandler: scrollHandler,
-        onMomentumScrollEnd: onMomentumScrollEnd,
         onChange: onChange,
       }}
     >
