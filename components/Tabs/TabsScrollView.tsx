@@ -1,0 +1,98 @@
+/* eslint-disable react/react-in-jsx-scope */
+import { useContext } from 'react';
+import { StyleSheet, useColorScheme, ViewStyle } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { TabsContext } from './TabsProvider';
+
+export interface TabsScrollViewStyles {
+  scrollView?: ViewStyle;
+}
+
+export interface ExtraTabScrollViewStyles {}
+
+export interface TabsScrollViewProps {
+  children?: React.ReactNode;
+  customStyles?: TabsScrollViewStyles;
+  customLightStyles?: TabsScrollViewStyles;
+  customDarkStyles?: TabsScrollViewStyles;
+}
+
+const styles = StyleSheet.create<TabsScrollViewStyles>({
+  scrollView: {},
+});
+const lightStyles = StyleSheet.create<TabsScrollViewStyles>({});
+const darkStyles = StyleSheet.create<TabsScrollViewStyles>({});
+
+function TabsScrollView({
+  children,
+  customStyles,
+  customDarkStyles,
+  customLightStyles,
+}: TabsScrollViewProps) {
+  const tabsContext = useContext(TabsContext);
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
+  return (
+    <Animated.ScrollView
+      ref={tabsContext.scrollRef}
+      onScroll={tabsContext.scrollHandler}
+      onMomentumScrollEnd={tabsContext.onMomentumScrollEnd}
+      pagingEnabled={true}
+      horizontal={true}
+      scrollEventThrottle={16}
+      showsHorizontalScrollIndicator={false}
+      scrollToOverflowEnabled={true}
+      snapToInterval={tabsContext.rootSize.width}
+      style={[
+        styles.scrollView,
+        customStyles?.scrollView ?? {},
+        ...(isDarkTheme
+          ? [darkStyles?.scrollView, customDarkStyles?.scrollView ?? {}]
+          : [lightStyles?.scrollView, customLightStyles?.scrollView ?? {}]),
+      ]}
+    >
+      {children}
+    </Animated.ScrollView>
+  );
+}
+
+export interface TabsScrollViewItemStyles {
+  root?: ViewStyle;
+}
+
+export interface ExtraTabScrollViewItemsStyles {}
+
+export interface TabsScrollViewItemProps {
+  children?: React.ReactNode;
+  customStyles?: TabsScrollViewItemStyles;
+  customLightStyles?: TabsScrollViewItemStyles;
+  customDarkStyles?: TabsScrollViewItemStyles;
+}
+
+function TabsScrollViewItem({
+  children,
+  customStyles,
+  customDarkStyles,
+  customLightStyles,
+}: TabsScrollViewItemProps) {
+  const tabsContext = useContext(TabsContext);
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
+  return (
+    <Animated.View
+      style={[
+        customStyles?.root ?? {},
+        ...(isDarkTheme
+          ? [customDarkStyles?.root ?? {}]
+          : [customLightStyles?.root ?? {}]),
+        { width: tabsContext.rootSize.width },
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+}
+
+TabsScrollView.Item = TabsScrollViewItem;
+
+export default TabsScrollView;
