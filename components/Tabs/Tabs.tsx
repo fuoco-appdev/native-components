@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/react-in-jsx-scope */
 import {
   LayoutChangeEvent,
@@ -14,6 +15,8 @@ import Animated, {
   AnimatedRef,
   ScrollHandlerProcessed,
 } from 'react-native-reanimated';
+import { useContext } from 'react';
+import { TabsContext } from './TabsProvider';
 
 export interface TabProps {
   id: string;
@@ -35,7 +38,7 @@ export interface ExtraTabsStyles {
 }
 
 export interface TabsProps {
-  tabsContext: {
+  context?: {
     tabs: TabProps[];
     rootSize: {
       x: number;
@@ -117,7 +120,7 @@ const darkStyles = StyleSheet.create<TabsStyles>({
 });
 
 function Tabs({
-  tabsContext,
+  context,
   customStyles,
   customDarkStyles,
   customLightStyles,
@@ -125,6 +128,7 @@ function Tabs({
   customExtraLightStyles,
   customExtraDarkStyles,
 }: TabsProps) {
+  const tabsContext = context ?? useContext(TabsContext);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
