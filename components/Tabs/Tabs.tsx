@@ -198,10 +198,7 @@ function Tabs({
                     ? [darkStyles?.tabItem, customDarkStyles?.tabItem ?? {}]
                     : [lightStyles?.tabItem, customLightStyles?.tabItem ?? {}]),
                 ]}
-                onLayout={(e) =>
-                  tabsContext.handleViewLayout &&
-                  runOnJS(tabsContext.handleViewLayout)(e, index)
-                }
+                onLayout={(e) => tabsContext.handleViewLayout?.(e, index)}
                 key={value.id}
               >
                 <Button
