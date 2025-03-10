@@ -14,6 +14,7 @@ import { Button, ButtonStyles } from '../Button';
 import Animated, {
   AnimatedRef,
   ScrollHandlerProcessed,
+  runOnJS,
 } from 'react-native-reanimated';
 import { useContext } from 'react';
 import { TabsContext } from './TabsProvider';
@@ -155,8 +156,17 @@ function Tabs({
           : [lightStyles?.root, customLightStyles?.root ?? {}]),
       ]}
       onLayout={(event) => {
-        event.currentTarget.measure((x, y, width, height, pageX, pageY) =>
-          tabsContext.setRootSize?.({ x, y, width, height, pageX, pageY })
+        event.currentTarget.measure(
+          (x, y, width, height, pageX, pageY) =>
+            tabsContext.setRootSize &&
+            runOnJS(tabsContext.setRootSize)({
+              x,
+              y,
+              width,
+              height,
+              pageX,
+              pageY,
+            })
         );
       }}
     >
@@ -188,7 +198,10 @@ function Tabs({
                     ? [darkStyles?.tabItem, customDarkStyles?.tabItem ?? {}]
                     : [lightStyles?.tabItem, customLightStyles?.tabItem ?? {}]),
                 ]}
-                onLayout={(e) => tabsContext.handleViewLayout?.(e, index)}
+                onLayout={(e) =>
+                  tabsContext.handleViewLayout &&
+                  runOnJS(tabsContext.handleViewLayout)(e, index)
+                }
                 key={value.id}
               >
                 <Button
@@ -200,12 +213,14 @@ function Tabs({
                   size={'full'}
                   icon={value.icon}
                   onPress={() => {
-                    tabsContext.scrollRef?.current?.scrollTo({
-                      x: tabsContext.rootSize?.width * index,
-                      y: 0,
-                      animated: true,
-                    });
-                    tabsContext.onChange?.(value.id);
+                    tabsContext.scrollRef?.current?.scrollTo &&
+                      runOnJS(tabsContext.scrollRef.current.scrollTo)({
+                        x: tabsContext.rootSize?.width * index,
+                        y: 0,
+                        animated: true,
+                      });
+                    tabsContext.onChange &&
+                      runOnJS(tabsContext.onChange)(value.id);
                   }}
                 >
                   {value.label}
