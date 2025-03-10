@@ -53,6 +53,7 @@ export interface TabsProps {
 
 const styles = StyleSheet.create<TabsStyles>({
   root: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -77,7 +78,9 @@ const styles = StyleSheet.create<TabsStyles>({
     bottom: 0,
     height: 2,
   },
-  scrollView: {},
+  scrollView: {
+    position: 'absolute',
+  },
 });
 const lightStyles = StyleSheet.create<TabsStyles>({
   tabSlider: {
@@ -269,6 +272,7 @@ function Tabs({
           scrollToOverflowEnabled={true}
           snapToInterval={rootSize.width}
           style={[
+            { top: rootSize.height },
             styles.scrollView,
             customStyles?.scrollView ?? {},
             ...(isDarkTheme
