@@ -115,7 +115,7 @@ function TabsScrollViewItem({
         ...(isDarkTheme
           ? [customDarkStyles?.root ?? {}]
           : [customLightStyles?.root ?? {}]),
-        { width: tabsContext.rootSize.width },
+        { width: '100%' },
       ]}
     >
       {children}
