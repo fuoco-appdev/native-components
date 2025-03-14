@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import Animated, {
+  Easing,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -123,7 +124,10 @@ function TabsScrollViewItem({
 
   useEffect(() => {
     if (tabsContext.rootSize.width > 0) {
-      opacity.value = withTiming(1, { duration: 150 });
+      opacity.value = withTiming(1, {
+        duration: 75,
+        easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+      });
     }
   }, [tabsContext.rootSize]);
 
