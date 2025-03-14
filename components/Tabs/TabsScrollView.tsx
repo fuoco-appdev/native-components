@@ -1,5 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -7,7 +7,12 @@ import {
   useColorScheme,
   ViewStyle,
 } from 'react-native';
-import Animated, { useAnimatedScrollHandler } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { TabsContext } from './TabsProvider';
 
 export interface TabsScrollViewStyles {
@@ -108,6 +113,20 @@ function TabsScrollViewItem({
   const tabsContext = useContext(TabsContext);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
+  const opacity = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+    };
+  });
+
+  useEffect(() => {
+    if (tabsContext.rootSize.width > 0) {
+      opacity.value = withTiming(1, { duration: 150 });
+    }
+  }, [tabsContext.rootSize]);
+
   return (
     <Animated.View
       style={[
@@ -115,7 +134,8 @@ function TabsScrollViewItem({
         ...(isDarkTheme
           ? [customDarkStyles?.root ?? {}]
           : [customLightStyles?.root ?? {}]),
-        { width: '100%' },
+        { width: tabsContext.rootSize.width },
+        animatedStyle,
       ]}
     >
       {children}
