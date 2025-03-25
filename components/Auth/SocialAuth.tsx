@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   ImageStyle,
   StyleSheet,
@@ -8,7 +9,7 @@ import {
   Linking,
 } from 'react-native';
 import Button, { ButtonStyles } from '../Button/Button';
-import Divider, { DividerStyles } from '../Divider/Divider';
+import Divider, { DividerStyles, ExtraDividerStyles } from '../Divider/Divider';
 import {
   AndroidRippleProps,
   AuthProps,
@@ -18,7 +19,10 @@ import {
 } from './Auth';
 import { useState } from 'react';
 import { AuthError, Provider, SupabaseClient } from '@supabase/supabase-js';
-import SocialButton, { SocialButtonStyles } from './SocialButton';
+import SocialButton, {
+  ExtraSocialButtonStyles,
+  SocialButtonStyles,
+} from './SocialButton';
 import MarginsPaddings from '../Themes/margins_paddings';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn';
 
@@ -29,7 +33,9 @@ export interface SocialAuthStyles {
 
 export interface ExtraSocialAuthStyles {
   socialButton?: SocialButtonStyles;
+  extraSocialButton?: ExtraSocialButtonStyles;
   divider?: DividerStyles;
+  extraDivider?: ExtraDividerStyles;
 }
 
 export interface SocialAuthProps {
@@ -212,6 +218,13 @@ export default function SocialAuth({
                     customStyles={customExtraStyles?.socialButton}
                     customDarkStyles={customExtraDarkStyles?.socialButton}
                     customLightStyles={customExtraLightStyles?.socialButton}
+                    customExtraStyles={customExtraStyles?.extraSocialButton}
+                    customExtraLightStyles={
+                      customExtraLightStyles?.extraSocialButton
+                    }
+                    customExtraDarkStyles={
+                      customExtraDarkStyles?.extraSocialButton
+                    }
                     key={`${provider}-button`}
                     provider={provider}
                     verticalSocialLayout={verticalSocialLayout}
@@ -238,6 +251,9 @@ export default function SocialAuth({
                 ...dividerLightStyles,
                 ...customExtraLightStyles?.divider,
               }}
+              customExtraStyles={customExtraStyles?.extraDivider}
+              customExtraLightStyles={customExtraLightStyles?.extraDivider}
+              customExtraDarkStyles={customExtraDarkStyles?.extraDivider}
             >
               {strings?.orContinueWith}
             </Divider>
