@@ -303,6 +303,8 @@ export function EmailAuth({
               customStyles={extraCustomStyles?.checkbox}
               customDarkStyles={extraCustomDarkStyles?.checkbox}
               customLightStyles={extraCustomLightStyles?.checkbox}
+              tintColors={checkboxTintColors}
+              onFillColor={checkboxOnFillColor}
               label={
                 <Text>
                   {strings.agreeToThe} &nbsp;
