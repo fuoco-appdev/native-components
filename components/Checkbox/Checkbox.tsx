@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   ImageStyle,
   NativeSyntheticEvent,
@@ -14,7 +15,6 @@ import NativeCheckBox, {
 } from '@react-native-community/checkbox';
 import Typography from '../Typography/Typography';
 import Colors from '../Themes/colors';
-import { darkTheme } from '@storybook/react-native-theming';
 
 export interface CheckboxStyles {
   container?: ViewStyle | TextStyle | ImageStyle;
@@ -26,6 +26,10 @@ export interface CheckboxStyles {
   beforeLabel?: TextStyle;
   afterLabel?: TextStyle;
   descriptionLabel?: TextStyle;
+}
+
+export interface ExtraCheckboxStyles {
+  formLayout?: FormLayoutStyles;
 }
 
 export interface CheckboxProps {
@@ -47,6 +51,12 @@ export interface CheckboxProps {
 }
 
 export interface CheckboxGroupProps {
+  customStyles?: CheckboxStyles;
+  customLightStyles?: CheckboxStyles;
+  customDarkStyles?: CheckboxStyles;
+  customExtraStyles?: ExtraCheckboxStyles;
+  customExtraLightStyles?: ExtraCheckboxStyles;
+  customExtraDarkStyles?: ExtraCheckboxStyles;
   id?: any;
   error?: any;
   descriptionText?: any;
@@ -74,6 +84,12 @@ export const CheckboxContext = createContext({
 });
 
 function Group({
+  customStyles,
+  customLightStyles,
+  customDarkStyles,
+  customExtraStyles,
+  customExtraLightStyles,
+  customExtraDarkStyles,
   id,
   error,
   descriptionText,
@@ -93,6 +109,9 @@ function Group({
 
   return (
     <FormLayout
+      customStyles={customExtraStyles?.formLayout}
+      customLightStyles={customExtraLightStyles?.formLayout}
+      customDarkStyles={customExtraDarkStyles?.formLayout}
       label={label}
       afterLabel={afterLabel}
       beforeLabel={beforeLabel}
@@ -109,6 +128,9 @@ function Group({
           ? options.map((option: CheckboxProps) => {
               return (
                 <Checkbox
+                  customStyles={customStyles}
+                  customLightStyles={customLightStyles}
+                  customDarkStyles={customDarkStyles}
                   id={option.id}
                   value={option.value}
                   label={option.label}
