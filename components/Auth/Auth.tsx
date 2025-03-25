@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { SupabaseClient, Provider, AuthError } from '@supabase/supabase-js';
 import { ButtonStyles } from '../Button/Button';
 import { InputStyles } from '../Input/Input';
@@ -14,14 +15,24 @@ import {
 } from 'react-native';
 import { DividerStyles } from '../Divider/Divider';
 import { useEffect, useState } from 'react';
-import SocialAuth, { SocialAuthStyles } from './SocialAuth';
-import { EmailAuth, EmailAuthStyles } from './EmailAuth';
-import { MagicLinkStyles } from './MagicLink';
+import SocialAuth, {
+  ExtraSocialAuthStyles,
+  SocialAuthStyles,
+} from './SocialAuth';
+import { EmailAuth, EmailAuthStyles, ExtraEmailAuthStyles } from './EmailAuth';
+import { ExtraMagicLinkStyles, MagicLinkStyles } from './MagicLink';
 import ForgottenPassword, {
   ExtraForgottenPasswordStyles,
+  ForgottenPasswordStyles,
 } from './ForgottenPassword';
-import UpdatePassword, { ExtraUpdatePasswordStyles } from './UpdatePassword';
-import ResetPassword from './ResetPassword';
+import UpdatePassword, {
+  ExtraUpdatePasswordStyles,
+  UpdatePasswordStyles,
+} from './UpdatePassword';
+import ResetPassword, {
+  ExtraResetPasswordStyles,
+  ResetPasswordStyles,
+} from './ResetPassword';
 import TermsOfService from './TermsOfService';
 import PrivacyPolicy from './PrivacyPolicy';
 
@@ -87,10 +98,17 @@ export interface AuthStyles {
 
 export interface ExtraAuthStyles {
   socialAuth?: SocialAuthStyles;
+  extraSocialAuth?: ExtraSocialAuthStyles;
   emailAuth?: EmailAuthStyles;
+  extraEmailAuth?: ExtraEmailAuthStyles;
   magicLink?: MagicLinkStyles;
-  forgottenPassword?: ExtraForgottenPasswordStyles;
-  updatePassword?: ExtraUpdatePasswordStyles;
+  extraMagicLink?: ExtraMagicLinkStyles;
+  forgottenPassword?: ForgottenPasswordStyles;
+  extraForgottenPassword?: ExtraForgottenPasswordStyles;
+  updatePassword?: UpdatePasswordStyles;
+  extraUpdatePassword?: ExtraUpdatePasswordStyles;
+  resetPassword?: ResetPasswordStyles;
+  extraResetPassword?: ExtraResetPasswordStyles;
 }
 
 export interface AndroidRippleProps {
@@ -103,6 +121,9 @@ export interface AuthProps {
   customStyles?: AuthStyles;
   customDarkStyles?: AuthStyles;
   customLightStyles?: AuthStyles;
+  customExtraStyles?: ExtraAuthStyles;
+  customExtraDarkStyles?: ExtraAuthStyles;
+  customExtraLightStyles?: ExtraAuthStyles;
   emailValue?: string;
   passwordValue?: string;
   confirmPasswordValue?: string;
@@ -193,6 +214,9 @@ function Auth({
   customStyles,
   customDarkStyles,
   customLightStyles,
+  customExtraStyles,
+  customExtraLightStyles,
+  customExtraDarkStyles,
   supabaseClient,
   emailValue,
   passwordValue,
@@ -256,6 +280,12 @@ function Auth({
     >
       {providers && providers?.length > 0 && (
         <SocialAuth
+          customStyles={customExtraStyles?.socialAuth}
+          customLightStyles={customExtraLightStyles?.socialAuth}
+          customDarkStyles={customExtraDarkStyles?.socialAuth}
+          customExtraStyles={customExtraStyles?.extraSocialAuth}
+          customExtraLightStyles={customExtraLightStyles?.extraSocialAuth}
+          customExtraDarkStyles={customExtraDarkStyles?.extraSocialAuth}
           view={view}
           socialLoadingComponent={socialLoadingComponent}
           strings={{ ...defaultStrings, ...strings }}
@@ -271,6 +301,12 @@ function Auth({
       )}
       {(authView === VIEWS.SIGN_IN || authView === VIEWS.SIGN_UP) && (
         <EmailAuth
+          customStyles={customExtraStyles?.emailAuth}
+          customLightStyles={customExtraLightStyles?.emailAuth}
+          customDarkStyles={customExtraDarkStyles?.emailAuth}
+          extraCustomStyles={customExtraStyles?.extraEmailAuth}
+          extraCustomLightStyles={customExtraLightStyles?.extraEmailAuth}
+          extraCustomDarkStyles={customExtraDarkStyles?.extraEmailAuth}
           loadingComponent={emailLoadingComponent}
           emailValue={emailValue}
           passwordValue={passwordValue}
@@ -298,6 +334,14 @@ function Auth({
       )}
       {authView === VIEWS.FORGOTTEN_PASSWORD && (
         <ForgottenPassword
+          customStyles={customExtraStyles?.forgottenPassword}
+          customLightStyles={customExtraLightStyles?.forgottenPassword}
+          customDarkStyles={customExtraDarkStyles?.forgottenPassword}
+          extraCustomStyles={customExtraStyles?.extraForgottenPassword}
+          extraCustomLightStyles={
+            customExtraLightStyles?.extraForgottenPassword
+          }
+          extraCustomDarkStyles={customExtraDarkStyles?.extraForgottenPassword}
           strings={{ ...defaultStrings, ...strings }}
           supabaseClient={supabaseClient}
           redirectTo={redirectTo}
@@ -323,6 +367,12 @@ function Auth({
       )}
       {authView === VIEWS.UPDATE_PASSWORD && (
         <UpdatePassword
+          customStyles={customExtraStyles?.updatePassword}
+          customLightStyles={customExtraLightStyles?.updatePassword}
+          customDarkStyles={customExtraDarkStyles?.updatePassword}
+          extraCustomStyles={customExtraStyles?.extraUpdatePassword}
+          extraCustomLightStyles={customExtraLightStyles?.extraUpdatePassword}
+          extraCustomDarkStyles={customExtraDarkStyles?.extraUpdatePassword}
           strings={{ ...defaultStrings, ...strings }}
           supabaseClient={supabaseClient}
           passwordErrorMessage={passwordErrorMessage}
@@ -332,6 +382,12 @@ function Auth({
       )}
       {authView === VIEWS.RESET_PASSWORD && (
         <ResetPassword
+          customStyles={customExtraStyles?.resetPassword}
+          customLightStyles={customExtraLightStyles?.resetPassword}
+          customDarkStyles={customExtraDarkStyles?.resetPassword}
+          extraCustomStyles={customExtraStyles?.extraResetPassword}
+          extraCustomLightStyles={customExtraLightStyles?.extraResetPassword}
+          extraCustomDarkStyles={customExtraDarkStyles?.extraResetPassword}
           strings={{ ...defaultStrings, ...strings }}
           supabaseClient={supabaseClient}
           passwordErrorMessage={passwordErrorMessage}
