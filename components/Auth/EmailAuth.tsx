@@ -309,6 +309,9 @@ export function EmailAuth({
                 <Text>
                   {strings.agreeToThe} &nbsp;
                   <Typography.Link
+                    customStyles={extraCustomStyles?.link}
+                    customLightStyles={extraCustomLightStyles?.link}
+                    customDarkStyles={extraCustomDarkStyles?.link}
                     onPress={(e: GestureResponderEvent) =>
                       onTermsOfServiceRedirect?.(e) ?? null
                     }
@@ -317,6 +320,9 @@ export function EmailAuth({
                   </Typography.Link>
                   &nbsp; & &nbsp;
                   <Typography.Link
+                    customStyles={extraCustomStyles?.link}
+                    customLightStyles={extraCustomLightStyles?.link}
+                    customDarkStyles={extraCustomDarkStyles?.link}
                     onPress={(e: GestureResponderEvent) =>
                       onPrivacyPolicyRedirect?.(e) ?? null
                     }
