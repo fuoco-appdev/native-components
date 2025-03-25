@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { Provider } from '@supabase/supabase-js';
 import { AuthStrings } from './Auth';
 import { useState } from 'react';
@@ -13,12 +14,9 @@ import {
 import Button, { ButtonStyles } from '../Button/Button';
 import * as SocialIcons from './Icons';
 import MarginsPaddings from '../Themes/margins_paddings';
-import { Globals } from '../Themes';
 
 export interface SocialButtonStyles {
   buttonContainer?: ViewStyle | TextStyle | ImageStyle;
-  buttonContent?: ViewStyle | TextStyle | ImageStyle;
-  buttonIcon?: ViewStyle | TextStyle | ImageStyle;
 }
 
 export interface ExtraSocialButtonStyles {
@@ -35,16 +33,7 @@ export interface SocialButtonProps {
   provider: Provider;
   isLoading: boolean;
   loadingComponent?: JSX.Element;
-  touchScreen?: boolean;
-  strings: AuthStrings;
   verticalSocialLayout: any;
-  socialButtonSize:
-    | 'tiny'
-    | 'small'
-    | 'medium'
-    | 'large'
-    | 'xlarge'
-    | undefined;
   signLabel: string;
   socialColors: boolean;
   handleProviderSignIn: (provider: Provider) => void;
@@ -56,18 +45,6 @@ const styles = StyleSheet.create<SocialButtonStyles>({
     flexDirection: 'column',
     width: '100%',
     gap: MarginsPaddings.mp_5,
-  },
-  buttonContent: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    gap: MarginsPaddings.mp_5,
-  },
-  buttonIcon: {
-    display: 'flex',
-    justifyContent: 'center',
   },
 });
 const lightStyles = StyleSheet.create<SocialButtonStyles>({});
@@ -83,10 +60,7 @@ export default function SocialButton({
   provider,
   isLoading,
   loadingComponent,
-  strings,
-  touchScreen,
   verticalSocialLayout,
-  socialButtonSize = 'large',
   signLabel,
   socialColors = true,
   handleProviderSignIn,
@@ -204,72 +178,19 @@ export default function SocialButton({
         loading={isLoading}
         loadingComponent={loadingComponent}
         onPress={() => handleProviderSignIn(provider)}
+        icon={
+          AuthIcon && (
+            <AuthIcon
+              {...(socialColors
+                ? textStyles[provider]
+                : isDarkTheme
+                ? { color: '#fff' }
+                : { color: '#000' })}
+            />
+          )
+        }
       >
-        <View
-          style={[
-            ...(isDarkTheme
-              ? [
-                  {
-                    ...darkStyles?.buttonContent,
-                    ...(customDarkStyles?.buttonContent ?? {}),
-                  },
-                ]
-              : [
-                  {
-                    ...lightStyles?.buttonContent,
-                    ...(customLightStyles?.buttonContent ?? {}),
-                  },
-                ]),
-            { ...styles.buttonContent, ...(customStyles?.buttonContent ?? {}) },
-          ]}
-        >
-          <View
-            style={[
-              ...(isDarkTheme
-                ? [
-                    {
-                      ...darkStyles?.buttonIcon,
-                      ...(customDarkStyles?.buttonIcon ?? {}),
-                    },
-                  ]
-                : [
-                    {
-                      ...lightStyles?.buttonIcon,
-                      ...(customLightStyles?.buttonIcon ?? {}),
-                    },
-                  ]),
-              { ...styles.buttonIcon, ...(customStyles?.buttonIcon ?? {}) },
-            ]}
-          >
-            {AuthIcon ? (
-              <AuthIcon
-                {...(socialColors
-                  ? textStyles[provider]
-                  : isDarkTheme
-                  ? { color: '#fff' }
-                  : { color: '#000' })}
-              />
-            ) : (
-              ''
-            )}
-          </View>
-          <Text
-            style={[
-              {
-                ...(socialColors
-                  ? textStyles[provider]
-                  : isDarkTheme
-                  ? { color: '#fff' }
-                  : { color: '#000' }),
-              },
-              {
-                fontFamily: Globals.font_family,
-              },
-            ]}
-          >
-            {verticalSocialLayout && signLabel + provider}
-          </Text>
-        </View>
+        {verticalSocialLayout && signLabel + provider}
       </Button>
     </View>
   );

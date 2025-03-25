@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   GestureResponderEvent,
   ImageStyle,
@@ -11,7 +12,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import Button, { ButtonStyles } from '../Button/Button';
-import Input, { InputStyles } from '../Input/Input';
+import Input, { ExtraInputStyles, InputStyles } from '../Input/Input';
 import { AuthStrings, RedirectTo, VIEWS, ViewType } from './Auth';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
 import { useState } from 'react';
@@ -21,6 +22,7 @@ import Typography from '../Typography/Typography';
 import { darkTheme } from '@storybook/react-native-theming';
 import Colors from '../Themes/colors';
 import MarginsPaddings from '../Themes/margins_paddings';
+import { LinkStyles } from '../Typography/Link';
 
 export interface EmailAuthStyles {
   buttonContainer?: ViewStyle | TextStyle | ImageStyle;
@@ -33,7 +35,9 @@ export interface EmailAuthStyles {
 
 export interface ExtraEmailAuthStyles {
   input?: InputStyles;
+  extraInput?: ExtraInputStyles;
   checkbox?: CheckboxStyles;
+  link?: LinkStyles;
   emailButton?: ButtonStyles;
 }
 
@@ -166,6 +170,12 @@ export function EmailAuth({
     <View>
       <View>
         <Input
+          customStyles={extraCustomStyles?.input}
+          customLightStyles={extraCustomLightStyles?.input}
+          customDarkStyles={extraCustomDarkStyles?.input}
+          customExtraStyles={extraCustomStyles?.extraInput}
+          customExtraLightStyles={extraCustomLightStyles?.extraInput}
+          customExtraDarkStyles={extraCustomDarkStyles?.extraInput}
           key={'email'}
           label={strings.emailAddress}
           error={emailErrorMessage}
@@ -175,6 +185,12 @@ export function EmailAuth({
           onChange={(e) => onEmailChanged?.(e)}
         />
         <Input
+          customStyles={extraCustomStyles?.input}
+          customLightStyles={extraCustomLightStyles?.input}
+          customDarkStyles={extraCustomDarkStyles?.input}
+          customExtraStyles={extraCustomStyles?.extraInput}
+          customExtraLightStyles={extraCustomLightStyles?.extraInput}
+          customExtraDarkStyles={extraCustomDarkStyles?.extraInput}
           key={'password'}
           label={strings.password}
           error={passwordErrorMessage}
@@ -187,6 +203,12 @@ export function EmailAuth({
         />
         {authView === VIEWS.SIGN_UP && (
           <Input
+            customStyles={extraCustomStyles?.input}
+            customLightStyles={extraCustomLightStyles?.input}
+            customDarkStyles={extraCustomDarkStyles?.input}
+            customExtraStyles={extraCustomStyles?.extraInput}
+            customExtraLightStyles={extraCustomLightStyles?.extraInput}
+            customExtraDarkStyles={extraCustomDarkStyles?.extraInput}
             key={'confirm-password'}
             label={strings.confirmPassword}
             error={confirmPasswordErrorMessage}
@@ -257,6 +279,9 @@ export function EmailAuth({
           )}
           {authView === VIEWS.SIGN_IN && (
             <Typography.Link
+              customStyles={extraCustomStyles?.link}
+              customLightStyles={extraCustomLightStyles?.link}
+              customDarkStyles={extraCustomDarkStyles?.link}
               onPress={(e) => {
                 onForgotPasswordRedirect ? onForgotPasswordRedirect(e) : null;
               }}
