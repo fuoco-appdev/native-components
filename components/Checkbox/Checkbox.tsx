@@ -37,6 +37,11 @@ export interface CheckboxProps {
   customDarkStyles?: CheckboxStyles;
   customLightStyles?: CheckboxStyles;
   communityProps?: CommunityCheckBoxProps;
+  tintColors?: {
+    true?: any;
+    false?: any;
+  };
+  onFillColor?: string;
   label: string | React.ReactNode;
   afterLabel?: string | React.ReactNode;
   beforeLabel?: string | React.ReactNode;
@@ -57,6 +62,11 @@ export interface CheckboxGroupProps {
   customExtraStyles?: ExtraCheckboxStyles;
   customExtraLightStyles?: ExtraCheckboxStyles;
   customExtraDarkStyles?: ExtraCheckboxStyles;
+  tintColors?: {
+    true?: any;
+    false?: any;
+  };
+  onFillColor?: string;
   id?: any;
   error?: any;
   descriptionText?: any;
@@ -90,6 +100,8 @@ function Group({
   customExtraStyles,
   customExtraLightStyles,
   customExtraDarkStyles,
+  tintColors,
+  onFillColor,
   id,
   error,
   descriptionText,
@@ -131,6 +143,8 @@ function Group({
                   customStyles={customStyles}
                   customLightStyles={customLightStyles}
                   customDarkStyles={customDarkStyles}
+                  tintColors={tintColors}
+                  onFillColor={onFillColor}
                   id={option.id}
                   value={option.value}
                   label={option.label}
@@ -167,6 +181,10 @@ export function Checkbox({
   customDarkStyles,
   customLightStyles,
   communityProps,
+  tintColors = {
+    true: Colors.brand_500,
+  },
+  onFillColor = Colors.brand_500,
   id,
   label,
   afterLabel,
@@ -235,10 +253,8 @@ export function Checkbox({
                   ...(customStyles?.checkbox ?? {}),
                 },
               ]}
-              tintColors={{
-                true: Colors.brand_500,
-              }}
-              onFillColor={Colors.brand_500}
+              tintColors={tintColors}
+              onFillColor={onFillColor}
               {...communityProps}
               disabled={disabled}
               value={checked}

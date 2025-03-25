@@ -131,7 +131,11 @@ export interface AuthProps {
   touchScreen?: boolean;
   socialLoadingComponent?: JSX.Element;
   emailLoadingComponent?: JSX.Element;
-  style?: React.CSSProperties;
+  checkboxTintColors?: {
+    true?: any;
+    false?: any;
+  };
+  checkboxOnFillColor?: string;
   strings?: AuthStrings;
   androidRippleProps?: AndroidRippleProps;
   socialLayout?: 'horizontal' | 'vertical';
@@ -221,7 +225,8 @@ function Auth({
   emailValue,
   passwordValue,
   confirmPasswordValue,
-  style,
+  checkboxTintColors,
+  checkboxOnFillColor,
   strings,
   socialLoadingComponent,
   emailLoadingComponent,
@@ -311,6 +316,8 @@ function Auth({
           emailValue={emailValue}
           passwordValue={passwordValue}
           confirmPasswordValue={confirmPasswordValue}
+          checkboxTintColors={checkboxTintColors}
+          checkboxOnFillColor={checkboxOnFillColor}
           strings={{ ...defaultStrings, ...strings }}
           supabaseClient={supabaseClient}
           authView={authView}

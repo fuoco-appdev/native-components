@@ -52,6 +52,11 @@ export interface EmailAuthProps {
   passwordValue?: string;
   confirmPasswordValue?: string;
   loadingComponent?: JSX.Element;
+  checkboxTintColors?: {
+    true?: any;
+    false?: any;
+  };
+  checkboxOnFillColor?: string;
   authView: ViewType;
   strings: AuthStrings;
   setAuthView: any;
@@ -102,6 +107,8 @@ export function EmailAuth({
   authView,
   strings,
   loadingComponent,
+  checkboxTintColors,
+  checkboxOnFillColor,
   supabaseClient,
   magicLink,
   emailErrorMessage,
@@ -270,6 +277,8 @@ export function EmailAuth({
               customStyles={extraCustomStyles?.checkbox}
               customDarkStyles={extraCustomDarkStyles?.checkbox}
               customLightStyles={extraCustomLightStyles?.checkbox}
+              tintColors={checkboxTintColors}
+              onFillColor={checkboxOnFillColor}
               label={strings.rememberMe ?? ''}
               name="remember_me"
               id="remember_me"
