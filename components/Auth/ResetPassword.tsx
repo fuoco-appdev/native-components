@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   GestureResponderEvent,
   ImageStyle,
@@ -30,9 +31,9 @@ export interface ResetPasswordProps {
   customStyles?: ResetPasswordStyles;
   customDarkStyles?: ResetPasswordStyles;
   customLightStyles?: ResetPasswordStyles;
-  extraCustomStyles?: ExtraResetPasswordStyles;
-  extraCustomDarkStyles?: ExtraResetPasswordStyles;
-  extraCustomLightStyles?: ExtraResetPasswordStyles;
+  customExtraStyles?: ExtraResetPasswordStyles;
+  customExtraDarkStyles?: ExtraResetPasswordStyles;
+  customExtraLightStyles?: ExtraResetPasswordStyles;
   supabaseClient: SupabaseClient;
   strings?: AuthStrings;
   loadingComponent?: JSX.Element;
@@ -50,9 +51,9 @@ export default function ResetPassword({
   customStyles,
   customDarkStyles,
   customLightStyles,
-  extraCustomStyles,
-  extraCustomDarkStyles,
-  extraCustomLightStyles,
+  customExtraStyles,
+  customExtraDarkStyles,
+  customExtraLightStyles,
   strings,
   loadingComponent,
   supabaseClient,
@@ -113,9 +114,9 @@ export default function ResetPassword({
       >
         <Input
           value={password}
-          customStyles={extraCustomStyles?.input}
-          customDarkStyles={extraCustomDarkStyles?.input}
-          customLightStyles={extraCustomLightStyles?.input}
+          customStyles={customExtraStyles?.input}
+          customDarkStyles={customExtraDarkStyles?.input}
+          customLightStyles={customExtraLightStyles?.input}
           label={strings.newPassword}
           placeholder={strings.enterYourNewPassword}
           reveal={true}
@@ -126,9 +127,9 @@ export default function ResetPassword({
         />
         <Input
           value={confirmPassword}
-          customStyles={extraCustomStyles?.input}
-          customDarkStyles={extraCustomDarkStyles?.input}
-          customLightStyles={extraCustomLightStyles?.input}
+          customStyles={customExtraStyles?.input}
+          customDarkStyles={customExtraDarkStyles?.input}
+          customLightStyles={customExtraLightStyles?.input}
           label={strings.confirmNewPassword}
           placeholder={strings.confirmNewPasswordPlaceholder}
           reveal={true}
@@ -143,10 +144,10 @@ export default function ResetPassword({
               paddingTop: MarginsPaddings.mp_6,
               paddingBottom: MarginsPaddings.mp_6,
             },
-            ...extraCustomStyles?.button,
+            ...customExtraStyles?.button,
           }}
-          customDarkStyles={extraCustomDarkStyles?.button}
-          customLightStyles={extraCustomLightStyles?.button}
+          customDarkStyles={customExtraDarkStyles?.button}
+          customLightStyles={customExtraLightStyles?.button}
           loading={isLoading}
           loadingComponent={loadingComponent}
           block
