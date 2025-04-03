@@ -18,6 +18,7 @@ import {
   GestureType,
   ScrollView,
   FlatList,
+  NativeViewGestureHandler,
 } from 'react-native-gesture-handler';
 import React, {
   useCallback,
@@ -121,6 +122,7 @@ function BottomSheet({
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const panGestureRef = React.useRef<GestureType>(Gesture.Pan());
+  const scrollRef = React.useRef<any>();
 
   const translateY = useSharedValue(0);
   const sheetHeight = useSharedValue(0);
@@ -176,7 +178,8 @@ function BottomSheet({
         );
       }
     })
-    .withRef(panGestureRef);
+    .withRef(panGestureRef)
+    .simultaneousWithExternalGesture(scrollRef);
 
   return (
     <Portal name={id} visible={isOpen}>
@@ -255,35 +258,11 @@ function BottomSheet({
           >
             <KeyboardAvoidingView behavior={'height'}>
               {type === 'scroll-view' && (
-                <ScrollView
-                  keyboardShouldPersistTaps={'always'}
-                  contentContainerStyle={[
-                    ...(isDarkTheme
-                      ? [
-                          {
-                            ...darkStyles?.scrollView,
-                            ...(customDarkStyles?.scrollView ?? {}),
-                          },
-                        ]
-                      : [
-                          {
-                            ...lightStyles?.scrollView,
-                            ...(customLightStyles?.scrollView ?? {}),
-                          },
-                        ]),
-                    {
-                      ...styles.scrollView,
-                      ...(customStyles?.scrollView ?? {}),
-                    },
-                  ]}
+                <NativeViewGestureHandler
+                  ref={scrollRef}
+                  simultaneousHandlers={panGestureRef}
                 >
-                  {children}
-                </ScrollView>
-              )}
-              {type === 'flat-list' && (
-                <>
-                  {children}
-                  <FlatList
+                  <ScrollView
                     keyboardShouldPersistTaps={'always'}
                     contentContainerStyle={[
                       ...(isDarkTheme
@@ -304,10 +283,41 @@ function BottomSheet({
                         ...(customStyles?.scrollView ?? {}),
                       },
                     ]}
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={keyExtractor}
-                  />
+                  >
+                    {children}
+                  </ScrollView>
+                </NativeViewGestureHandler>
+              )}
+              {type === 'flat-list' && (
+                <>
+                  {children}
+                  <NativeViewGestureHandler ref={scrollRef}>
+                    <FlatList
+                      keyboardShouldPersistTaps={'always'}
+                      contentContainerStyle={[
+                        ...(isDarkTheme
+                          ? [
+                              {
+                                ...darkStyles?.scrollView,
+                                ...(customDarkStyles?.scrollView ?? {}),
+                              },
+                            ]
+                          : [
+                              {
+                                ...lightStyles?.scrollView,
+                                ...(customLightStyles?.scrollView ?? {}),
+                              },
+                            ]),
+                        {
+                          ...styles.scrollView,
+                          ...(customStyles?.scrollView ?? {}),
+                        },
+                      ]}
+                      data={data}
+                      renderItem={renderItem}
+                      keyExtractor={keyExtractor}
+                    />
+                  </NativeViewGestureHandler>
                 </>
               )}
             </KeyboardAvoidingView>
