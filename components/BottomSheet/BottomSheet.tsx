@@ -284,6 +284,7 @@ function BottomSheet({
               )}
               {type === 'flat-list' && (
                 <View
+                  style={{ flex: 1 }}
                   onLayout={(e) => {
                     sheetHeight.value = e.nativeEvent.layout.height;
                     setTimeout(() => {
@@ -296,7 +297,6 @@ function BottomSheet({
                 >
                   {children}
                   <FlatList
-                    style={{ flex: 1 }}
                     contentContainerStyle={[
                       ...(isDarkTheme
                         ? [
