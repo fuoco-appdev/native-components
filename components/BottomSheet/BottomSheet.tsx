@@ -283,19 +283,18 @@ function BottomSheet({
                 </ScrollView>
               )}
               {type === 'flat-list' && (
-                <View
-                  onLayout={(e) => {
-                    sheetHeight.value = e.nativeEvent.layout.height;
-                    setTimeout(() => {
-                      translateY.value = withTiming(0, {
-                        easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                        duration: duration,
-                      });
-                    }, 75);
-                  }}
-                >
+                <>
                   {children}
                   <FlatList
+                    onLayout={(e) => {
+                      sheetHeight.value = e.nativeEvent.layout.height;
+                      setTimeout(() => {
+                        translateY.value = withTiming(0, {
+                          easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                          duration: duration,
+                        });
+                      }, 75);
+                    }}
                     contentContainerStyle={[
                       ...(isDarkTheme
                         ? [
@@ -319,7 +318,7 @@ function BottomSheet({
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                   />
-                </View>
+                </>
               )}
             </KeyboardAvoidingView>
           </Animated.View>
