@@ -1,11 +1,8 @@
+import React, { useEffect, useState } from 'react';
 import {
-  Dimensions,
   GestureResponderEvent,
-  Keyboard,
   KeyboardAvoidingView,
   ListRenderItem,
-  Platform,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
@@ -13,30 +10,21 @@ import {
   ViewStyle,
 } from 'react-native';
 import {
+  FlatList,
   Gesture,
   GestureDetector,
   GestureType,
   ScrollView,
-  FlatList,
-  NativeViewGestureHandler,
 } from 'react-native-gesture-handler';
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
-import { Button, ButtonStyles } from '../Button';
-import { Portal } from '../Portal';
 import Animated, {
   Easing,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withDelay,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { Button, ButtonStyles } from '../Button';
+import { Portal } from '../Portal';
 import { Globals } from '../Themes';
 
 export type SheetPositions = 'minimised' | 'maximised' | 'expanded';
@@ -258,11 +246,39 @@ function BottomSheet({
           >
             <KeyboardAvoidingView behavior={'height'}>
               {type === 'scroll-view' && (
-                <NativeViewGestureHandler
+                <ScrollView
                   ref={scrollRef}
                   simultaneousHandlers={panGestureRef}
+                  keyboardShouldPersistTaps={'always'}
+                  contentContainerStyle={[
+                    ...(isDarkTheme
+                      ? [
+                          {
+                            ...darkStyles?.scrollView,
+                            ...(customDarkStyles?.scrollView ?? {}),
+                          },
+                        ]
+                      : [
+                          {
+                            ...lightStyles?.scrollView,
+                            ...(customLightStyles?.scrollView ?? {}),
+                          },
+                        ]),
+                    {
+                      ...styles.scrollView,
+                      ...(customStyles?.scrollView ?? {}),
+                    },
+                  ]}
                 >
-                  <ScrollView
+                  {children}
+                </ScrollView>
+              )}
+              {type === 'flat-list' && (
+                <>
+                  {children}
+                  <FlatList
+                    ref={scrollRef}
+                    simultaneousHandlers={panGestureRef}
                     keyboardShouldPersistTaps={'always'}
                     contentContainerStyle={[
                       ...(isDarkTheme
@@ -283,41 +299,10 @@ function BottomSheet({
                         ...(customStyles?.scrollView ?? {}),
                       },
                     ]}
-                  >
-                    {children}
-                  </ScrollView>
-                </NativeViewGestureHandler>
-              )}
-              {type === 'flat-list' && (
-                <>
-                  {children}
-                  <NativeViewGestureHandler ref={scrollRef}>
-                    <FlatList
-                      keyboardShouldPersistTaps={'always'}
-                      contentContainerStyle={[
-                        ...(isDarkTheme
-                          ? [
-                              {
-                                ...darkStyles?.scrollView,
-                                ...(customDarkStyles?.scrollView ?? {}),
-                              },
-                            ]
-                          : [
-                              {
-                                ...lightStyles?.scrollView,
-                                ...(customLightStyles?.scrollView ?? {}),
-                              },
-                            ]),
-                        {
-                          ...styles.scrollView,
-                          ...(customStyles?.scrollView ?? {}),
-                        },
-                      ]}
-                      data={data}
-                      renderItem={renderItem}
-                      keyExtractor={keyExtractor}
-                    />
-                  </NativeViewGestureHandler>
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                  />
                 </>
               )}
             </KeyboardAvoidingView>
