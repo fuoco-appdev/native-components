@@ -84,7 +84,7 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     height: '100%',
     width: '100%',
   },
-  scrollView: { flexGrow: 1 },
+  scrollView: {},
 });
 const lightStyles = StyleSheet.create<BottomSheetStyles>({
   sheet: {
@@ -277,13 +277,14 @@ function BottomSheet({
                     },
                   ]}
                 >
-                  <View>{children}</View>
+                  {children}
                 </ScrollView>
               )}
               {type === 'flat-list' && (
                 <>
                   {children}
                   <FlatList
+                    keyboardShouldPersistTaps={'always'}
                     contentContainerStyle={[
                       ...(isDarkTheme
                         ? [
