@@ -78,6 +78,7 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     borderTopLeftRadius: Globals.rounded_md,
     zIndex: 2,
     maxHeight: '89%',
+    flex: 1,
   },
   backdrop: {
     height: '100%',
@@ -222,6 +223,15 @@ function BottomSheet({
         </Animated.View>
         <GestureDetector gesture={onGestureEvent}>
           <Animated.View
+            onLayout={(e) => {
+              sheetHeight.value = e.nativeEvent.layout.height;
+              setTimeout(() => {
+                translateY.value = withTiming(0, {
+                  easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                  duration: duration,
+                });
+              }, 75);
+            }}
             style={[
               ...(isDarkTheme
                 ? [
@@ -267,34 +277,11 @@ function BottomSheet({
                     },
                   ]}
                 >
-                  <View
-                    onLayout={(e) => {
-                      sheetHeight.value = e.nativeEvent.layout.height;
-                      setTimeout(() => {
-                        translateY.value = withTiming(0, {
-                          easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                          duration: duration,
-                        });
-                      }, 75);
-                    }}
-                  >
-                    {children}
-                  </View>
+                  <View>{children}</View>
                 </ScrollView>
               )}
               {type === 'flat-list' && (
-                <View
-                  style={{ flex: 1 }}
-                  onLayout={(e) => {
-                    sheetHeight.value = e.nativeEvent.layout.height;
-                    setTimeout(() => {
-                      translateY.value = withTiming(0, {
-                        easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                        duration: duration,
-                      });
-                    }, 75);
-                  }}
-                >
+                <>
                   {children}
                   <FlatList
                     contentContainerStyle={[
@@ -320,7 +307,7 @@ function BottomSheet({
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                   />
-                </View>
+                </>
               )}
             </KeyboardAvoidingView>
           </Animated.View>
