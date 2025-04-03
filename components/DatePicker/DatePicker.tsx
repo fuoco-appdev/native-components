@@ -240,7 +240,7 @@ function DatePicker({
           }}
           customDarkStyles={customExtraDarkStyles.button}
           customLightStyles={customExtraLightStyles.button}
-          type={'default'}
+          type={'text'}
           size={'full'}
           onPress={() => setOpen(true)}
           disabled={disabled}
