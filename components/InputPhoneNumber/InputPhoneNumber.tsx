@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { reduce, startsWith } from 'lodash';
 import memoize from 'lodash.memoize';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
