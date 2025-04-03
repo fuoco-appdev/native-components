@@ -77,14 +77,13 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     borderTopRightRadius: Globals.rounded_md,
     borderTopLeftRadius: Globals.rounded_md,
     zIndex: 2,
+    maxHeight: '89%',
   },
   backdrop: {
     height: '100%',
     width: '100%',
   },
-  scrollView: {
-    maxHeight: '89%',
-  },
+  scrollView: {},
 });
 const lightStyles = StyleSheet.create<BottomSheetStyles>({
   sheet: {
@@ -297,6 +296,7 @@ function BottomSheet({
                 >
                   {children}
                   <FlatList
+                    style={{ flex: 1 }}
                     contentContainerStyle={[
                       ...(isDarkTheme
                         ? [
