@@ -77,6 +77,7 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     borderTopRightRadius: Globals.rounded_md,
     borderTopLeftRadius: Globals.rounded_md,
     zIndex: 2,
+    maxHeight: '89%',
   },
   backdrop: {
     height: '100%',
