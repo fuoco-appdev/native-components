@@ -11,13 +11,13 @@ import {
   useColorScheme,
   View,
   ViewStyle,
-  ScrollView,
-  FlatList,
 } from 'react-native';
 import {
   Gesture,
   GestureDetector,
   GestureType,
+  ScrollView,
+  FlatList,
 } from 'react-native-gesture-handler';
 import React, {
   useCallback,
