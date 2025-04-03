@@ -77,13 +77,14 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     borderTopRightRadius: Globals.rounded_md,
     borderTopLeftRadius: Globals.rounded_md,
     zIndex: 2,
-    maxHeight: '89%',
   },
   backdrop: {
     height: '100%',
     width: '100%',
   },
-  scrollView: {},
+  scrollView: {
+    maxHeight: '89%',
+  },
 });
 const lightStyles = StyleSheet.create<BottomSheetStyles>({
   sheet: {
@@ -283,18 +284,19 @@ function BottomSheet({
                 </ScrollView>
               )}
               {type === 'flat-list' && (
-                <>
+                <View
+                  onLayout={(e) => {
+                    sheetHeight.value = e.nativeEvent.layout.height;
+                    setTimeout(() => {
+                      translateY.value = withTiming(0, {
+                        easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+                        duration: duration,
+                      });
+                    }, 75);
+                  }}
+                >
                   {children}
                   <FlatList
-                    onLayout={(e) => {
-                      sheetHeight.value = e.nativeEvent.layout.height;
-                      setTimeout(() => {
-                        translateY.value = withTiming(0, {
-                          easing: Easing.bezier(0.4, 0.0, 0.2, 1),
-                          duration: duration,
-                        });
-                      }, 75);
-                    }}
                     contentContainerStyle={[
                       ...(isDarkTheme
                         ? [
@@ -318,7 +320,7 @@ function BottomSheet({
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                   />
-                </>
+                </View>
               )}
             </KeyboardAvoidingView>
           </Animated.View>
