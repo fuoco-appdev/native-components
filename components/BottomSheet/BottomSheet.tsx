@@ -48,7 +48,7 @@ export interface BottomSheetProps {
   children?: React.ReactNode;
   data?: ArrayLike<any> | null;
   gestureRefs?: React.MutableRefObject<any>[];
-  onPanGestureRef?: (ref: React.MutableRefObject<GestureType>) => void;
+  onPanGestureRef?: (ref: GestureType) => void;
   renderItem?: ListRenderItem<any> | null;
   keyExtractor?: (item: any, index: number) => string;
   onClose?: () => void;
@@ -183,7 +183,7 @@ function BottomSheet({
   }, [gestureRefs]);
 
   useEffect(() => {
-    onPanGestureRef?.(panGestureRef);
+    onPanGestureRef?.(panGestureRef.current);
   }, [onPanGestureRef]);
 
   return (
