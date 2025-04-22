@@ -14,6 +14,7 @@ import {
   Gesture,
   GestureDetector,
   GestureType,
+  PanGesture,
   ScrollView,
 } from 'react-native-gesture-handler';
 import Animated, {
@@ -46,6 +47,8 @@ export interface BottomSheetProps {
   customLightStyles?: BottomSheetStyles;
   children?: React.ReactNode;
   data?: ArrayLike<any> | null;
+  gestureRefs?: React.MutableRefObject<any>[];
+  onPanGestureRef?: (ref: React.MutableRefObject<GestureType>) => void;
   renderItem?: ListRenderItem<any> | null;
   keyExtractor?: (item: any, index: number) => string;
   onClose?: () => void;
@@ -101,8 +104,10 @@ function BottomSheet({
   id,
   open = false,
   data,
+  gestureRefs,
   renderItem,
   keyExtractor,
+  onPanGestureRef,
   children,
   onClose,
 }: BottomSheetProps) {
@@ -111,6 +116,7 @@ function BottomSheet({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const panGestureRef = React.useRef<GestureType>(Gesture.Pan());
   const scrollRef = React.useRef<any>();
+  const onGestureEventRef = React.useRef<PanGesture>();
 
   const translateY = useSharedValue(0);
   const sheetHeight = useSharedValue(0);
@@ -140,7 +146,7 @@ function BottomSheet({
     transform: [{ translateY: translateY.value }],
   }));
 
-  const onGestureEvent = Gesture.Pan()
+  onGestureEventRef.current = Gesture.Pan()
     .onUpdate((event) => {
       translateY.value = Math.max(
         Math.min(event.translationY, sheetHeight.value),
@@ -168,6 +174,17 @@ function BottomSheet({
     })
     .withRef(panGestureRef)
     .simultaneousWithExternalGesture(scrollRef);
+
+  useEffect(() => {
+    for (const ref of gestureRefs ?? []) {
+      onGestureEventRef.current =
+        onGestureEventRef.current?.simultaneousWithExternalGesture(ref);
+    }
+  }, [gestureRefs]);
+
+  useEffect(() => {
+    onPanGestureRef?.(panGestureRef);
+  }, [onPanGestureRef]);
 
   return (
     <Portal name={id} visible={isOpen}>
@@ -212,7 +229,7 @@ function BottomSheet({
         >
           <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
         </Animated.View>
-        <GestureDetector gesture={onGestureEvent}>
+        <GestureDetector gesture={onGestureEventRef.current}>
           <Animated.View
             onLayout={(e) => {
               sheetHeight.value = e.nativeEvent.layout.height;
