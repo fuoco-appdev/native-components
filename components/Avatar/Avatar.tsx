@@ -52,7 +52,9 @@ const styles = StyleSheet.create<AvatarStyles>({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  image: {},
+  image: {
+    borderRadius: Globals.rounded_full,
+  },
   text: {
     fontWeight: Globals.font_weight_bold,
   },

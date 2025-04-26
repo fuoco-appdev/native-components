@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { StyleSheet, Text, TextStyle, useColorScheme } from 'react-native';
 import Colors from '../Themes/colors';
 import Globals from '../Themes/globals';
