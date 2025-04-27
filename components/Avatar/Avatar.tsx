@@ -54,6 +54,8 @@ const styles = StyleSheet.create<AvatarStyles>({
   },
   image: {
     borderRadius: Globals.rounded_full,
+    width: '100%',
+    height: '100%',
   },
   text: {
     fontWeight: Globals.font_weight_bold,
