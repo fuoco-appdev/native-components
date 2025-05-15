@@ -13,6 +13,7 @@ import { Button, ButtonStyles } from '../Button';
 import { Colors, Globals } from '../Themes';
 import { Edit } from '../Icon/Icons/Line';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
+import { useEffect } from 'react';
 
 export interface AvatarStyles {
   container?: ViewStyle;
@@ -38,6 +39,7 @@ export interface AvatarProps {
   customExtraLightStyles?: ExtraAvatarStyles;
   text?: string;
   editMode?: boolean;
+  openImagePicker?: boolean;
   size?: 'custom' | 'small' | 'medium' | 'large';
   cropperSize?: { width: number; height: number };
   avatarIcon?: JSX.Element;
@@ -97,6 +99,7 @@ export default function Avatar({
   loadingComponent,
   text,
   editMode = false,
+  openImagePicker = false,
   size = 'large',
   cropperSize = { width: 300, height: 300 },
   avatarIcon,
@@ -139,7 +142,7 @@ export default function Avatar({
   } else if (size === 'custom') {
   }
 
-  const onEditFilePressAsync = async () => {
+  const openImagePickerAsync = async () => {
     onLoading?.(true);
     try {
       const content = await ImagePicker.openPicker({
@@ -154,6 +157,14 @@ export default function Avatar({
     }
     onLoading?.(false);
   };
+
+  useEffect(() => {
+    if (!openImagePicker) {
+      return;
+    }
+
+    openImagePickerAsync();
+  }, [openImagePicker]);
 
   return (
     <View>
@@ -259,7 +270,7 @@ export default function Avatar({
               loadingComponent={loadingComponent}
               loading={loading}
               icon={
-                <Edit size={21} color={'#fff'} onPress={onEditFilePressAsync} />
+                <Edit size={21} color={'#fff'} onPress={openImagePickerAsync} />
               }
             />
           </View>
