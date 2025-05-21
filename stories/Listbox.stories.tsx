@@ -3,6 +3,7 @@ import Listbox from '../components/Listbox/Listbox';
 import { PortalProvider } from '../components/Portal';
 import { useState } from 'react';
 import { BottomSheet } from '../components';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const meta = {
   title: 'Data Input/Listbox',
@@ -24,33 +25,35 @@ export const Default: Story = {
       { id: 'four', value: 'four' },
     ];
     return (
-      <PortalProvider>
-        <Listbox
-          data={options}
-          open={isOpen}
-          onOpen={() => setIsOpen(true)}
-          onClose={() => setIsOpen(false)}
-          renderBottomSheetItem={({
-            item,
-            index,
-          }: {
-            item: { id: string; value: string };
-            index: number;
-          }) => (
-            <BottomSheet.Item
-              key={item.id}
-              onPress={() => {
-                setSelectedIndex(index);
-                setIsOpen(false);
-              }}
-            >
-              {item.value}
-            </BottomSheet.Item>
-          )}
-        >
-          {options[selectedIndex].value}
-        </Listbox>
-      </PortalProvider>
+      <GestureHandlerRootView>
+        <PortalProvider>
+          <Listbox
+            data={options}
+            open={isOpen}
+            onOpen={() => setIsOpen(true)}
+            onClose={() => setIsOpen(false)}
+            renderBottomSheetItem={({
+              item,
+              index,
+            }: {
+              item: { id: string; value: string };
+              index: number;
+            }) => (
+              <BottomSheet.Item
+                key={item.id}
+                onPress={() => {
+                  setSelectedIndex(index);
+                  setIsOpen(false);
+                }}
+              >
+                {item.value}
+              </BottomSheet.Item>
+            )}
+          >
+            {options[selectedIndex].value}
+          </Listbox>
+        </PortalProvider>
+      </GestureHandlerRootView>
     );
   },
 };

@@ -40,7 +40,6 @@ import NativeDatePicker from 'react-native-date-picker';
 import moment from 'moment';
 
 export interface DatePickerStyles {
-  root?: ViewStyle;
   container?: ViewStyle | TextStyle | ImageStyle;
   error?: ViewStyle | TextStyle | ImageStyle;
   withIcon?: ViewStyle | TextStyle | ImageStyle;
@@ -73,13 +72,10 @@ export interface DatePickerProps {
   beforeLabel?: string;
   afterLabel?: string;
   labelOptional?: string;
-  shakeInterpolationCount?: number;
-  shakeDistance?: number;
   onChange?: (value: Date) => void;
 }
 
 const styles = StyleSheet.create<DatePickerStyles>({
-  root: {},
   container: {
     position: 'relative',
     display: 'flex',
@@ -180,90 +176,59 @@ function DatePicker({
   beforeLabel,
   afterLabel,
   labelOptional,
-  shakeInterpolationCount = 3,
-  shakeDistance = 6,
   onChange,
 }: DatePickerProps) {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [open, setOpen] = useState<boolean>(false);
 
-  const { x } = useSpring({
-    from: { x: 0 },
-    to: error ? { x: 1 } : { x: 0 },
-    config: { mass: 1, tension: 500, friction: 100 },
-  });
-
-  const interpolation: number[] = [];
-  interpolation.push(0);
-
-  for (let i = 0; i < shakeInterpolationCount; i++) {
-    interpolation.push(-shakeDistance);
-    interpolation.push(shakeDistance);
-  }
-
-  interpolation.push(0);
-
   return (
-    <animated.View
-      style={[
-        {
-          x: x.to([0, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 1], interpolation),
-        },
-        styles.root as any,
-        customStyles?.root ?? {},
-        ...(isDarkTheme
-          ? [darkStyles?.root, customDarkStyles?.root ?? {}]
-          : [lightStyles?.root, customLightStyles?.root ?? {}]),
-      ]}
+    <FormLayout
+      label={label}
+      afterLabel={afterLabel}
+      beforeLabel={beforeLabel}
+      labelOptional={labelOptional}
+      error={error}
+      descriptionText={descriptionText}
+      customStyles={customExtraStyles.formLayout}
+      customDarkStyles={customExtraDarkStyles.formLayout}
+      customLightStyles={customExtraLightStyles.formLayout}
     >
-      <FormLayout
-        label={label}
-        afterLabel={afterLabel}
-        beforeLabel={beforeLabel}
-        labelOptional={labelOptional}
-        error={error}
-        descriptionText={descriptionText}
-        customStyles={customExtraStyles.formLayout}
-        customDarkStyles={customExtraDarkStyles.formLayout}
-        customLightStyles={customExtraLightStyles.formLayout}
-      >
-        <Button
-          customStyles={{
-            ...{
-              button: {
-                paddingTop: MarginsPaddings.mp_5,
-                paddingBottom: MarginsPaddings.mp_5,
-              },
+      <Button
+        customStyles={{
+          ...{
+            button: {
+              paddingTop: MarginsPaddings.mp_5,
+              paddingBottom: MarginsPaddings.mp_5,
             },
-            ...customExtraStyles.button,
-          }}
-          customDarkStyles={customExtraDarkStyles.button}
-          customLightStyles={customExtraLightStyles.button}
-          type={'text'}
-          size={'full'}
-          onPress={() => setOpen(true)}
-          disabled={disabled}
-        >
-          {children}
-        </Button>
-        <NativeDatePicker
-          modal={true}
-          open={open}
-          date={date}
-          locale={locale}
-          theme={isDarkTheme ? 'dark' : 'light'}
-          mode={mode}
-          onConfirm={(date: Date) => {
-            setOpen(false);
-            onChange?.(date);
-          }}
-          onCancel={() => {
-            setOpen(false);
-          }}
-        />
-      </FormLayout>
-    </animated.View>
+          },
+          ...customExtraStyles.button,
+        }}
+        customDarkStyles={customExtraDarkStyles.button}
+        customLightStyles={customExtraLightStyles.button}
+        type={'text'}
+        size={'full'}
+        onPress={() => setOpen(true)}
+        disabled={disabled}
+      >
+        {children}
+      </Button>
+      <NativeDatePicker
+        modal={true}
+        open={open}
+        date={date}
+        locale={locale}
+        theme={isDarkTheme ? 'dark' : 'light'}
+        mode={mode}
+        onConfirm={(date: Date) => {
+          setOpen(false);
+          onChange?.(date);
+        }}
+        onCancel={() => {
+          setOpen(false);
+        }}
+      />
+    </FormLayout>
   );
 }
 

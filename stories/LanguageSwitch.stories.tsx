@@ -3,6 +3,7 @@ import { LanguageSwitch } from '../components/LanguageSwitch';
 import { useState } from 'react';
 import { LanguageCode } from 'iso-639-1';
 import { PortalProvider } from '../components/Portal';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const meta = {
   title: 'General/LanguageSwitch',
@@ -18,19 +19,21 @@ export const Default: Story = {
     const [language, setLanguage] = useState<LanguageCode>('en');
     const [open, setOpen] = useState<boolean>(false);
     return (
-      <PortalProvider>
-        <LanguageSwitch
-          language={language}
-          open={open}
-          onOpen={() => setOpen(true)}
-          onClose={() => setOpen(false)}
-          onChange={(code, info) => {
-            console.log(code);
-            console.log(info);
-            setLanguage(code);
-          }}
-        />
-      </PortalProvider>
+      <GestureHandlerRootView>
+        <PortalProvider>
+          <LanguageSwitch
+            language={language}
+            open={open}
+            onOpen={() => setOpen(true)}
+            onClose={() => setOpen(false)}
+            onChange={(code, info) => {
+              console.log(code);
+              console.log(info);
+              setLanguage(code);
+            }}
+          />
+        </PortalProvider>
+      </GestureHandlerRootView>
     );
   },
 };

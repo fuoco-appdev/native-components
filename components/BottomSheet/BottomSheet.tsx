@@ -41,6 +41,7 @@ export interface BottomSheetProps {
   id: string;
   open: boolean;
   type?: 'scroll-view' | 'flat-list';
+  defaultSheetHeight?: number;
   duration?: number;
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
@@ -101,6 +102,7 @@ function BottomSheet({
   customLightStyles,
   type = 'scroll-view',
   duration = 150,
+  defaultSheetHeight,
   id,
   open = false,
   data,
@@ -119,7 +121,7 @@ function BottomSheet({
   const onGestureEventRef = React.useRef<PanGesture>();
 
   const translateY = useSharedValue(0);
-  const sheetHeight = useSharedValue(0);
+  const sheetHeight = useSharedValue(defaultSheetHeight ?? 0);
 
   useEffect(() => {
     if (open && !isOpen) {
@@ -232,7 +234,9 @@ function BottomSheet({
         <GestureDetector gesture={onGestureEventRef.current}>
           <Animated.View
             onLayout={(e) => {
-              sheetHeight.value = e.nativeEvent.layout.height;
+              sheetHeight.value = !defaultSheetHeight
+                ? e.nativeEvent.layout.height
+                : defaultSheetHeight;
               setTimeout(() => {
                 translateY.value = withTiming(0, {
                   easing: Easing.bezier(0.4, 0.0, 0.2, 1),
@@ -257,6 +261,7 @@ function BottomSheet({
               {
                 ...styles.sheet,
                 ...(customStyles?.sheet ?? {}),
+                ...(defaultSheetHeight && { height: defaultSheetHeight }),
               },
               sheetAnimatedStyle,
             ]}

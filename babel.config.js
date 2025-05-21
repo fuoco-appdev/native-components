@@ -4,6 +4,14 @@ module.exports = {
     "transform-inline-environment-variables",
     "@babel/plugin-transform-export-namespace-from",
     ["babel-plugin-react-docgen-typescript", { exclude: "node_modules" }],
-    "react-native-reanimated/plugin"
+    "react-native-reanimated/plugin",
+    [
+      'module:react-native-dotenv',
+      {
+        envName: 'APP_ENV',
+        moduleName: '@env',
+        path: '.env',
+      },
+    ],
   ],
 };
