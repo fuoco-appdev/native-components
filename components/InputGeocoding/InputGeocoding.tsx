@@ -339,6 +339,7 @@ function InputGeocoding({
       if (results.features?.length > 0) {
         const feature = results.features[0];
         setValue(feature['place_name']);
+        onChanged(feature);
         //setFeatures(results.features);
         resolve();
       }
