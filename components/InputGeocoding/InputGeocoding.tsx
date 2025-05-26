@@ -338,8 +338,10 @@ function InputGeocoding({
       const results = await response.json();
       if (results.features?.length > 0) {
         const feature = results.features[0];
-        setValue(feature['place_name']);
-        onLocationChanged?.(feature);
+        if (feature['place_name'] !== value) {
+          setValue(feature['place_name']);
+          onLocationChanged?.(feature);
+        }
         resolve();
       }
     });
