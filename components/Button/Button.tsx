@@ -510,18 +510,18 @@ export default function Button({
                 },
                 ...(isDarkTheme
                   ? [
+                      textDarkStyle,
                       {
                         ...darkStyles.children,
                         ...(customDarkStyles?.children ?? {}),
                       },
-                      textDarkStyle,
                     ]
                   : [
+                      textLightStyle,
                       {
                         ...lightStyles.children,
                         ...(customLightStyles?.children ?? {}),
                       },
-                      textLightStyle,
                     ]),
                 { ...styles.children, ...(customStyles?.children ?? {}) },
               ]}
