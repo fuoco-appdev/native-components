@@ -504,6 +504,10 @@ export default function Button({
           {!loading && children && (
             <Text
               style={[
+                textStyle,
+                danger && {
+                  color: Colors.red_500,
+                },
                 ...(isDarkTheme
                   ? [
                       {
@@ -520,10 +524,6 @@ export default function Button({
                       textLightStyle,
                     ]),
                 { ...styles.children, ...(customStyles?.children ?? {}) },
-                textStyle,
-                danger && {
-                  color: Colors.red_500,
-                },
               ]}
             >
               {children}
