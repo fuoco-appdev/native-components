@@ -73,7 +73,7 @@ export default function Link({
   );
   return (
     <Text
-      onPress={onLinkPressed}
+      onPress={url ? onLinkPressed : onPress}
       style={[
         ...(isDarkTheme
           ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
