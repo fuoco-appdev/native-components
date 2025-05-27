@@ -26,6 +26,10 @@ export interface ExtraForgottenPasswordStyles {
   button?: ButtonStyles;
 }
 
+export interface ForgottenPasswordPlaceholders {
+  email?: string;
+}
+
 export interface ForgottenPasswordProps {
   email?: string;
   customStyles?: ForgottenPasswordStyles;
@@ -34,6 +38,7 @@ export interface ForgottenPasswordProps {
   extraCustomStyles?: ExtraForgottenPasswordStyles;
   extraCustomDarkStyles?: ExtraForgottenPasswordStyles;
   extraCustomLightStyles?: ExtraForgottenPasswordStyles;
+  placeholders?: ForgottenPasswordPlaceholders;
   loadingComponent?: React.ReactNode;
   strings: AuthStrings;
   supabaseClient: SupabaseClient;
@@ -57,6 +62,7 @@ export default function ForgottenPassword({
   extraCustomStyles,
   extraCustomDarkStyles,
   extraCustomLightStyles,
+  placeholders,
   strings,
   loadingComponent,
   supabaseClient,
@@ -112,7 +118,7 @@ export default function ForgottenPassword({
           customDarkStyles={extraCustomDarkStyles?.input}
           customLightStyles={extraCustomLightStyles?.input}
           label={strings.emailAddress}
-          placeholder={strings.yourEmailAddress}
+          placeholder={placeholders?.email}
           error={emailErrorMessage}
           icon={<Email size={21} color={isDarkTheme ? '#fff' : '#000'} />}
           onChange={(e) => onEmailChanged?.(e.nativeEvent.text)}

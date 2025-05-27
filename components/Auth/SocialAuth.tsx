@@ -25,6 +25,7 @@ import SocialButton, {
 } from './SocialButton';
 import MarginsPaddings from '../Themes/margins_paddings';
 import { InAppBrowser } from 'react-native-inappbrowser-reborn';
+import { EmailPlaceholders } from './EmailAuth';
 
 export interface SocialAuthStyles {
   buttonRoot?: ViewStyle | TextStyle | ImageStyle;
@@ -46,6 +47,7 @@ export interface SocialAuthProps {
   customExtraStyles?: ExtraSocialAuthStyles;
   customExtraDarkStyles?: ExtraSocialAuthStyles;
   customExtraLightStyles?: ExtraSocialAuthStyles;
+  hideDivider?: boolean;
   socialLoadingComponent?: JSX.Element;
   strings?: AuthStrings;
   socialColors?: boolean;
@@ -90,12 +92,12 @@ export default function SocialAuth({
   customExtraStyles,
   customExtraDarkStyles,
   customExtraLightStyles,
+  hideDivider = false,
   view,
   strings,
   socialLoadingComponent,
   supabaseClient,
   socialColors = false,
-  socialButtonSize = 'large',
   providers,
   verticalSocialLayout,
   redirectTo,
@@ -228,10 +230,8 @@ export default function SocialAuth({
                     key={`${provider}-button`}
                     provider={provider}
                     verticalSocialLayout={verticalSocialLayout}
-                    socialButtonSize={socialButtonSize}
                     signLabel={signLabel}
                     socialColors={socialColors}
-                    strings={strings!}
                     isLoading={isLoading}
                     loadingComponent={socialLoadingComponent}
                     handleProviderSignIn={handleProviderSignIn}
@@ -240,7 +240,7 @@ export default function SocialAuth({
               })}
             </View>
           </View>
-          {!onlyThirdPartyProviders && (
+          {!onlyThirdPartyProviders && !hideDivider && (
             <Divider
               customStyles={{ ...dividerStyles, ...customExtraStyles?.divider }}
               customDarkStyles={{

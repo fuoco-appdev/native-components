@@ -41,6 +41,15 @@ export interface ExtraEmailAuthStyles {
   emailButton?: ButtonStyles;
 }
 
+export interface EmailPlaceholders {
+  email?: string;
+  password?: string;
+}
+
+export interface EmailIcons {
+  button?: React.ReactNode;
+}
+
 export interface EmailAuthProps {
   customStyles?: EmailAuthStyles;
   customDarkStyles?: EmailAuthStyles;
@@ -48,6 +57,7 @@ export interface EmailAuthProps {
   extraCustomStyles?: ExtraEmailAuthStyles;
   extraCustomDarkStyles?: ExtraEmailAuthStyles;
   extraCustomLightStyles?: ExtraEmailAuthStyles;
+  placeholders?: EmailPlaceholders;
   emailValue?: string;
   passwordValue?: string;
   confirmPasswordValue?: string;
@@ -56,6 +66,7 @@ export interface EmailAuthProps {
     true?: any;
     false?: any;
   };
+  icons?: EmailIcons;
   checkboxOnFillColor?: string;
   authView: ViewType;
   strings: AuthStrings;
@@ -101,6 +112,10 @@ export function EmailAuth({
   extraCustomStyles,
   extraCustomDarkStyles,
   extraCustomLightStyles,
+  icons = {
+    button: <Lock size={21} color={Colors.gray_100} />,
+  },
+  placeholders,
   emailValue,
   passwordValue,
   confirmPasswordValue,
@@ -183,6 +198,7 @@ export function EmailAuth({
           customExtraStyles={extraCustomStyles?.extraInput}
           customExtraLightStyles={extraCustomLightStyles?.extraInput}
           customExtraDarkStyles={extraCustomDarkStyles?.extraInput}
+          placeholder={placeholders?.email}
           key={'email'}
           label={strings.emailAddress}
           error={emailErrorMessage}
@@ -198,6 +214,7 @@ export function EmailAuth({
           customExtraStyles={extraCustomStyles?.extraInput}
           customExtraLightStyles={extraCustomLightStyles?.extraInput}
           customExtraDarkStyles={extraCustomDarkStyles?.extraInput}
+          placeholder={placeholders?.password}
           key={'password'}
           label={strings.password}
           error={passwordErrorMessage}
@@ -216,6 +233,7 @@ export function EmailAuth({
             customExtraStyles={extraCustomStyles?.extraInput}
             customExtraLightStyles={extraCustomLightStyles?.extraInput}
             customExtraDarkStyles={extraCustomDarkStyles?.extraInput}
+            placeholder={placeholders?.password}
             key={'confirm-password'}
             label={strings.confirmPassword}
             error={confirmPasswordErrorMessage}
@@ -372,7 +390,7 @@ export function EmailAuth({
               authView === VIEWS.SIGN_UP ? !termAgreementChecked : false
             }
             block={true}
-            icon={<Lock size={21} color={Colors.gray_100} />}
+            icon={icons.button}
           >
             {authView === VIEWS.SIGN_IN ? strings.signIn : strings.signUp}
           </Button>

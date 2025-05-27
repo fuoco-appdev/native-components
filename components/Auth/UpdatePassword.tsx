@@ -26,6 +26,10 @@ export interface ExtraUpdatePasswordStyles {
   button?: ButtonStyles;
 }
 
+export interface UpdatePasswordPlaceholders {
+  password?: string;
+}
+
 export interface UpdatePasswordProps {
   customStyles?: UpdatePasswordStyles;
   customDarkStyles?: UpdatePasswordStyles;
@@ -33,6 +37,7 @@ export interface UpdatePasswordProps {
   extraCustomStyles?: ExtraUpdatePasswordStyles;
   extraCustomDarkStyles?: ExtraUpdatePasswordStyles;
   extraCustomLightStyles?: ExtraUpdatePasswordStyles;
+  placeholders?: UpdatePasswordPlaceholders;
   supabaseClient: SupabaseClient;
   loadingComponent?: React.ReactNode;
   strings: AuthStrings;
@@ -53,6 +58,7 @@ export default function UpdatePassword({
   extraCustomStyles,
   extraCustomDarkStyles,
   extraCustomLightStyles,
+  placeholders,
   strings,
   loadingComponent,
   supabaseClient,
@@ -112,7 +118,7 @@ export default function UpdatePassword({
           customDarkStyles={extraCustomDarkStyles?.input}
           customLightStyles={extraCustomLightStyles?.input}
           label={strings.newPassword}
-          placeholder={strings.enterYourNewPassword}
+          placeholder={placeholders?.password}
           reveal={true}
           password={true}
           error={passwordErrorMessage}
@@ -124,7 +130,7 @@ export default function UpdatePassword({
           customDarkStyles={extraCustomDarkStyles?.input}
           customLightStyles={extraCustomLightStyles?.input}
           label={strings.confirmNewPassword}
-          placeholder={strings.confirmNewPasswordPlaceholder}
+          placeholder={placeholders?.password}
           reveal={true}
           password={true}
           error={passwordErrorMessage}

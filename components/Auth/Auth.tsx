@@ -19,14 +19,22 @@ import SocialAuth, {
   ExtraSocialAuthStyles,
   SocialAuthStyles,
 } from './SocialAuth';
-import { EmailAuth, EmailAuthStyles, ExtraEmailAuthStyles } from './EmailAuth';
+import {
+  EmailAuth,
+  EmailAuthStyles,
+  EmailIcons,
+  EmailPlaceholders,
+  ExtraEmailAuthStyles,
+} from './EmailAuth';
 import { ExtraMagicLinkStyles, MagicLinkStyles } from './MagicLink';
 import ForgottenPassword, {
   ExtraForgottenPasswordStyles,
+  ForgottenPasswordPlaceholders,
   ForgottenPasswordStyles,
 } from './ForgottenPassword';
 import UpdatePassword, {
   ExtraUpdatePasswordStyles,
+  UpdatePasswordPlaceholders,
   UpdatePasswordStyles,
 } from './UpdatePassword';
 import ResetPassword, {
@@ -116,6 +124,16 @@ export interface AndroidRippleProps {
   //submitButton?: AndroidRipplesProps;
 }
 
+export interface AuthPlaceholders {
+  email?: EmailPlaceholders;
+  forgottenPassword?: ForgottenPasswordPlaceholders;
+  updatePassword?: UpdatePasswordPlaceholders;
+}
+
+export interface AuthIcons {
+  email?: EmailIcons;
+}
+
 export interface AuthProps {
   supabaseClient: SupabaseClient;
   customStyles?: AuthStyles;
@@ -124,6 +142,8 @@ export interface AuthProps {
   customExtraStyles?: ExtraAuthStyles;
   customExtraDarkStyles?: ExtraAuthStyles;
   customExtraLightStyles?: ExtraAuthStyles;
+  icons?: AuthIcons;
+  placeholders?: AuthPlaceholders;
   emailValue?: string;
   passwordValue?: string;
   confirmPasswordValue?: string;
@@ -221,6 +241,8 @@ function Auth({
   customExtraStyles,
   customExtraLightStyles,
   customExtraDarkStyles,
+  icons,
+  placeholders,
   supabaseClient,
   emailValue,
   passwordValue,
@@ -312,6 +334,8 @@ function Auth({
           extraCustomStyles={customExtraStyles?.extraEmailAuth}
           extraCustomLightStyles={customExtraLightStyles?.extraEmailAuth}
           extraCustomDarkStyles={customExtraDarkStyles?.extraEmailAuth}
+          icons={icons?.email}
+          placeholders={placeholders?.email}
           loadingComponent={emailLoadingComponent}
           emailValue={emailValue}
           passwordValue={passwordValue}
@@ -349,6 +373,7 @@ function Auth({
             customExtraLightStyles?.extraForgottenPassword
           }
           extraCustomDarkStyles={customExtraDarkStyles?.extraForgottenPassword}
+          placeholders={placeholders?.forgottenPassword}
           strings={{ ...defaultStrings, ...strings }}
           supabaseClient={supabaseClient}
           redirectTo={redirectTo}
@@ -380,6 +405,7 @@ function Auth({
           extraCustomStyles={customExtraStyles?.extraUpdatePassword}
           extraCustomLightStyles={customExtraLightStyles?.extraUpdatePassword}
           extraCustomDarkStyles={customExtraDarkStyles?.extraUpdatePassword}
+          placeholders={placeholders?.updatePassword}
           strings={{ ...defaultStrings, ...strings }}
           supabaseClient={supabaseClient}
           passwordErrorMessage={passwordErrorMessage}
