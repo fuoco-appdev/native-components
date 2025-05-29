@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import Button, { ButtonStyles } from '../Button/Button';
-import Input, { InputStyles } from '../Input/Input';
+import Input, { ExtraInputStyles, InputStyles } from '../Input/Input';
 import { AuthStrings, RedirectTo } from './Auth';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
 import { useState } from 'react';
@@ -22,12 +22,17 @@ export interface ForgottenPasswordStyles {
 }
 
 export interface ExtraForgottenPasswordStyles {
+  extraInput?: ExtraInputStyles;
   input?: InputStyles;
   button?: ButtonStyles;
 }
 
 export interface ForgottenPasswordPlaceholders {
   email?: string;
+}
+
+export interface ForgottenPasswordIcons {
+  input?: React.ReactNode;
 }
 
 export interface ForgottenPasswordProps {
@@ -40,6 +45,7 @@ export interface ForgottenPasswordProps {
   extraCustomLightStyles?: ExtraForgottenPasswordStyles;
   placeholders?: ForgottenPasswordPlaceholders;
   loadingComponent?: React.ReactNode;
+  icons?: ForgottenPasswordIcons;
   strings: AuthStrings;
   supabaseClient: SupabaseClient;
   redirectTo?: RedirectTo;
@@ -63,6 +69,7 @@ export default function ForgottenPassword({
   extraCustomDarkStyles,
   extraCustomLightStyles,
   placeholders,
+  icons,
   strings,
   loadingComponent,
   supabaseClient,
@@ -117,10 +124,17 @@ export default function ForgottenPassword({
           customStyles={extraCustomStyles?.input}
           customDarkStyles={extraCustomDarkStyles?.input}
           customLightStyles={extraCustomLightStyles?.input}
+          customExtraStyles={extraCustomStyles?.extraInput}
+          customExtraLightStyles={extraCustomLightStyles?.extraInput}
+          customExtraDarkStyles={extraCustomDarkStyles?.extraInput}
           label={strings.emailAddress}
           placeholder={placeholders?.email}
           error={emailErrorMessage}
-          icon={<Email size={21} color={isDarkTheme ? '#fff' : '#000'} />}
+          icon={
+            icons?.input ?? (
+              <Email size={21} color={isDarkTheme ? '#fff' : '#000'} />
+            )
+          }
           onChange={(e) => onEmailChanged?.(e.nativeEvent.text)}
         />
         <Button

@@ -29,6 +29,7 @@ import {
 import { ExtraMagicLinkStyles, MagicLinkStyles } from './MagicLink';
 import ForgottenPassword, {
   ExtraForgottenPasswordStyles,
+  ForgottenPasswordIcons,
   ForgottenPasswordPlaceholders,
   ForgottenPasswordStyles,
 } from './ForgottenPassword';
@@ -132,6 +133,7 @@ export interface AuthPlaceholders {
 
 export interface AuthIcons {
   email?: EmailIcons;
+  forgottenPassword?: ForgottenPasswordIcons;
 }
 
 export interface AuthProps {
@@ -374,6 +376,7 @@ function Auth({
           }
           extraCustomDarkStyles={customExtraDarkStyles?.extraForgottenPassword}
           placeholders={placeholders?.forgottenPassword}
+          icons={icons?.forgottenPassword}
           strings={{ ...defaultStrings, ...strings }}
           supabaseClient={supabaseClient}
           redirectTo={redirectTo}
@@ -418,9 +421,9 @@ function Auth({
           customStyles={customExtraStyles?.resetPassword}
           customLightStyles={customExtraLightStyles?.resetPassword}
           customDarkStyles={customExtraDarkStyles?.resetPassword}
-          extraCustomStyles={customExtraStyles?.extraResetPassword}
-          extraCustomLightStyles={customExtraLightStyles?.extraResetPassword}
-          extraCustomDarkStyles={customExtraDarkStyles?.extraResetPassword}
+          customExtraStyles={customExtraStyles?.extraResetPassword}
+          customExtraLightStyles={customExtraLightStyles?.extraResetPassword}
+          customExtraDarkStyles={customExtraDarkStyles?.extraResetPassword}
           strings={{ ...defaultStrings, ...strings }}
           supabaseClient={supabaseClient}
           passwordErrorMessage={passwordErrorMessage}

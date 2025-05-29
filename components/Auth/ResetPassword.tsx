@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import Button, { ButtonStyles } from '../Button/Button';
-import Input, { InputStyles } from '../Input/Input';
+import Input, { ExtraInputStyles, InputStyles } from '../Input/Input';
 import { AuthStrings, defaultStrings } from './Auth';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
 import { useState } from 'react';
@@ -23,6 +23,7 @@ export interface ResetPasswordStyles {
 }
 
 export interface ExtraResetPasswordStyles {
+  extraInput?: ExtraInputStyles;
   input?: InputStyles;
   button?: ButtonStyles;
 }
@@ -117,6 +118,9 @@ export default function ResetPassword({
           customStyles={customExtraStyles?.input}
           customDarkStyles={customExtraDarkStyles?.input}
           customLightStyles={customExtraLightStyles?.input}
+          customExtraStyles={customExtraStyles?.extraInput}
+          customExtraLightStyles={customExtraLightStyles?.extraInput}
+          customExtraDarkStyles={customExtraDarkStyles?.extraInput}
           label={strings.newPassword}
           placeholder={strings.enterYourNewPassword}
           reveal={true}
@@ -130,6 +134,9 @@ export default function ResetPassword({
           customStyles={customExtraStyles?.input}
           customDarkStyles={customExtraDarkStyles?.input}
           customLightStyles={customExtraLightStyles?.input}
+          customExtraStyles={customExtraStyles?.extraInput}
+          customExtraLightStyles={customExtraLightStyles?.extraInput}
+          customExtraDarkStyles={customExtraDarkStyles?.extraInput}
           label={strings.confirmNewPassword}
           placeholder={strings.confirmNewPasswordPlaceholder}
           reveal={true}
