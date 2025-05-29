@@ -28,6 +28,11 @@ export interface ExtraResetPasswordStyles {
   button?: ButtonStyles;
 }
 
+export interface ResetPasswordIcons {
+  password?: React.ReactNode;
+  button?: React.ReactNode;
+}
+
 export interface ResetPasswordProps {
   customStyles?: ResetPasswordStyles;
   customDarkStyles?: ResetPasswordStyles;
@@ -35,6 +40,7 @@ export interface ResetPasswordProps {
   customExtraStyles?: ExtraResetPasswordStyles;
   customExtraDarkStyles?: ExtraResetPasswordStyles;
   customExtraLightStyles?: ExtraResetPasswordStyles;
+  icons?: ResetPasswordIcons;
   supabaseClient: SupabaseClient;
   strings?: AuthStrings;
   loadingComponent?: JSX.Element;
@@ -55,6 +61,7 @@ export default function ResetPassword({
   customExtraStyles,
   customExtraDarkStyles,
   customExtraLightStyles,
+  icons,
   strings,
   loadingComponent,
   supabaseClient,
@@ -126,7 +133,11 @@ export default function ResetPassword({
           reveal={true}
           password={true}
           error={passwordErrorMessage}
-          icon={<Key size={21} color={isDarkTheme ? '#fff' : '#000'} />}
+          icon={
+            icons?.password ?? (
+              <Key size={21} color={isDarkTheme ? '#fff' : '#000'} />
+            )
+          }
           onChange={(e) => setPassword(e.nativeEvent.text)}
         />
         <Input
@@ -142,7 +153,11 @@ export default function ResetPassword({
           reveal={true}
           password={true}
           error={passwordErrorMessage}
-          icon={<Key size={21} color={isDarkTheme ? '#fff' : '#000'} />}
+          icon={
+            icons?.password ?? (
+              <Key size={21} color={isDarkTheme ? '#fff' : '#000'} />
+            )
+          }
           onChange={(e) => setConfirmPassword(e.nativeEvent.text)}
         />
         <Button
@@ -159,7 +174,7 @@ export default function ResetPassword({
           loadingComponent={loadingComponent}
           block
           size={'full'}
-          icon={<Key size={21} color={'#fff'} />}
+          icon={icons?.button ?? <Key size={21} color={'#fff'} />}
           onPress={handlePasswordResetAsync}
         >
           {strings.resetPassword}

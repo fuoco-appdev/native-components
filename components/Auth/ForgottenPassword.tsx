@@ -10,7 +10,7 @@ import Button, { ButtonStyles } from '../Button/Button';
 import Input, { ExtraInputStyles, InputStyles } from '../Input/Input';
 import { AuthStrings, RedirectTo } from './Auth';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Email, Inbox } from '../Icon/Icons/Line';
 import MarginsPaddings from '../Themes/margins_paddings';
 
@@ -33,6 +33,7 @@ export interface ForgottenPasswordPlaceholders {
 
 export interface ForgottenPasswordIcons {
   input?: React.ReactNode;
+  button?: React.ReactNode;
 }
 
 export interface ForgottenPasswordProps {
@@ -151,7 +152,7 @@ export default function ForgottenPassword({
           loadingComponent={loadingComponent}
           block
           size={'full'}
-          icon={<Inbox size={21} color={'#fff'} />}
+          icon={icons?.button ?? <Inbox size={21} color={'#fff'} />}
           onPress={handlePasswordResetAsync}
         >
           {strings.sendResetPasswordInstructions}
