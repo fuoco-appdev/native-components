@@ -160,12 +160,13 @@ export default function SocialAuth({
           if (response.type === 'success' && response.url) {
             Linking.openURL(response.url);
             await createSessionFromUrl(response.url);
-            setIsLoading(false);
           }
+          setIsLoading(false);
         });
       } else Linking.openURL(data?.url ?? '');
     } catch (error) {
       Linking.openURL(data?.url ?? '');
+      setIsLoading(false);
     }
   };
 
