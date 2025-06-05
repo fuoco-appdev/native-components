@@ -14,9 +14,10 @@ import {
   ViewStyle,
 } from 'react-native';
 import { DividerStyles } from '../Divider/Divider';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SocialAuth, {
   ExtraSocialAuthStyles,
+  SocialAuthIcons,
   SocialAuthStyles,
 } from './SocialAuth';
 import {
@@ -132,6 +133,7 @@ export interface AuthPlaceholders {
 }
 
 export interface AuthIcons {
+  socialAuth?: SocialAuthIcons;
   email?: EmailIcons;
   forgottenPassword?: ForgottenPasswordIcons;
 }
@@ -315,6 +317,7 @@ function Auth({
           customExtraStyles={customExtraStyles?.extraSocialAuth}
           customExtraLightStyles={customExtraLightStyles?.extraSocialAuth}
           customExtraDarkStyles={customExtraDarkStyles?.extraSocialAuth}
+          icons={icons?.socialAuth as Record<string, React.ReactNode>}
           view={view}
           socialLoadingComponent={socialLoadingComponent}
           strings={{ ...defaultStrings, ...strings }}

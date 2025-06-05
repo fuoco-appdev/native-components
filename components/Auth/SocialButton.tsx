@@ -14,6 +14,7 @@ import {
 import Button, { ButtonStyles } from '../Button/Button';
 import * as SocialIcons from './Icons';
 import MarginsPaddings from '../Themes/margins_paddings';
+import { SocialAuthIcons } from './SocialAuth';
 
 export interface SocialButtonStyles {
   buttonContainer?: ViewStyle | TextStyle | ImageStyle;
@@ -31,6 +32,7 @@ export interface SocialButtonProps {
   customExtraDarkStyles?: ExtraSocialButtonStyles;
   customExtraLightStyles?: ExtraSocialButtonStyles;
   provider: Provider;
+  icon?: React.ReactNode;
   isLoading: boolean;
   loadingComponent?: JSX.Element;
   verticalSocialLayout: any;
@@ -58,6 +60,7 @@ export default function SocialButton({
   customExtraDarkStyles,
   customExtraLightStyles,
   provider,
+  icon,
   isLoading,
   loadingComponent,
   verticalSocialLayout,
@@ -179,15 +182,17 @@ export default function SocialButton({
         loadingComponent={loadingComponent}
         onPress={() => handleProviderSignIn(provider)}
         icon={
-          AuthIcon && (
-            <AuthIcon
-              {...(socialColors
-                ? textStyles[provider]
-                : isDarkTheme
-                ? { color: '#fff' }
-                : { color: '#000' })}
-            />
-          )
+          icon
+            ? icon
+            : AuthIcon && (
+                <AuthIcon
+                  {...(socialColors
+                    ? textStyles[provider]
+                    : isDarkTheme
+                    ? { color: '#fff' }
+                    : { color: '#000' })}
+                />
+              )
         }
       >
         {verticalSocialLayout && signLabel + provider}

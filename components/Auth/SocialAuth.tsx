@@ -17,7 +17,7 @@ import {
   RedirectTo,
   ViewType,
 } from './Auth';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { AuthError, Provider, SupabaseClient } from '@supabase/supabase-js';
 import SocialButton, {
   ExtraSocialButtonStyles,
@@ -50,6 +50,7 @@ export interface SocialAuthProps {
   hideDivider?: boolean;
   socialLoadingComponent?: JSX.Element;
   strings?: AuthStrings;
+  icons?: Record<string, React.ReactNode>;
   socialColors?: boolean;
   socialButtonSize?: 'tiny' | 'small' | 'medium' | 'large' | 'xlarge';
   providers?: Provider[];
@@ -60,6 +61,20 @@ export interface SocialAuthProps {
   onAuthenticating?: () => void;
   onSigninError?: (error: AuthError) => void;
   onSignupError?: (error: AuthError) => void;
+}
+
+export interface SocialAuthIcons {
+  azure?: React.ReactNode;
+  bitbucket?: React.ReactNode;
+  facebook?: React.ReactNode;
+  github?: React.ReactNode;
+  gitlab?: React.ReactNode;
+  google?: React.ReactNode;
+  twitter?: React.ReactNode;
+  apple?: React.ReactNode;
+  discord?: React.ReactNode;
+  twitch?: React.ReactNode;
+  spotify?: React.ReactNode;
 }
 
 const styles = StyleSheet.create<SocialAuthStyles>({
@@ -95,6 +110,7 @@ export default function SocialAuth({
   hideDivider = false,
   view,
   strings,
+  icons,
   socialLoadingComponent,
   supabaseClient,
   socialColors = false,
@@ -229,6 +245,7 @@ export default function SocialAuth({
                       customExtraDarkStyles?.extraSocialButton
                     }
                     key={`${provider}-button`}
+                    icon={icons?.[provider]}
                     provider={provider}
                     verticalSocialLayout={verticalSocialLayout}
                     signLabel={signLabel}
