@@ -15,7 +15,7 @@ import Button, { ButtonStyles } from '../Button/Button';
 import Input, { ExtraInputStyles, InputStyles } from '../Input/Input';
 import { AuthStrings, RedirectTo, VIEWS, ViewType } from './Auth';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Email, Key, Lock } from '../Icon/Icons/Line';
 import { Checkbox, CheckboxStyles } from '../Checkbox/Checkbox';
 import Typography from '../Typography/Typography';
@@ -47,6 +47,11 @@ export interface EmailPlaceholders {
 }
 
 export interface EmailIcons {
+  email?: React.ReactNode;
+  password?: React.ReactNode;
+  reveal?: React.ReactNode;
+  hiddenReveal?: React.ReactNode;
+  error?: React.ReactNode;
   button?: React.ReactNode;
 }
 
@@ -112,9 +117,7 @@ export function EmailAuth({
   extraCustomStyles,
   extraCustomDarkStyles,
   extraCustomLightStyles,
-  icons = {
-    button: <Lock size={21} color={Colors.gray_100} />,
-  },
+  icons,
   placeholders,
   emailValue,
   passwordValue,
@@ -204,7 +207,14 @@ export function EmailAuth({
           error={emailErrorMessage}
           autoComplete={'email'}
           value={emailValue}
-          icon={<Email size={21} color={isDarkTheme ? '#fff' : '#000'} />}
+          icons={{
+            error: icons?.error,
+          }}
+          icon={
+            icons?.email ?? (
+              <Email size={21} color={isDarkTheme ? '#fff' : '#000'} />
+            )
+          }
           onChange={(e) => onEmailChanged?.(e)}
         />
         <Input
@@ -222,7 +232,16 @@ export function EmailAuth({
           reveal={true}
           password={true}
           value={passwordValue}
-          icon={<Key size={21} color={isDarkTheme ? '#fff' : '#000'} />}
+          icons={{
+            error: icons?.error,
+            reveal: icons?.reveal,
+            hiddenReveal: icons?.hiddenReveal,
+          }}
+          icon={
+            icons?.password ?? (
+              <Key size={21} color={isDarkTheme ? '#fff' : '#000'} />
+            )
+          }
           onChange={(e) => onPasswordChanged?.(e)}
         />
         {authView === VIEWS.SIGN_UP && (
@@ -241,7 +260,16 @@ export function EmailAuth({
             password={true}
             value={confirmPasswordValue}
             autoComplete="current-password"
-            icon={<Key size={21} color={isDarkTheme ? '#fff' : '#000'} />}
+            icons={{
+              error: icons?.error,
+              reveal: icons?.reveal,
+              hiddenReveal: icons?.hiddenReveal,
+            }}
+            icon={
+              icons?.password ?? (
+                <Key size={21} color={isDarkTheme ? '#fff' : '#000'} />
+              )
+            }
             onChange={(e) => {
               onConfirmPasswordChanged?.(e);
             }}
@@ -390,7 +418,7 @@ export function EmailAuth({
               authView === VIEWS.SIGN_UP ? !termAgreementChecked : false
             }
             block={true}
-            icon={icons.button}
+            icon={icons?.button ?? <Lock size={21} color={Colors.gray_100} />}
           >
             {authView === VIEWS.SIGN_IN ? strings.signIn : strings.signUp}
           </Button>

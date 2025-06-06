@@ -26,7 +26,7 @@ import {
   Visibility,
   VisibilityOff,
 } from '../Icon/Icons/Line';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Typography from '../Typography/Typography';
 
 export interface InputStyles {
@@ -42,6 +42,13 @@ export interface InputStyles {
 export interface ExtraInputStyles {
   formLayout?: FormLayoutStyles;
   revealButton?: ButtonStyles;
+}
+
+export interface InputIcons {
+  reveal?: React.ReactNode;
+  hiddenReveal?: React.ReactNode;
+  copy?: React.ReactNode;
+  error?: React.ReactNode;
 }
 
 export interface InputProps {
@@ -117,6 +124,7 @@ export interface InputProps {
   customExtraStyles?: ExtraInputStyles;
   customExtraDarkStyles?: ExtraInputStyles;
   customExtraLightStyles?: ExtraInputStyles;
+  icons?: InputIcons;
   copy?: boolean;
   password?: boolean;
   defaultValue?: string;
@@ -236,6 +244,7 @@ function Input({
   customExtraStyles = {},
   customExtraDarkStyles = {},
   customExtraLightStyles = {},
+  icons,
   copy,
   password,
   defaultValue,
@@ -369,24 +378,35 @@ function Input({
                 type={'text'}
                 rounded={true}
                 icon={
-                  isHidden ? (
-                    <Visibility
-                      size={21}
-                      color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
-                    />
-                  ) : (
-                    <VisibilityOff
-                      size={21}
-                      color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
-                    />
-                  )
+                  isHidden
+                    ? icons?.hiddenReveal ?? (
+                        <Visibility
+                          size={21}
+                          color={
+                            isDarkTheme ? Colors.gray_100 : Colors.gray_900
+                          }
+                        />
+                      )
+                    : icons?.reveal ?? (
+                        <VisibilityOff
+                          size={21}
+                          color={
+                            isDarkTheme ? Colors.gray_100 : Colors.gray_900
+                          }
+                        />
+                      )
                 }
                 onPress={onReveal}
               />
             ) : null}
-            {error && (
-              <ErrorOutline size={21} color={Colors.red_500} strokeWidth={0} />
-            )}
+            {error &&
+              (icons?.error ?? (
+                <ErrorOutline
+                  size={21}
+                  color={Colors.red_500}
+                  strokeWidth={0}
+                />
+              ))}
             {copy && (
               <Button
                 size={'tiny'}
@@ -394,10 +414,12 @@ function Input({
                 rounded={true}
                 onPress={() => onCopy(value)}
                 icon={
-                  <ContentCopy
-                    size={21}
-                    color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
-                  />
+                  icons?.copy ?? (
+                    <ContentCopy
+                      size={21}
+                      color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
+                    />
+                  )
                 }
               >
                 {copyLabel}
