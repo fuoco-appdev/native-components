@@ -275,15 +275,8 @@ export default function Avatar({
               rounded={true}
               loadingComponent={loadingComponent}
               loading={loading}
-              icon={
-                icons?.edit ?? (
-                  <Edit
-                    size={21}
-                    color={'#fff'}
-                    onPress={openImagePickerAsync}
-                  />
-                )
-              }
+              onPress={openImagePickerAsync}
+              icon={icons?.edit ?? <Edit size={21} color={'#fff'} />}
             />
           </View>
         )}
