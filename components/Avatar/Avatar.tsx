@@ -13,7 +13,7 @@ import { Button, ButtonStyles } from '../Button';
 import { Colors, Globals } from '../Themes';
 import { Edit } from '../Icon/Icons/Line';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 export interface AvatarStyles {
   container?: ViewStyle;
@@ -24,6 +24,10 @@ export interface AvatarStyles {
 
 export interface ExtraAvatarStyles {
   button?: ButtonStyles;
+}
+
+export interface AvatarIcons {
+  edit?: React.ReactNode;
 }
 
 export interface AvatarProps {
@@ -37,6 +41,7 @@ export interface AvatarProps {
   customExtraStyles?: ExtraAvatarStyles;
   customExtraDarkStyles?: ExtraAvatarStyles;
   customExtraLightStyles?: ExtraAvatarStyles;
+  icons?: AvatarIcons;
   text?: string;
   editMode?: boolean;
   openImagePicker?: boolean;
@@ -95,6 +100,7 @@ export default function Avatar({
   customExtraStyles,
   customExtraDarkStyles,
   customExtraLightStyles,
+  icons,
   loading,
   loadingComponent,
   text,
@@ -270,7 +276,13 @@ export default function Avatar({
               loadingComponent={loadingComponent}
               loading={loading}
               icon={
-                <Edit size={21} color={'#fff'} onPress={openImagePickerAsync} />
+                icons?.edit ?? (
+                  <Edit
+                    size={21}
+                    color={'#fff'}
+                    onPress={openImagePickerAsync}
+                  />
+                )
               }
             />
           </View>
