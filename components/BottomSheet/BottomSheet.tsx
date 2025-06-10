@@ -254,7 +254,7 @@ function BottomSheet({
               right: 0,
             }}
             blurType={blurType ?? 'light'}
-            blurAmount={blurAmount ?? 10}
+            blurAmount={blurAmount ?? 5}
             reducedTransparencyFallbackColor={
               reducedTransparencyFallbackColor ?? 'white'
             }
