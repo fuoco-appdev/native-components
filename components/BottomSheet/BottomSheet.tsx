@@ -27,6 +27,7 @@ import Animated, {
 import { Button, ButtonStyles } from '../Button';
 import { Portal } from '../Portal';
 import { Globals } from '../Themes';
+import { BlurView } from '@react-native-community/blur';
 
 export type SheetPositions = 'minimised' | 'maximised' | 'expanded';
 
@@ -43,6 +44,16 @@ export interface BottomSheetProps {
   type?: 'scroll-view' | 'flat-list';
   defaultSheetHeight?: number;
   duration?: number;
+  blurType?:
+    | 'xlight'
+    | 'light'
+    | 'dark'
+    | 'extraDark'
+    | 'regular'
+    | 'prominent';
+  blurAmount?: number;
+  reducedTransparencyFallbackColor?: string;
+  overlayColor?: string;
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
   customLightStyles?: BottomSheetStyles;
@@ -74,6 +85,7 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     flex: 1,
   },
   backdrop: {
+    position: 'relative',
     height: '100%',
     width: '100%',
   },
@@ -100,6 +112,10 @@ function BottomSheet({
   customStyles,
   customDarkStyles,
   customLightStyles,
+  blurType,
+  blurAmount,
+  reducedTransparencyFallbackColor,
+  overlayColor,
   type = 'scroll-view',
   duration = 150,
   defaultSheetHeight,
@@ -229,6 +245,21 @@ function BottomSheet({
             { ...styles.backdrop, ...(customStyles?.backdrop ?? {}) },
           ]}
         >
+          <BlurView
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+            }}
+            blurType={blurType ?? 'light'}
+            blurAmount={blurAmount ?? 10}
+            reducedTransparencyFallbackColor={
+              reducedTransparencyFallbackColor ?? 'white'
+            }
+            overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
+          />
           <TouchableOpacity style={[{ flex: 1 }]} onPress={onAnimatedClose} />
         </Animated.View>
         <GestureDetector gesture={onGestureEventRef.current}>
