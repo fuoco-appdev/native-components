@@ -31,6 +31,8 @@ export interface ExtraResetPasswordStyles {
 export interface ResetPasswordIcons {
   password?: React.ReactNode;
   button?: React.ReactNode;
+  reveal?: React.ReactNode;
+  hiddenReveal?: React.ReactNode;
 }
 
 export interface ResetPasswordProps {
@@ -133,6 +135,10 @@ export default function ResetPassword({
           reveal={true}
           password={true}
           error={passwordErrorMessage}
+          icons={{
+            reveal: icons?.reveal,
+            hiddenReveal: icons?.hiddenReveal,
+          }}
           icon={
             icons?.password ?? (
               <Key size={21} color={isDarkTheme ? '#fff' : '#000'} />
@@ -153,6 +159,10 @@ export default function ResetPassword({
           reveal={true}
           password={true}
           error={passwordErrorMessage}
+          icons={{
+            reveal: icons?.reveal,
+            hiddenReveal: icons?.hiddenReveal,
+          }}
           icon={
             icons?.password ?? (
               <Key size={21} color={isDarkTheme ? '#fff' : '#000'} />
