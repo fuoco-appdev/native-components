@@ -19,7 +19,7 @@ import { TabsContext } from './TabsProvider';
 
 export interface TabProps {
   id: string;
-  label?: string;
+  label?: string | React.ReactNode;
   icon?: React.ReactNode;
 }
 
@@ -34,6 +34,7 @@ export interface TabsStyles {
 
 export interface ExtraTabsStyles {
   button?: ButtonStyles;
+  selectedButton?: ButtonStyles;
 }
 
 export interface TabsProps {
