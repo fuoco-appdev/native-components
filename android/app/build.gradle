@@ -110,6 +110,7 @@ dependencies {
     implementation("com.facebook.react:flipper-integration")
     implementation project(':react-native-inappbrowser-reborn')
     implementation project(':react-native-async-storage_async-storage')
+    implementation project(':react-native-image-picker')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

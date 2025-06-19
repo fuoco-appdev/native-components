@@ -315,6 +315,10 @@ function InputGeocoding({
   };
 
   useEffect(() => {
+    if (value) {
+      return;
+    }
+
     const updateLocationAsync = new Promise<void>(async (resolve, reject) => {
       let selectedLongitude = 0;
       let selectedLatitude = 0;
