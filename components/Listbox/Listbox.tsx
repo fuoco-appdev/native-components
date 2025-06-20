@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { BottomSheet, BottomSheetStyles } from '../BottomSheet';
-import { FormLayout } from '../FormLayout';
+import { FormLayout, FormLayoutStyles } from '../FormLayout';
 // import { ArrowDropDown } from '../Icon/Icons/Line';
 import React from 'react';
 import { ArrowDropDown } from '../Icon/Icons/Line';
@@ -49,6 +49,7 @@ export interface ListboxStyles {
 }
 
 export interface ExtraListboxStyles {
+  formLayout?: FormLayoutStyles;
   bottomSheet?: BottomSheetStyles;
   label?: TypographyStyles;
 }
@@ -115,12 +116,15 @@ function Listbox({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   return (
-    <View>
+    <>
       <FormLayout
         label={label}
         labelOptional={labelOptional}
         error={error}
         descriptionText={descriptionText}
+        customStyles={customExtraStyles?.formLayout}
+        customLightStyles={customExtraLightStyles?.formLayout}
+        customDarkStyles={customExtraDarkStyles?.formLayout}
       >
         <View
           style={[
@@ -274,7 +278,7 @@ function Listbox({
         renderItem={renderBottomSheetItem}
         keyExtractor={keyExtractor}
       />
-    </View>
+    </>
   );
 }
 
