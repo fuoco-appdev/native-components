@@ -19,6 +19,7 @@ import {
   LayoutRectangle,
   Vibration,
 } from 'react-native';
+import Skeleton from 'react-native-reanimated-skeleton';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Colors from '../Themes/colors';
 import MarginsPaddings from '../Themes/margins_paddings';
@@ -187,8 +188,6 @@ const styles = StyleSheet.create<InputStyles>({
   },
   backdrop: {
     position: 'absolute',
-    height: '100%',
-    width: '100%',
   },
   error: {
     borderColor: Colors.red_500,
@@ -348,12 +347,18 @@ function Input({
   };
 
   const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    setIsFocused(true);
+    if (popout) {
+      Vibration.vibrate([0, 50], false);
+      setIsFocused(true);
+    }
     onFocus?.(e);
   };
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    setIsFocused(false);
+    if (popout) {
+      setIsFocused(false);
+    }
+
     onBlur?.(e);
   };
 
@@ -407,60 +412,63 @@ function Input({
       setInputLeft(rootLayout?.pageX ?? 0);
       setZIndex(24);
       setContainerWidth(width);
-      Vibration.vibrate([0, 50], false);
-    } else {
+    } else if (!isFocused) {
       setInputBottom(0);
       setInputLeft(0);
       setZIndex(0);
       setContainerWidth(rootLayout?.width ?? 0);
     }
-  }, [keyboardHeight, containerLayout, popout]);
+  }, [keyboardHeight, containerLayout, rootLayout, popout]);
 
   return (
     <>
       {isFocused && (
-        <View
-          style={[
-            ...(isDarkTheme
-              ? [
-                  {
-                    ...darkStyles?.backdrop,
-                    ...(customDarkStyles?.backdrop ?? {}),
-                  },
-                ]
-              : [
-                  {
-                    ...lightStyles?.backdrop,
-                    ...(customLightStyles?.backdrop ?? {}),
-                  },
-                ]),
-            {
-              ...styles.backdrop,
-              ...(customStyles?.backdrop ?? {}),
-              top: -(rootLayout?.pageY ?? 0),
-              left: -(rootLayout?.pageX ?? 0),
-              zIndex: zIndex,
-              height: height,
-              width: width,
-            },
-          ]}
-        >
-          <BlurView
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-            }}
-            blurType={blurType ?? 'light'}
-            blurAmount={blurAmount ?? 5}
-            reducedTransparencyFallbackColor={
-              reducedTransparencyFallbackColor ?? 'white'
-            }
-            overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
-          />
-        </View>
+        <>
+          <View
+            style={[
+              ...(isDarkTheme
+                ? [
+                    {
+                      ...darkStyles?.backdrop,
+                      ...(customDarkStyles?.backdrop ?? {}),
+                    },
+                  ]
+                : [
+                    {
+                      ...lightStyles?.backdrop,
+                      ...(customLightStyles?.backdrop ?? {}),
+                    },
+                  ]),
+              {
+                top:
+                  -(rootLayout?.pageY ?? 0) - (rootLayout?.pageY ?? 0 - height),
+                left:
+                  -(rootLayout?.pageX ?? 0) + (rootLayout?.pageX ?? 0 - width),
+                zIndex: zIndex,
+                height: height,
+                width: width,
+                ...styles.backdrop,
+                ...(customStyles?.backdrop ?? {}),
+              },
+            ]}
+          >
+            <BlurView
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+              }}
+              blurType={blurType ?? 'light'}
+              blurAmount={blurAmount ?? 5}
+              reducedTransparencyFallbackColor={
+                reducedTransparencyFallbackColor ?? 'white'
+              }
+              overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
+            />
+          </View>
+        </>
       )}
       <FormLayout
         label={label}
@@ -469,23 +477,81 @@ function Input({
         labelOptional={labelOptional}
         error={error}
         descriptionText={descriptionText}
+        isLoading={isFocused}
+        loadingHighlightColor={
+          isDarkTheme
+            ? customDarkStyles?.container?.backgroundColor?.toString() ??
+              darkStyles.container?.backgroundColor?.toString()
+            : customLightStyles?.container?.backgroundColor?.toString() ??
+              lightStyles.container?.backgroundColor?.toString()
+        }
         customStyles={{
           ...customExtraStyles.formLayout,
           root: {
             zIndex: zIndex,
+            ...customExtraStyles.formLayout?.root,
           },
           container: {
             position: isFocused ? 'absolute' : 'relative',
             left: -inputLeft,
             bottom: -inputBottom,
             width: containerWidth,
+            ...customExtraStyles.formLayout?.container,
           },
         }}
-        customDarkStyles={customExtraDarkStyles.formLayout}
-        customLightStyles={customExtraLightStyles.formLayout}
+        customLightStyles={{
+          label: {
+            backgroundColor: isFocused
+              ? customLightStyles?.container?.backgroundColor ??
+                lightStyles?.container?.backgroundColor
+              : undefined,
+          },
+          labelAfter: {
+            backgroundColor: isFocused
+              ? customLightStyles?.container?.backgroundColor ??
+                lightStyles?.container?.backgroundColor
+              : undefined,
+          },
+          ...customExtraLightStyles.formLayout,
+        }}
+        customDarkStyles={{
+          label: {
+            backgroundColor: isFocused
+              ? customDarkStyles?.container?.backgroundColor ??
+                darkStyles?.container?.backgroundColor
+              : undefined,
+          },
+          labelAfter: {
+            backgroundColor: isFocused
+              ? customDarkStyles?.container?.backgroundColor ??
+                darkStyles?.container?.backgroundColor
+              : undefined,
+          },
+          ...customExtraDarkStyles.formLayout,
+        }}
+        loadingChildren={
+          <Skeleton
+            boneColor={'transparent'}
+            highlightColor={
+              isDarkTheme
+                ? darkStyles.container?.backgroundColor?.toString()
+                : lightStyles.container?.backgroundColor?.toString()
+            }
+            isLoading={true}
+            easing={Easing.bezier(0.0, 0.0, 0.2, 1)}
+            animationDirection={'horizontalRight'}
+            layout={[
+              {
+                alignSelf: 'flex-start',
+                borderRadius: styles.container?.borderRadius,
+                width: rootLayout?.width,
+                height: containerLayout?.height,
+              },
+            ]}
+          />
+        }
         onLayout={(e) =>
           e.currentTarget.measure((x, y, width, height, pageX, pageY) => {
-            setContainerWidth(width);
             setRootLayout({
               x,
               y,
@@ -951,6 +1017,7 @@ function TextArea({
   };
 
   const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    Vibration.vibrate([0, 50], false);
     setIsFocused(true);
     onFocus?.(e);
   };
@@ -991,7 +1058,7 @@ function TextArea({
       showSubscription.remove();
       hideSubscription.remove();
     };
-  }, []);
+  }, [popout]);
 
   useEffect(() => {
     if (!popout) {
@@ -1010,14 +1077,13 @@ function TextArea({
       setInputLeft(rootLayout?.pageX ?? 0);
       setZIndex(24);
       setContainerWidth(width);
-      Vibration.vibrate([0, 50], false);
-    } else {
+    } else if (!isFocused) {
       setInputBottom(0);
       setInputLeft(0);
       setZIndex(0);
       setContainerWidth(rootLayout?.width ?? 0);
     }
-  }, [keyboardHeight, containerLayout, popout]);
+  }, [keyboardHeight, containerLayout, rootLayout, popout]);
 
   return (
     <>
@@ -1038,13 +1104,15 @@ function TextArea({
                   },
                 ]),
             {
-              ...styles.backdrop,
-              ...(customStyles?.backdrop ?? {}),
-              top: -(rootLayout?.pageY ?? 0),
-              left: -(rootLayout?.pageX ?? 0),
+              top:
+                -(rootLayout?.pageY ?? 0) - (rootLayout?.pageY ?? 0 - height),
+              left:
+                -(rootLayout?.pageX ?? 0) + (rootLayout?.pageX ?? 0 - width),
               zIndex: zIndex,
               height: height,
               width: width,
+              ...styles.backdrop,
+              ...(customStyles?.backdrop ?? {}),
             },
           ]}
         >
@@ -1076,19 +1144,79 @@ function TextArea({
           ...customExtraStyles.formLayoutStyles,
           root: {
             zIndex: zIndex,
+            ...customExtraStyles.formLayoutStyles?.root,
           },
           container: {
             position: isFocused ? 'absolute' : 'relative',
             left: -inputLeft,
             bottom: -inputBottom,
             width: containerWidth,
+            ...customExtraStyles.formLayoutStyles?.container,
           },
         }}
-        customDarkStyles={customExtraStyles.formLayoutDarkStyles}
-        customLightStyles={customExtraStyles.formLayoutLightStyles}
+        customLightStyles={{
+          label: {
+            backgroundColor: isFocused
+              ? customLightStyles?.container?.backgroundColor ??
+                lightStyles?.container?.backgroundColor
+              : undefined,
+          },
+          labelAfter: {
+            backgroundColor: isFocused
+              ? customLightStyles?.container?.backgroundColor ??
+                lightStyles?.container?.backgroundColor
+              : undefined,
+          },
+          ...customExtraStyles.formLayoutLightStyles,
+        }}
+        customDarkStyles={{
+          label: {
+            backgroundColor: isFocused
+              ? customDarkStyles?.container?.backgroundColor ??
+                darkStyles?.container?.backgroundColor
+              : undefined,
+          },
+          labelAfter: {
+            backgroundColor: isFocused
+              ? customDarkStyles?.container?.backgroundColor ??
+                darkStyles?.container?.backgroundColor
+              : undefined,
+          },
+          ...customExtraStyles.formLayoutLightStyles,
+        }}
+        loadingHighlightColor={
+          isDarkTheme
+            ? customDarkStyles?.container?.backgroundColor?.toString() ??
+              darkStyles.container?.backgroundColor?.toString()
+            : customLightStyles?.container?.backgroundColor?.toString() ??
+              lightStyles.container?.backgroundColor?.toString()
+        }
+        isLoading={isFocused}
+        loadingChildren={
+          <Skeleton
+            boneColor={'transparent'}
+            highlightColor={
+              isDarkTheme
+                ? customDarkStyles?.container?.backgroundColor?.toString() ??
+                  darkStyles.container?.backgroundColor?.toString()
+                : customLightStyles?.container?.backgroundColor?.toString() ??
+                  lightStyles.container?.backgroundColor?.toString()
+            }
+            isLoading={true}
+            easing={Easing.bezier(0.0, 0.0, 0.2, 1)}
+            animationDirection={'horizontalRight'}
+            layout={[
+              {
+                alignSelf: 'flex-start',
+                borderRadius: styles.container?.borderRadius,
+                width: rootLayout?.width,
+                height: containerLayout?.height,
+              },
+            ]}
+          />
+        }
         onLayout={(e) =>
           e.currentTarget.measure((x, y, width, height, pageX, pageY) => {
-            setContainerWidth(width);
             setRootLayout({
               x,
               y,

@@ -69,28 +69,20 @@ export const Default: Story = {
     }, [error]);
 
     return (
-      <ScrollView
-        style={{
-          padding: 13,
-        }}
-      >
-        <Auth
-          {...args}
-          emailValue={email}
-          passwordValue={password}
-          emailErrorMessage={emailErrorMessage}
-          passwordErrorMessage={passwordErrorMessage}
-          confirmPasswordErrorMessage={confirmPasswordErrorMessage}
-          onEmailChanged={(e) => setEmail(e.nativeEvent.text)}
-          onPasswordChanged={(e) => setPassword(e.nativeEvent.text)}
-          onSigninError={(error: AuthError) => setError(error)}
-          onSignupError={(error: AuthError) => setError(error)}
-          onAuthenticating={() => console.log('Authenticating!')}
-          onEmailConfirmationSent={() =>
-            console.log('Email confirmation sent!')
-          }
-        />
-      </ScrollView>
+      <Auth
+        {...args}
+        emailValue={email}
+        passwordValue={password}
+        emailErrorMessage={emailErrorMessage}
+        passwordErrorMessage={passwordErrorMessage}
+        confirmPasswordErrorMessage={confirmPasswordErrorMessage}
+        onEmailChanged={(e) => setEmail(e.nativeEvent.text)}
+        onPasswordChanged={(e) => setPassword(e.nativeEvent.text)}
+        onSigninError={(error: AuthError) => setError(error)}
+        onSignupError={(error: AuthError) => setError(error)}
+        onAuthenticating={() => console.log('Authenticating!')}
+        onEmailConfirmationSent={() => console.log('Email confirmation sent!')}
+      />
     );
   },
 };
@@ -127,25 +119,17 @@ export const WithSocialAuthSignin: Story = {
     }, [error]);
 
     return (
-      <ScrollView
-        style={{
-          padding: 13,
-        }}
-      >
-        <Auth
-          {...args}
-          providers={['facebook', 'google']}
-          onAuthenticating={() => console.log('Authenticating!')}
-          onEmailConfirmationSent={() =>
-            console.log('Email confirmation sent!')
-          }
-          emailErrorMessage={emailErrorMessage}
-          passwordErrorMessage={passwordErrorMessage}
-          confirmPasswordErrorMessage={confirmPasswordErrorMessage}
-          onSigninError={(error: AuthError) => setError(error)}
-          onSignupError={(error: AuthError) => setError(error)}
-        />
-      </ScrollView>
+      <Auth
+        {...args}
+        providers={['facebook', 'google']}
+        onAuthenticating={() => console.log('Authenticating!')}
+        onEmailConfirmationSent={() => console.log('Email confirmation sent!')}
+        emailErrorMessage={emailErrorMessage}
+        passwordErrorMessage={passwordErrorMessage}
+        confirmPasswordErrorMessage={confirmPasswordErrorMessage}
+        onSigninError={(error: AuthError) => setError(error)}
+        onSignupError={(error: AuthError) => setError(error)}
+      />
     );
   },
 };
@@ -182,36 +166,28 @@ export const WithAllSocialAuthSignin: Story = {
     }, [error]);
 
     return (
-      <ScrollView
-        style={{
-          padding: 13,
-        }}
-      >
-        <Auth
-          {...args}
-          providers={[
-            'apple',
-            'azure',
-            'bitbucket',
-            'discord',
-            'facebook',
-            'github',
-            'google',
-            'twitch',
-            'twitter',
-          ]}
-          socialColors={true}
-          onAuthenticating={() => console.log('Authenticating!')}
-          onEmailConfirmationSent={() =>
-            console.log('Email confirmation sent!')
-          }
-          emailErrorMessage={emailErrorMessage}
-          passwordErrorMessage={passwordErrorMessage}
-          confirmPasswordErrorMessage={confirmPasswordErrorMessage}
-          onSigninError={(error: AuthError) => setError(error)}
-          onSignupError={(error: AuthError) => setError(error)}
-        />
-      </ScrollView>
+      <Auth
+        {...args}
+        providers={[
+          'apple',
+          'azure',
+          'bitbucket',
+          'discord',
+          'facebook',
+          'github',
+          'google',
+          'twitch',
+          'twitter',
+        ]}
+        socialColors={true}
+        onAuthenticating={() => console.log('Authenticating!')}
+        onEmailConfirmationSent={() => console.log('Email confirmation sent!')}
+        emailErrorMessage={emailErrorMessage}
+        passwordErrorMessage={passwordErrorMessage}
+        confirmPasswordErrorMessage={confirmPasswordErrorMessage}
+        onSigninError={(error: AuthError) => setError(error)}
+        onSignupError={(error: AuthError) => setError(error)}
+      />
     );
   },
 };
@@ -248,37 +224,29 @@ export const WithAllSocialAuthSignup: Story = {
     }, [error]);
 
     return (
-      <ScrollView
-        style={{
-          padding: 13,
-        }}
-      >
-        <Auth
-          {...args}
-          providers={[
-            'apple',
-            'azure',
-            'bitbucket',
-            'discord',
-            'facebook',
-            'github',
-            'google',
-            'twitch',
-            'twitter',
-          ]}
-          socialColors={true}
-          view={'sign_up'}
-          onAuthenticating={() => console.log('Authenticating!')}
-          onEmailConfirmationSent={() =>
-            console.log('Email confirmation sent!')
-          }
-          emailErrorMessage={emailErrorMessage}
-          passwordErrorMessage={passwordErrorMessage}
-          confirmPasswordErrorMessage={confirmPasswordErrorMessage}
-          onSigninError={(error: AuthError) => setError(error)}
-          onSignupError={(error: AuthError) => setError(error)}
-        />
-      </ScrollView>
+      <Auth
+        {...args}
+        providers={[
+          'apple',
+          'azure',
+          'bitbucket',
+          'discord',
+          'facebook',
+          'github',
+          'google',
+          'twitch',
+          'twitter',
+        ]}
+        socialColors={true}
+        view={'sign_up'}
+        onAuthenticating={() => console.log('Authenticating!')}
+        onEmailConfirmationSent={() => console.log('Email confirmation sent!')}
+        emailErrorMessage={emailErrorMessage}
+        passwordErrorMessage={passwordErrorMessage}
+        confirmPasswordErrorMessage={confirmPasswordErrorMessage}
+        onSigninError={(error: AuthError) => setError(error)}
+        onSignupError={(error: AuthError) => setError(error)}
+      />
     );
   },
 };
@@ -288,15 +256,7 @@ export const ForgottenPassword: Story = {
     supabaseClient: supabase,
   },
   render: (args: any) => {
-    return (
-      <ScrollView
-        style={{
-          padding: 13,
-        }}
-      >
-        <Auth {...args} view={'forgotten_password'} />
-      </ScrollView>
-    );
+    return <Auth {...args} view={'forgotten_password'} />;
   },
 };
 
@@ -305,15 +265,7 @@ export const UpdatePassword: Story = {
     supabaseClient: supabase,
   },
   render: (args: any) => {
-    return (
-      <ScrollView
-        style={{
-          padding: 13,
-        }}
-      >
-        <Auth {...args} view={'update_password'} />
-      </ScrollView>
-    );
+    return <Auth {...args} view={'update_password'} />;
   },
 };
 
@@ -322,14 +274,6 @@ export const ResetPassword: Story = {
     supabaseClient: supabase,
   },
   render: (args: any) => {
-    return (
-      <ScrollView
-        style={{
-          padding: 13,
-        }}
-      >
-        <Auth {...args} view={'reset_password'} />
-      </ScrollView>
-    );
+    return <Auth {...args} view={'reset_password'} />;
   },
 };

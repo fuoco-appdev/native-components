@@ -34,6 +34,40 @@ export const Default: Story = {
         label={'Name'}
         afterLabel={'right text'}
       />
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: MarginsPaddings.mp_5,
+        }}
+      >
+        <Input
+          customExtraStyles={{
+            formLayout: {
+              root: {
+                flex: 1,
+              },
+            },
+          }}
+          placeholder={'Type text here ...'}
+          disabled={false}
+          label={'Name'}
+          afterLabel={'right text'}
+        />
+        <Input
+          customExtraStyles={{
+            formLayout: {
+              root: {
+                flex: 1,
+              },
+            },
+          }}
+          placeholder={'Type text here ...'}
+          disabled={false}
+          label={'Name'}
+          afterLabel={'right text'}
+        />
+      </View>
     </>
   ),
 };
@@ -83,7 +117,9 @@ export const WithDescription: Story = {
 };
 
 export const TextArea: Story = {
-  render: () => <Input.TextArea label={'This is a text area'} />,
+  render: () => (
+    <Input.TextArea label={'This is a text area'} afterLabel={'right text'} />
+  ),
 };
 
 export const TextAreaWithError: Story = {
