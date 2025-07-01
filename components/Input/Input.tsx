@@ -233,7 +233,7 @@ const lightStyles = StyleSheet.create<InputStyles>({
     backgroundColor: Colors.gray_100,
   },
   backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.34)',
+    backgroundColor: 'rgba(255, 255, 255, 0.34)',
   },
   error: {},
   withIcon: {},
@@ -254,7 +254,7 @@ const darkStyles = StyleSheet.create<InputStyles>({
     backgroundColor: Colors.dark_1,
   },
   backdrop: {
-    backgroundColor: 'rgba(255, 255, 255, 0.34)',
+    backgroundColor: 'rgba(0, 0, 0, 0.34)',
   },
   error: {},
   withIcon: {},
@@ -330,10 +330,10 @@ function Input({
   const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
   const isDarkTheme = theme === 'dark';
   const { height, width } = Dimensions.get('window');
-  const containerWidth = useSharedValue(0);
-  const zIndex = useSharedValue(0);
-  const inputBottom = useSharedValue(0);
-  const inputLeft = useSharedValue(0);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [zIndex, setZIndex] = useState<number>(0);
+  const [inputBottom, setInputBottom] = useState<number>(0);
+  const [inputLeft, setInputLeft] = useState<number>(0);
 
   const onCopy = (value: any) => {
     Clipboard.setString(value);
@@ -348,32 +348,14 @@ function Input({
   };
 
   const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    if (popout) {
-      zIndex.value = 12;
-      containerWidth.value = width;
-      Vibration.vibrate([0, 50], false);
-    }
     setIsFocused(true);
     onFocus?.(e);
   };
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    if (popout) {
-      zIndex.value = 0;
-      containerWidth.value = rootLayout?.width ?? 0;
-    }
     setIsFocused(false);
     onBlur?.(e);
   };
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      elevation: zIndex.value,
-      left: -inputLeft.value,
-      bottom: -inputBottom.value,
-      width: containerWidth.value,
-    };
-  });
 
   useEffect(() => {
     if (!popout) {
@@ -413,43 +395,97 @@ function Input({
       return;
     }
 
-    if (keyboardHeight > 0) {
-      inputBottom.value =
+    if (isFocused && keyboardHeight > 0) {
+      setInputBottom(
         height -
-        keyboardHeight -
-        (containerLayout?.height ?? 0) -
-        (rootLayout?.pageY ?? 0);
-      inputLeft.value = rootLayout?.pageX ?? 0;
+          keyboardHeight -
+          (rootLayout?.height ?? 0) -
+          (containerLayout?.height ?? 0) +
+          (containerLayout?.height ?? 0) -
+          (rootLayout?.pageY ?? 0)
+      );
+      setInputLeft(rootLayout?.pageX ?? 0);
+      setZIndex(24);
+      setContainerWidth(width);
+      Vibration.vibrate([0, 50], false);
     } else {
-      inputBottom.value = 0;
-      inputLeft.value = 0;
+      setInputBottom(0);
+      setInputLeft(0);
+      setZIndex(0);
+      setContainerWidth(rootLayout?.width ?? 0);
     }
-  }, [keyboardHeight, containerLayout, rootLayout, popout]);
+  }, [keyboardHeight, containerLayout, popout]);
 
   return (
-    <FormLayout
-      label={label}
-      afterLabel={afterLabel}
-      beforeLabel={beforeLabel}
-      labelOptional={labelOptional}
-      error={error}
-      descriptionText={descriptionText}
-      customStyles={customExtraStyles.formLayout}
-      customDarkStyles={customExtraDarkStyles.formLayout}
-      customLightStyles={customExtraLightStyles.formLayout}
-    >
-      <View
-        style={[
-          styles.root,
-          customStyles?.root ?? {},
-          ...(isDarkTheme
-            ? [darkStyles?.root, customDarkStyles?.root ?? {}]
-            : [lightStyles?.root, customLightStyles?.root ?? {}]),
-          { height: containerLayout?.height },
-        ]}
+    <>
+      {isFocused && (
+        <View
+          style={[
+            ...(isDarkTheme
+              ? [
+                  {
+                    ...darkStyles?.backdrop,
+                    ...(customDarkStyles?.backdrop ?? {}),
+                  },
+                ]
+              : [
+                  {
+                    ...lightStyles?.backdrop,
+                    ...(customLightStyles?.backdrop ?? {}),
+                  },
+                ]),
+            {
+              ...styles.backdrop,
+              ...(customStyles?.backdrop ?? {}),
+              top: -(rootLayout?.pageY ?? 0),
+              left: -(rootLayout?.pageX ?? 0),
+              zIndex: zIndex,
+              height: height,
+              width: width,
+            },
+          ]}
+        >
+          <BlurView
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+            }}
+            blurType={blurType ?? 'light'}
+            blurAmount={blurAmount ?? 5}
+            reducedTransparencyFallbackColor={
+              reducedTransparencyFallbackColor ?? 'white'
+            }
+            overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
+          />
+        </View>
+      )}
+      <FormLayout
+        label={label}
+        afterLabel={afterLabel}
+        beforeLabel={beforeLabel}
+        labelOptional={labelOptional}
+        error={error}
+        descriptionText={descriptionText}
+        customStyles={{
+          ...customExtraStyles.formLayout,
+          root: {
+            zIndex: zIndex,
+          },
+          container: {
+            position: isFocused ? 'absolute' : 'relative',
+            left: -inputLeft,
+            bottom: -inputBottom,
+            width: containerWidth,
+          },
+        }}
+        customDarkStyles={customExtraDarkStyles.formLayout}
+        customLightStyles={customExtraLightStyles.formLayout}
         onLayout={(e) =>
           e.currentTarget.measure((x, y, width, height, pageX, pageY) => {
-            containerWidth.value = width;
+            setContainerWidth(width);
             setRootLayout({
               x,
               y,
@@ -461,206 +497,173 @@ function Input({
           })
         }
       >
-        {isFocused && (
-          <View
-            style={[
-              ...(isDarkTheme
-                ? [
-                    {
-                      ...darkStyles?.backdrop,
-                      ...(customDarkStyles?.backdrop ?? {}),
-                    },
-                  ]
-                : [
-                    {
-                      ...lightStyles?.backdrop,
-                      ...(customLightStyles?.backdrop ?? {}),
-                    },
-                  ]),
-              {
-                ...styles.backdrop,
-                ...(customStyles?.backdrop ?? {}),
-                top: -(rootLayout?.pageY ?? 0),
-                left: -(rootLayout?.pageX ?? 0),
-                height: height,
-                width: width,
-              },
-            ]}
-          >
-            <BlurView
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-              }}
-              blurType={blurType ?? 'light'}
-              blurAmount={blurAmount ?? 5}
-              reducedTransparencyFallbackColor={
-                reducedTransparencyFallbackColor ?? 'white'
-              }
-              overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
-            />
-          </View>
-        )}
-        <Animated.View
+        <View
           style={[
-            styles.container,
-            customStyles?.container ?? {},
-            error ? styles.error : {},
+            styles.root,
+            customStyles?.root ?? {},
             ...(isDarkTheme
-              ? [
-                  darkStyles?.container,
-                  error ? darkStyles.error : {},
-                  customDarkStyles?.container ?? {},
-                ]
-              : [
-                  lightStyles?.container,
-                  error ? lightStyles.error : {},
-                  customLightStyles?.container ?? {},
-                ]),
-            { position: 'absolute' },
-            animatedStyle,
+              ? [darkStyles?.root, customDarkStyles?.root ?? {}]
+              : [lightStyles?.root, customLightStyles?.root ?? {}]),
           ]}
         >
-          {icon && (
-            <View
-              style={[
-                styles.iconContainer,
-                customStyles?.iconContainer ?? {},
-                ...(isDarkTheme
-                  ? [
-                      darkStyles?.iconContainer,
-                      customDarkStyles?.iconContainer ?? {},
-                    ]
-                  : [
-                      lightStyles?.iconContainer,
-                      customLightStyles?.iconContainer ?? {},
-                    ]),
-              ]}
-            >
-              {icon}
-            </View>
-          )}
-          <TextInput
+          <View
             style={[
-              styles.input,
-              customStyles?.input ?? {},
+              styles.container,
+              customStyles?.container ?? {},
+              error ? styles.error : {},
               ...(isDarkTheme
-                ? [darkStyles?.input, customDarkStyles?.input ?? {}]
-                : [lightStyles?.input, customLightStyles?.input ?? {}]),
+                ? [
+                    darkStyles?.container,
+                    error ? darkStyles.error : {},
+                    customDarkStyles?.container ?? {},
+                  ]
+                : [
+                    lightStyles?.container,
+                    error ? lightStyles.error : {},
+                    customLightStyles?.container ?? {},
+                  ]),
             ]}
-            value={value}
-            autoComplete={autoComplete}
-            autoFocus={autoFocus}
-            placeholderTextColor={
-              placeholderTextColor ?? isDarkTheme
-                ? Colors.gray_400
-                : Colors.gray_600
-            }
-            defaultValue={defaultValue}
-            editable={!disabled}
-            selectTextOnFocus={!disabled}
-            onChange={onChange ? (event) => onChange(event) : undefined}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onContentSizeChange={(e) => {
-              e.currentTarget.measure((x, y, width, height, pageX, pageY) => {
-                const layout = {
-                  x,
-                  y,
-                  width,
-                  height,
-                  pageX,
-                  pageY,
-                };
-                setContainerLayout(layout);
-              });
-            }}
-            placeholder={placeholder}
-            secureTextEntry={isHidden}
-            keyboardType={type}
-            {...textInputProps}
-          />
-          {copy || error || actions || password ? (
-            <View
+          >
+            {icon && (
+              <View
+                style={[
+                  styles.iconContainer,
+                  customStyles?.iconContainer ?? {},
+                  ...(isDarkTheme
+                    ? [
+                        darkStyles?.iconContainer,
+                        customDarkStyles?.iconContainer ?? {},
+                      ]
+                    : [
+                        lightStyles?.iconContainer,
+                        customLightStyles?.iconContainer ?? {},
+                      ]),
+                ]}
+              >
+                {icon}
+              </View>
+            )}
+            <TextInput
               style={[
-                styles.actionsContainer,
-                customStyles?.actionsContainer ?? {},
+                styles.input,
+                customStyles?.input ?? {},
                 ...(isDarkTheme
-                  ? [
-                      darkStyles?.actionsContainer,
-                      customDarkStyles?.actionsContainer ?? {},
-                    ]
-                  : [
-                      lightStyles?.actionsContainer,
-                      customLightStyles?.actionsContainer ?? {},
-                    ]),
+                  ? [darkStyles?.input, customDarkStyles?.input ?? {}]
+                  : [lightStyles?.input, customLightStyles?.input ?? {}]),
               ]}
-            >
-              {reveal ? (
-                <Button
-                  customStyles={customExtraStyles.revealButton}
-                  customDarkStyles={customExtraDarkStyles.revealButton}
-                  customLightStyles={customExtraLightStyles.revealButton}
-                  size={'tiny'}
-                  type={'text'}
-                  rounded={true}
-                  icon={
-                    isHidden
-                      ? icons?.hiddenReveal ?? (
-                          <Visibility
-                            size={21}
-                            color={
-                              isDarkTheme ? Colors.gray_100 : Colors.gray_900
-                            }
-                          />
-                        )
-                      : icons?.reveal ?? (
-                          <VisibilityOff
-                            size={21}
-                            color={
-                              isDarkTheme ? Colors.gray_100 : Colors.gray_900
-                            }
-                          />
-                        )
-                  }
-                  onPress={onReveal}
-                />
-              ) : null}
-              {error &&
-                (icons?.error ?? (
-                  <ErrorOutline
-                    size={21}
-                    color={Colors.red_500}
-                    strokeWidth={0}
+              value={value}
+              autoComplete={autoComplete}
+              autoFocus={autoFocus}
+              placeholderTextColor={
+                placeholderTextColor ?? isDarkTheme
+                  ? Colors.gray_400
+                  : Colors.gray_600
+              }
+              defaultValue={defaultValue}
+              editable={!disabled}
+              selectTextOnFocus={!disabled}
+              onChange={onChange ? (event) => onChange(event) : undefined}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              onContentSizeChange={(e) => {
+                e.currentTarget.measure((x, y, width, height, pageX, pageY) => {
+                  const layout = {
+                    x,
+                    y,
+                    width,
+                    height,
+                    pageX,
+                    pageY,
+                  };
+                  setContainerLayout(layout);
+                });
+              }}
+              placeholder={placeholder}
+              secureTextEntry={isHidden}
+              keyboardType={type}
+              {...textInputProps}
+            />
+            {copy || error || actions || password ? (
+              <View
+                style={[
+                  styles.actionsContainer,
+                  customStyles?.actionsContainer ?? {},
+                  ...(isDarkTheme
+                    ? [
+                        darkStyles?.actionsContainer,
+                        customDarkStyles?.actionsContainer ?? {},
+                      ]
+                    : [
+                        lightStyles?.actionsContainer,
+                        customLightStyles?.actionsContainer ?? {},
+                      ]),
+                ]}
+              >
+                {reveal ? (
+                  <Button
+                    customStyles={customExtraStyles.revealButton}
+                    customDarkStyles={customExtraDarkStyles.revealButton}
+                    customLightStyles={customExtraLightStyles.revealButton}
+                    size={'tiny'}
+                    type={'text'}
+                    rounded={true}
+                    icon={
+                      isHidden
+                        ? icons?.hiddenReveal ?? (
+                            <Visibility
+                              size={21}
+                              color={
+                                isDarkTheme ? Colors.gray_100 : Colors.gray_900
+                              }
+                            />
+                          )
+                        : icons?.reveal ?? (
+                            <VisibilityOff
+                              size={21}
+                              color={
+                                isDarkTheme ? Colors.gray_100 : Colors.gray_900
+                              }
+                            />
+                          )
+                    }
+                    onPress={onReveal}
                   />
-                ))}
-              {copy && (
-                <Button
-                  size={'tiny'}
-                  type={'default'}
-                  rounded={true}
-                  onPress={() => onCopy(value)}
-                  icon={
-                    icons?.copy ?? (
-                      <ContentCopy
-                        size={21}
-                        color={isDarkTheme ? Colors.gray_100 : Colors.gray_900}
-                      />
-                    )
-                  }
-                >
-                  {copyLabel}
-                </Button>
-              )}
-              {actions && actions}
-            </View>
-          ) : null}
-        </Animated.View>
-      </View>
-    </FormLayout>
+                ) : null}
+                {error &&
+                  (icons?.error ?? (
+                    <ErrorOutline
+                      size={21}
+                      color={Colors.red_500}
+                      strokeWidth={0}
+                    />
+                  ))}
+                {copy && (
+                  <Button
+                    size={'tiny'}
+                    type={'default'}
+                    rounded={true}
+                    onPress={() => onCopy(value)}
+                    icon={
+                      icons?.copy ?? (
+                        <ContentCopy
+                          size={21}
+                          color={
+                            isDarkTheme ? Colors.gray_100 : Colors.gray_900
+                          }
+                        />
+                      )
+                    }
+                  >
+                    {copyLabel}
+                  </Button>
+                )}
+                {actions && actions}
+              </View>
+            ) : null}
+          </View>
+        </View>
+      </FormLayout>
+    </>
   );
 }
 
@@ -935,10 +938,10 @@ function TextArea({
     pageX: number;
     pageY: number;
   }>();
-  const containerWidth = useSharedValue(0);
-  const zIndex = useSharedValue(0);
-  const inputBottom = useSharedValue(0);
-  const inputLeft = useSharedValue(0);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [zIndex, setZIndex] = useState<number>(0);
+  const [inputBottom, setInputBottom] = useState<number>(0);
+  const [inputLeft, setInputLeft] = useState<number>(0);
 
   const onInputChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setCharLength(e.nativeEvent.text.length);
@@ -948,34 +951,14 @@ function TextArea({
   };
 
   const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    if (popout) {
-      zIndex.value = 12;
-      containerWidth.value = width;
-      Vibration.vibrate([0, 50], false);
-    }
-
     setIsFocused(true);
     onFocus?.(e);
   };
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    if (popout) {
-      zIndex.value = 0;
-      containerWidth.value = rootLayout?.width ?? 0;
-    }
-
     setIsFocused(false);
     onBlur?.(e);
   };
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      elevation: zIndex.value,
-      left: -inputLeft.value,
-      bottom: -inputBottom.value,
-      width: containerWidth.value,
-    };
-  });
 
   useEffect(() => {
     if (!popout) {
@@ -1015,43 +998,97 @@ function TextArea({
       return;
     }
 
-    if (keyboardHeight > 0) {
-      inputBottom.value =
+    if (isFocused && keyboardHeight > 0) {
+      setInputBottom(
         height -
-        keyboardHeight -
-        (containerLayout?.height ?? 0) -
-        (rootLayout?.pageY ?? 0);
-      inputLeft.value = rootLayout?.pageX ?? 0;
+          keyboardHeight -
+          (rootLayout?.height ?? 0) -
+          (containerLayout?.height ?? 0) +
+          (containerLayout?.height ?? 0) -
+          (rootLayout?.pageY ?? 0)
+      );
+      setInputLeft(rootLayout?.pageX ?? 0);
+      setZIndex(24);
+      setContainerWidth(width);
+      Vibration.vibrate([0, 50], false);
     } else {
-      inputBottom.value = 0;
-      inputLeft.value = 0;
+      setInputBottom(0);
+      setInputLeft(0);
+      setZIndex(0);
+      setContainerWidth(rootLayout?.width ?? 0);
     }
-  }, [keyboardHeight, containerLayout]);
+  }, [keyboardHeight, containerLayout, popout]);
 
   return (
-    <FormLayout
-      label={label}
-      afterLabel={afterLabel}
-      beforeLabel={beforeLabel}
-      labelOptional={labelOptional}
-      error={error}
-      descriptionText={descriptionText}
-      customStyles={customExtraStyles.formLayoutStyles}
-      customDarkStyles={customExtraStyles.formLayoutDarkStyles}
-      customLightStyles={customExtraStyles.formLayoutLightStyles}
-    >
-      <View
-        style={[
-          styles.root,
-          customStyles?.root ?? {},
-          ...(isDarkTheme
-            ? [darkStyles?.root, customDarkStyles?.root ?? {}]
-            : [lightStyles?.root, customLightStyles?.root ?? {}]),
-          { height: containerLayout?.height },
-        ]}
+    <>
+      {isFocused && (
+        <View
+          style={[
+            ...(isDarkTheme
+              ? [
+                  {
+                    ...darkStyles?.backdrop,
+                    ...(customDarkStyles?.backdrop ?? {}),
+                  },
+                ]
+              : [
+                  {
+                    ...lightStyles?.backdrop,
+                    ...(customLightStyles?.backdrop ?? {}),
+                  },
+                ]),
+            {
+              ...styles.backdrop,
+              ...(customStyles?.backdrop ?? {}),
+              top: -(rootLayout?.pageY ?? 0),
+              left: -(rootLayout?.pageX ?? 0),
+              zIndex: zIndex,
+              height: height,
+              width: width,
+            },
+          ]}
+        >
+          <BlurView
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+            }}
+            blurType={blurType ?? 'light'}
+            blurAmount={blurAmount ?? 5}
+            reducedTransparencyFallbackColor={
+              reducedTransparencyFallbackColor ?? 'white'
+            }
+            overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
+          />
+        </View>
+      )}
+      <FormLayout
+        label={label}
+        afterLabel={afterLabel}
+        beforeLabel={beforeLabel}
+        labelOptional={labelOptional}
+        error={error}
+        descriptionText={descriptionText}
+        customStyles={{
+          ...customExtraStyles.formLayoutStyles,
+          root: {
+            zIndex: zIndex,
+          },
+          container: {
+            position: isFocused ? 'absolute' : 'relative',
+            left: -inputLeft,
+            bottom: -inputBottom,
+            width: containerWidth,
+          },
+        }}
+        customDarkStyles={customExtraStyles.formLayoutDarkStyles}
+        customLightStyles={customExtraStyles.formLayoutLightStyles}
         onLayout={(e) =>
           e.currentTarget.measure((x, y, width, height, pageX, pageY) => {
-            containerWidth.value = width;
+            setContainerWidth(width);
             setRootLayout({
               x,
               y,
@@ -1063,139 +1100,107 @@ function TextArea({
           })
         }
       >
-        {isFocused && (
-          <View
-            style={[
-              ...(isDarkTheme
-                ? [
-                    {
-                      ...darkStyles?.backdrop,
-                      ...(customDarkStyles?.backdrop ?? {}),
-                    },
-                  ]
-                : [
-                    {
-                      ...lightStyles?.backdrop,
-                      ...(customLightStyles?.backdrop ?? {}),
-                    },
-                  ]),
-              {
-                ...styles.backdrop,
-                ...(customStyles?.backdrop ?? {}),
-                top: -(rootLayout?.pageY ?? 0),
-                left: -(rootLayout?.pageX ?? 0),
-                height: height,
-                width: width,
-              },
-            ]}
-          >
-            <BlurView
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-              }}
-              blurType={blurType ?? 'light'}
-              blurAmount={blurAmount ?? 5}
-              reducedTransparencyFallbackColor={
-                reducedTransparencyFallbackColor ?? 'white'
-              }
-              overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
-            />
-          </View>
-        )}
-        <Animated.View
+        <View
           style={[
-            textAreaStyles.container,
-            customStyles?.container ?? {},
-            error ? textAreaStyles.error : {},
+            styles.root,
+            customStyles?.root ?? {},
             ...(isDarkTheme
-              ? [
-                  textAreaDarkStyles?.container,
-                  error ? textAreaDarkStyles.error : {},
-                  customDarkStyles?.container ?? {},
-                ]
-              : [
-                  textAreaLightStyles?.container,
-                  error ? textAreaLightStyles.error : {},
-                  customLightStyles?.container ?? {},
-                ]),
-            { position: 'absolute' },
-            animatedStyle,
+              ? [darkStyles?.root, customDarkStyles?.root ?? {}]
+              : [lightStyles?.root, customLightStyles?.root ?? {}]),
           ]}
         >
-          <TextInput
+          <Animated.View
             style={[
-              textAreaStyles.input,
-              customStyles?.input ?? {},
+              textAreaStyles.container,
+              customStyles?.container ?? {},
+              error ? textAreaStyles.error : {},
               ...(isDarkTheme
-                ? [textAreaDarkStyles?.input, customDarkStyles?.input ?? {}]
-                : [textAreaLightStyles?.input, customLightStyles?.input ?? {}]),
+                ? [
+                    textAreaDarkStyles?.container,
+                    error ? textAreaDarkStyles.error : {},
+                    customDarkStyles?.container ?? {},
+                  ]
+                : [
+                    textAreaLightStyles?.container,
+                    error ? textAreaLightStyles.error : {},
+                    customLightStyles?.container ?? {},
+                  ]),
             ]}
-            multiline={true}
-            value={value}
-            autoComplete={autoComplete}
-            autoFocus={autoFocus}
-            textAlignVertical={'top'}
-            placeholderTextColor={
-              placeholderTextColor ?? isDarkTheme
-                ? Colors.gray_400
-                : Colors.gray_600
-            }
-            numberOfLines={numberOfLines}
-            maxLength={limit}
-            defaultValue={defaultValue}
-            editable={!disabled}
-            selectTextOnFocus={!disabled}
-            onContentSizeChange={(e) => {
-              e.currentTarget.measure((x, y, width, height, pageX, pageY) => {
-                const layout = {
-                  x,
-                  y,
-                  width,
-                  height,
-                  pageX,
-                  pageY,
-                };
-                setContainerLayout(layout);
-              });
-            }}
-            onChange={(event) => onInputChange(event)}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            placeholder={placeholder}
-            keyboardType={type}
-            {...textInputProps}
-          />
-          {error && (
-            <View
+          >
+            <TextInput
               style={[
-                textAreaStyles.actionsContainer,
-                customStyles?.actionsContainer ?? {},
+                textAreaStyles.input,
+                customStyles?.input ?? {},
                 ...(isDarkTheme
-                  ? [
-                      textAreaDarkStyles?.actionsContainer,
-                      customDarkStyles?.actionsContainer ?? {},
-                    ]
+                  ? [textAreaDarkStyles?.input, customDarkStyles?.input ?? {}]
                   : [
-                      textAreaLightStyles?.actionsContainer,
-                      customLightStyles?.actionsContainer ?? {},
+                      textAreaLightStyles?.input,
+                      customLightStyles?.input ?? {},
                     ]),
               ]}
-            >
-              <ErrorOutline size={21} color={Colors.red_500} />
-            </View>
+              multiline={true}
+              value={value}
+              autoComplete={autoComplete}
+              autoFocus={autoFocus}
+              textAlignVertical={'top'}
+              placeholderTextColor={
+                placeholderTextColor ?? isDarkTheme
+                  ? Colors.gray_400
+                  : Colors.gray_600
+              }
+              numberOfLines={numberOfLines}
+              maxLength={limit}
+              defaultValue={defaultValue}
+              editable={!disabled}
+              selectTextOnFocus={!disabled}
+              onContentSizeChange={(e) => {
+                e.currentTarget.measure((x, y, width, height, pageX, pageY) => {
+                  const layout = {
+                    x,
+                    y,
+                    width,
+                    height,
+                    pageX,
+                    pageY,
+                  };
+                  setContainerLayout(layout);
+                });
+              }}
+              onChange={(event) => onInputChange(event)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              placeholder={placeholder}
+              keyboardType={type}
+              {...textInputProps}
+            />
+            {error && (
+              <View
+                style={[
+                  textAreaStyles.actionsContainer,
+                  customStyles?.actionsContainer ?? {},
+                  ...(isDarkTheme
+                    ? [
+                        textAreaDarkStyles?.actionsContainer,
+                        customDarkStyles?.actionsContainer ?? {},
+                      ]
+                    : [
+                        textAreaLightStyles?.actionsContainer,
+                        customLightStyles?.actionsContainer ?? {},
+                      ]),
+                ]}
+              >
+                <ErrorOutline size={21} color={Colors.red_500} />
+              </View>
+            )}
+          </Animated.View>
+          {limit && (
+            <Typography.Text>
+              {charLength}/{limit}
+            </Typography.Text>
           )}
-        </Animated.View>
-        {limit && (
-          <Typography.Text>
-            {charLength}/{limit}
-          </Typography.Text>
-        )}
-      </View>
-    </FormLayout>
+        </View>
+      </FormLayout>
+    </>
   );
 }
 

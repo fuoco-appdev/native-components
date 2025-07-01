@@ -21,12 +21,20 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <Input
-      placeholder={'Type text here ...'}
-      disabled={false}
-      label={'Name'}
-      afterLabel={'right text'}
-    />
+    <>
+      <Input
+        placeholder={'Type text here ...'}
+        disabled={false}
+        label={'Name'}
+        afterLabel={'right text'}
+      />
+      <Input
+        placeholder={'Type text here ...'}
+        disabled={false}
+        label={'Name'}
+        afterLabel={'right text'}
+      />
+    </>
   ),
 };
 

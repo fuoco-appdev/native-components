@@ -1,6 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {
   ImageStyle,
+  LayoutChangeEvent,
   StyleSheet,
   Text,
   TextStyle,
@@ -22,6 +23,7 @@ import Animated, {
 
 export interface FormLayoutStyles {
   root?: ViewStyle;
+  container?: ViewStyle;
   flex?: ViewStyle;
   flexLeft?: TextStyle;
   flexRight?: TextStyle;
@@ -43,6 +45,10 @@ const styles = StyleSheet.create<FormLayoutStyles>({
   root: {
     marginBottom: MarginsPaddings.mp_5,
     height: 'auto',
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
   },
   flex: {
     display: 'flex',
@@ -178,6 +184,7 @@ export interface FormLayoutProps {
   size?: 'tiny' | 'small' | 'medium' | 'large' | 'xlarge';
   beforeLabel?: string;
   afterLabel?: string;
+  onLayout?: (event: LayoutChangeEvent) => void;
 }
 
 export function FormLayout({
@@ -192,6 +199,7 @@ export function FormLayout({
   children,
   error,
   descriptionText,
+  onLayout,
 }: FormLayoutProps) {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
@@ -258,151 +266,176 @@ export function FormLayout({
           : [{ ...lightStyles?.root, ...(customLightStyles?.root ?? {}) }]),
         { ...styles.root, ...customStyles.root },
       ]}
+      onLayout={onLayout}
     >
-      {labelled && (
-        <View
-          style={[
-            ...(isDarkTheme
-              ? [
-                  {
-                    ...darkStyles?.labelContainer,
-                    ...(customDarkStyles?.labelContainer ?? {}),
-                  },
-                ]
-              : [
-                  {
-                    ...lightStyles?.labelContainer,
-                    ...(customLightStyles?.labelContainer ?? {}),
-                  },
-                ]),
-            { ...styles.labelContainer, ...customStyles.labelContainer },
-          ]}
-        >
-          <Text
+      <View
+        style={[
+          ...(isDarkTheme
+            ? [
+                {
+                  ...darkStyles?.container,
+                  ...(customDarkStyles?.container ?? {}),
+                },
+              ]
+            : [
+                {
+                  ...lightStyles?.container,
+                  ...(customLightStyles?.container ?? {}),
+                },
+              ]),
+          { ...styles.container, ...customStyles.container },
+        ]}
+      >
+        {labelled && (
+          <View
             style={[
               ...(isDarkTheme
-                ? [{ ...darkStyles?.label, ...(customDarkStyles?.label ?? {}) }]
+                ? [
+                    {
+                      ...darkStyles?.labelContainer,
+                      ...(customDarkStyles?.labelContainer ?? {}),
+                    },
+                  ]
                 : [
                     {
-                      ...lightStyles?.label,
-                      ...(customLightStyles?.label ?? {}),
+                      ...lightStyles?.labelContainer,
+                      ...(customLightStyles?.labelContainer ?? {}),
                     },
                   ]),
-              { ...styles.label, ...customStyles.label },
-              textSizeStyle,
+              { ...styles.labelContainer, ...customStyles.labelContainer },
             ]}
           >
-            {beforeLabel && (
-              <Text
-                style={[
-                  ...(isDarkTheme
-                    ? [
-                        {
-                          ...darkStyles?.labelBefore,
-                          ...(customDarkStyles?.labelBefore ?? {}),
-                        },
-                      ]
-                    : [
-                        {
-                          ...lightStyles?.labelBefore,
-                          ...(customLightStyles?.labelBefore ?? {}),
-                        },
-                      ]),
-                  { ...styles.labelBefore, ...customStyles.labelBefore },
-                ]}
-              >
-                {beforeLabel}
-              </Text>
-            )}
-            {label}
-            {labelOptional && (
-              <Text
-                style={[
-                  ...(isDarkTheme
-                    ? [
-                        {
-                          ...darkStyles?.labelOptional,
-                          ...(customDarkStyles?.labelOptional ?? {}),
-                        },
-                      ]
-                    : [
-                        {
-                          ...lightStyles?.labelOptional,
-                          ...(customLightStyles?.labelOptional ?? {}),
-                        },
-                      ]),
-                  { ...styles.labelOptional, ...customStyles.labelOptional },
-                ]}
-              >
-                {' '}
-                {labelOptional}
-              </Text>
-            )}
-          </Text>
-          {afterLabel && (
             <Text
               style={[
                 ...(isDarkTheme
                   ? [
                       {
-                        ...darkStyles?.labelAfter,
-                        ...(customDarkStyles?.labelAfter ?? {}),
+                        ...darkStyles?.label,
+                        ...(customDarkStyles?.label ?? {}),
                       },
                     ]
                   : [
                       {
-                        ...lightStyles?.labelAfter,
-                        ...(customLightStyles?.labelAfter ?? {}),
+                        ...lightStyles?.label,
+                        ...(customLightStyles?.label ?? {}),
                       },
                     ]),
-                { ...styles.labelAfter, ...customStyles.labelAfter },
+                { ...styles.label, ...customStyles.label },
+                textSizeStyle,
               ]}
             >
-              {afterLabel}
+              {beforeLabel && (
+                <Text
+                  style={[
+                    ...(isDarkTheme
+                      ? [
+                          {
+                            ...darkStyles?.labelBefore,
+                            ...(customDarkStyles?.labelBefore ?? {}),
+                          },
+                        ]
+                      : [
+                          {
+                            ...lightStyles?.labelBefore,
+                            ...(customLightStyles?.labelBefore ?? {}),
+                          },
+                        ]),
+                    { ...styles.labelBefore, ...customStyles.labelBefore },
+                  ]}
+                >
+                  {beforeLabel}
+                </Text>
+              )}
+              {label}
+              {labelOptional && (
+                <Text
+                  style={[
+                    ...(isDarkTheme
+                      ? [
+                          {
+                            ...darkStyles?.labelOptional,
+                            ...(customDarkStyles?.labelOptional ?? {}),
+                          },
+                        ]
+                      : [
+                          {
+                            ...lightStyles?.labelOptional,
+                            ...(customLightStyles?.labelOptional ?? {}),
+                          },
+                        ]),
+                    { ...styles.labelOptional, ...customStyles.labelOptional },
+                  ]}
+                >
+                  {' '}
+                  {labelOptional}
+                </Text>
+              )}
             </Text>
-          )}
-        </View>
-      )}
-      {children}
-      {error && (
-        <Text
-          style={[
-            ...(isDarkTheme
-              ? [{ ...darkStyles?.error, ...(customDarkStyles?.error ?? {}) }]
-              : [
-                  {
-                    ...lightStyles?.error,
-                    ...(customLightStyles?.error ?? {}),
-                  },
-                ]),
-            { ...styles.error, ...customStyles.error },
-          ]}
-        >
-          {error}
-        </Text>
-      )}
-      {descriptionText && (
-        <Text
-          style={[
-            ...(isDarkTheme
-              ? [
-                  {
-                    ...darkStyles?.description,
-                    ...(customDarkStyles?.description ?? {}),
-                  },
-                ]
-              : [
-                  {
-                    ...lightStyles?.description,
-                    ...(customLightStyles?.description ?? {}),
-                  },
-                ]),
-            { ...styles.description, ...customStyles.description },
-          ]}
-        >
-          {descriptionText}
-        </Text>
-      )}
+            {afterLabel && (
+              <Text
+                style={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.labelAfter,
+                          ...(customDarkStyles?.labelAfter ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.labelAfter,
+                          ...(customLightStyles?.labelAfter ?? {}),
+                        },
+                      ]),
+                  { ...styles.labelAfter, ...customStyles.labelAfter },
+                ]}
+              >
+                {afterLabel}
+              </Text>
+            )}
+          </View>
+        )}
+        {children}
+        {error && (
+          <Text
+            style={[
+              ...(isDarkTheme
+                ? [{ ...darkStyles?.error, ...(customDarkStyles?.error ?? {}) }]
+                : [
+                    {
+                      ...lightStyles?.error,
+                      ...(customLightStyles?.error ?? {}),
+                    },
+                  ]),
+              { ...styles.error, ...customStyles.error },
+            ]}
+          >
+            {error}
+          </Text>
+        )}
+        {descriptionText && (
+          <Text
+            style={[
+              ...(isDarkTheme
+                ? [
+                    {
+                      ...darkStyles?.description,
+                      ...(customDarkStyles?.description ?? {}),
+                    },
+                  ]
+                : [
+                    {
+                      ...lightStyles?.description,
+                      ...(customLightStyles?.description ?? {}),
+                    },
+                  ]),
+              { ...styles.description, ...customStyles.description },
+            ]}
+          >
+            {descriptionText}
+          </Text>
+        )}
+      </View>
     </Animated.View>
   );
 }
