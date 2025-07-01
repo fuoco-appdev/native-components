@@ -27,6 +27,7 @@ export interface FormLayoutStyles {
   flexRight?: TextStyle;
   labelContainerHorizontal?: ViewStyle;
   labelContainerVertical?: ViewStyle;
+  labelContainer?: ViewStyle;
   label?: TextStyle;
   labelBefore?: TextStyle;
   labelAfter?: TextStyle;
@@ -57,12 +58,18 @@ const styles = StyleSheet.create<FormLayoutStyles>({
   },
   labelContainerHorizontal: {},
   labelContainerVertical: {},
+  labelContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
   label: {
     display: 'flex',
+    flexDirection: 'row',
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
     marginBottom: MarginsPaddings.mp_3,
     fontFamily: Globals.font_family,
+    flex: 1,
   },
   labelBefore: {
     fontSize: Globals.font_size_sm,
@@ -253,66 +260,85 @@ export function FormLayout({
       ]}
     >
       {labelled && (
-        <Text
+        <View
           style={[
             ...(isDarkTheme
-              ? [{ ...darkStyles?.label, ...(customDarkStyles?.label ?? {}) }]
+              ? [
+                  {
+                    ...darkStyles?.labelContainer,
+                    ...(customDarkStyles?.labelContainer ?? {}),
+                  },
+                ]
               : [
                   {
-                    ...lightStyles?.label,
-                    ...(customLightStyles?.label ?? {}),
+                    ...lightStyles?.labelContainer,
+                    ...(customLightStyles?.labelContainer ?? {}),
                   },
                 ]),
-            { ...styles.label, ...customStyles.label },
-            textSizeStyle,
+            { ...styles.labelContainer, ...customStyles.labelContainer },
           ]}
         >
-          {beforeLabel && (
-            <Text
-              style={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.labelBefore,
-                        ...(customDarkStyles?.labelBefore ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.labelBefore,
-                        ...(customLightStyles?.labelBefore ?? {}),
-                      },
-                    ]),
-                { ...styles.labelBefore, ...customStyles.labelBefore },
-              ]}
-            >
-              {beforeLabel}
-            </Text>
-          )}
-          {label}
-          {labelOptional && (
-            <Text
-              style={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.labelOptional,
-                        ...(customDarkStyles?.labelOptional ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.labelOptional,
-                        ...(customLightStyles?.labelOptional ?? {}),
-                      },
-                    ]),
-                { ...styles.labelOptional, ...customStyles.labelOptional },
-              ]}
-            >
-              {' '}
-              {labelOptional}
-            </Text>
-          )}
+          <Text
+            style={[
+              ...(isDarkTheme
+                ? [{ ...darkStyles?.label, ...(customDarkStyles?.label ?? {}) }]
+                : [
+                    {
+                      ...lightStyles?.label,
+                      ...(customLightStyles?.label ?? {}),
+                    },
+                  ]),
+              { ...styles.label, ...customStyles.label },
+              textSizeStyle,
+            ]}
+          >
+            {beforeLabel && (
+              <Text
+                style={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.labelBefore,
+                          ...(customDarkStyles?.labelBefore ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.labelBefore,
+                          ...(customLightStyles?.labelBefore ?? {}),
+                        },
+                      ]),
+                  { ...styles.labelBefore, ...customStyles.labelBefore },
+                ]}
+              >
+                {beforeLabel}
+              </Text>
+            )}
+            {label}
+            {labelOptional && (
+              <Text
+                style={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.labelOptional,
+                          ...(customDarkStyles?.labelOptional ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.labelOptional,
+                          ...(customLightStyles?.labelOptional ?? {}),
+                        },
+                      ]),
+                  { ...styles.labelOptional, ...customStyles.labelOptional },
+                ]}
+              >
+                {' '}
+                {labelOptional}
+              </Text>
+            )}
+          </Text>
           {afterLabel && (
             <Text
               style={[
@@ -335,7 +361,7 @@ export function FormLayout({
               {afterLabel}
             </Text>
           )}
-        </Text>
+        </View>
       )}
       {children}
       {error && (

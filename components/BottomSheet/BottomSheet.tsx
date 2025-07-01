@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   GestureResponderEvent,
-  KeyboardAvoidingView,
   ListRenderItem,
   StyleSheet,
   TouchableOpacity,
@@ -297,9 +296,38 @@ function BottomSheet({
               sheetAnimatedStyle,
             ]}
           >
-            <KeyboardAvoidingView behavior={'height'}>
-              {type === 'scroll-view' && (
-                <ScrollView
+            {type === 'scroll-view' && (
+              <ScrollView
+                ref={scrollRef}
+                simultaneousHandlers={panGestureRef}
+                keyboardShouldPersistTaps={'always'}
+                contentContainerStyle={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.scrollView,
+                          ...(customDarkStyles?.scrollView ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.scrollView,
+                          ...(customLightStyles?.scrollView ?? {}),
+                        },
+                      ]),
+                  {
+                    ...styles.scrollView,
+                    ...(customStyles?.scrollView ?? {}),
+                  },
+                ]}
+              >
+                {children}
+              </ScrollView>
+            )}
+            {type === 'flat-list' && (
+              <>
+                {children}
+                <FlatList
                   ref={scrollRef}
                   simultaneousHandlers={panGestureRef}
                   keyboardShouldPersistTaps={'always'}
@@ -322,43 +350,12 @@ function BottomSheet({
                       ...(customStyles?.scrollView ?? {}),
                     },
                   ]}
-                >
-                  {children}
-                </ScrollView>
-              )}
-              {type === 'flat-list' && (
-                <>
-                  {children}
-                  <FlatList
-                    ref={scrollRef}
-                    simultaneousHandlers={panGestureRef}
-                    keyboardShouldPersistTaps={'always'}
-                    contentContainerStyle={[
-                      ...(isDarkTheme
-                        ? [
-                            {
-                              ...darkStyles?.scrollView,
-                              ...(customDarkStyles?.scrollView ?? {}),
-                            },
-                          ]
-                        : [
-                            {
-                              ...lightStyles?.scrollView,
-                              ...(customLightStyles?.scrollView ?? {}),
-                            },
-                          ]),
-                      {
-                        ...styles.scrollView,
-                        ...(customStyles?.scrollView ?? {}),
-                      },
-                    ]}
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={keyExtractor}
-                  />
-                </>
-              )}
-            </KeyboardAvoidingView>
+                  data={data}
+                  renderItem={renderItem}
+                  keyExtractor={keyExtractor}
+                />
+              </>
+            )}
           </Animated.View>
         </GestureDetector>
       </View>

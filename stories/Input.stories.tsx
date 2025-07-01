@@ -8,6 +8,7 @@ import {
 import Input from '../components/Input/Input';
 import { ScrollView, View } from 'react-native';
 import Colors from '../components/Themes/colors';
+import { MarginsPaddings } from '../components';
 
 const meta = {
   title: 'Data Input/Input',
@@ -20,7 +21,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <Input placeholder={'Type text here ...'} disabled={false} label={'Name'} />
+    <Input
+      placeholder={'Type text here ...'}
+      disabled={false}
+      label={'Name'}
+      afterLabel={'right text'}
+    />
   ),
 };
 
