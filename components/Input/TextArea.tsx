@@ -266,6 +266,123 @@ const darkStyles = StyleSheet.create<TextAreaStyles>({
   },
 });
 
+const PopupTextArea = ({
+  isFocused,
+  setIsFocused,
+  onBlur,
+  popout = true,
+  blurType,
+  placeholder,
+  blurAmount,
+  reducedTransparencyFallbackColor,
+  overlayColor,
+  customStyles = {},
+  customLightStyles = {},
+  customDarkStyles = {},
+  label,
+  ...props
+}: {
+  isFocused: boolean;
+  setIsFocused: (value: boolean) => void;
+} & TextAreaProps) => {
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
+  const inputPopupRef = useRef<TextInput>(null);
+
+  const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    if (popout) {
+      setIsFocused(false);
+    }
+
+    onBlur?.(e);
+  };
+
+  useEffect(() => {
+    if (inputPopupRef.current !== null && popout && isFocused) {
+      inputPopupRef.current?.focus();
+    }
+  }, [isFocused, popout, inputPopupRef]);
+
+  return (
+    <View
+      style={[
+        {
+          position: 'absolute',
+          height: '100%',
+          width: '100%',
+          bottom: 30,
+        },
+      ]}
+    >
+      <KeyboardAvoidingView behavior={'height'}>
+        <View
+          style={[
+            ...(isDarkTheme
+              ? [
+                  {
+                    ...darkStyles?.backdrop,
+                    ...(customDarkStyles?.backdrop ?? {}),
+                  },
+                ]
+              : [
+                  {
+                    ...lightStyles?.backdrop,
+                    ...(customLightStyles?.backdrop ?? {}),
+                  },
+                ]),
+            {
+              ...styles.backdrop,
+              ...(customStyles?.backdrop ?? {}),
+            },
+          ]}
+        >
+          <BlurView
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+            }}
+            blurType={blurType ?? 'light'}
+            blurAmount={blurAmount ?? 5}
+            reducedTransparencyFallbackColor={
+              reducedTransparencyFallbackColor ?? 'white'
+            }
+            overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
+          />
+        </View>
+
+        <View
+          style={[
+            {
+              position: 'absolute',
+              bottom: 0,
+            },
+          ]}
+        >
+          <TextAreaInner
+            inputRef={inputPopupRef}
+            focused={true}
+            onBlur={handleBlur}
+            popout={popout}
+            blurType={blurType}
+            placeholder={placeholder}
+            blurAmount={blurAmount}
+            reducedTransparencyFallbackColor={reducedTransparencyFallbackColor}
+            overlayColor={overlayColor}
+            customStyles={customStyles}
+            customLightStyles={customLightStyles}
+            customDarkStyles={customDarkStyles}
+            label={label}
+            {...props}
+          />
+        </View>
+      </KeyboardAvoidingView>
+    </View>
+  );
+};
+
 const TextAreaInner = ({
   inputRef,
   focused,
@@ -458,20 +575,8 @@ function TextArea({
   label,
   ...props
 }: TextAreaProps) {
-  const theme = useColorScheme();
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const isDarkTheme = theme === 'dark';
-  const { width, height } = Dimensions.get('window');
   const inputRef = useRef<TextInput>(null);
-  const inputPopupRef = useRef<TextInput>(null);
-  const [inputLayout, setInputLayout] = useState<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    pageX: number;
-    pageY: number;
-  }>();
 
   const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
     if (popout) {
@@ -481,20 +586,6 @@ function TextArea({
 
     onFocus?.(e);
   };
-
-  const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    if (popout) {
-      setIsFocused(false);
-    }
-
-    onBlur?.(e);
-  };
-
-  useEffect(() => {
-    if (inputPopupRef.current !== null && popout && isFocused) {
-      inputPopupRef.current?.focus();
-    }
-  }, [isFocused, popout, inputPopupRef]);
 
   return (
     <View
@@ -510,11 +601,6 @@ function TextArea({
         focused={false}
         onFocus={handleFocus}
         onBlur={!popout ? onBlur : undefined}
-        onLayout={(e) =>
-          e.currentTarget.measure((x, y, width, height, pageX, pageY) =>
-            setInputLayout({ x, y, width, height, pageX, pageY })
-          )
-        }
         popout={popout}
         blurType={blurType}
         placeholder={placeholder}
@@ -527,88 +613,28 @@ function TextArea({
         label={label}
         {...props}
       />
-      {isFocused && popout && (
-        <View
-          style={[
-            {
-              position: 'absolute',
-              height: height,
-              width: width,
-              zIndex: 99,
-              top: -(inputLayout?.pageY ?? 0) - 30,
-              left: -(inputLayout?.pageX ?? 0),
-            },
-          ]}
-        >
-          <KeyboardAvoidingView behavior={'height'}>
-            <View
-              style={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.backdrop,
-                        ...(customDarkStyles?.backdrop ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.backdrop,
-                        ...(customLightStyles?.backdrop ?? {}),
-                      },
-                    ]),
-                {
-                  ...styles.backdrop,
-                  ...(customStyles?.backdrop ?? {}),
-                },
-              ]}
-            >
-              <BlurView
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  right: 0,
-                }}
-                blurType={blurType ?? 'light'}
-                blurAmount={blurAmount ?? 5}
-                reducedTransparencyFallbackColor={
-                  reducedTransparencyFallbackColor ?? 'white'
-                }
-                overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
-              />
-            </View>
-
-            <View
-              style={[
-                {
-                  position: 'absolute',
-                  bottom: 0,
-                },
-              ]}
-            >
-              <TextAreaInner
-                inputRef={inputPopupRef}
-                focused={true}
-                onBlur={handleBlur}
-                popout={popout}
-                blurType={blurType}
-                placeholder={placeholder}
-                blurAmount={blurAmount}
-                reducedTransparencyFallbackColor={
-                  reducedTransparencyFallbackColor
-                }
-                overlayColor={overlayColor}
-                customStyles={customStyles}
-                customLightStyles={customLightStyles}
-                customDarkStyles={customDarkStyles}
-                label={label}
-                {...props}
-              />
-            </View>
-          </KeyboardAvoidingView>
-        </View>
-      )}
+      <Portal
+        name={`${label || placeholder}-${Math.random()}`}
+        visible={isFocused && popout}
+      >
+        <PopupTextArea
+          isFocused={isFocused}
+          setIsFocused={setIsFocused}
+          onFocus={handleFocus}
+          onBlur={!popout ? onBlur : undefined}
+          popout={popout}
+          blurType={blurType}
+          placeholder={placeholder}
+          blurAmount={blurAmount}
+          reducedTransparencyFallbackColor={reducedTransparencyFallbackColor}
+          overlayColor={overlayColor}
+          customStyles={customStyles}
+          customLightStyles={customLightStyles}
+          customDarkStyles={customDarkStyles}
+          label={label}
+          {...props}
+        />
+      </Portal>
     </View>
   );
 }

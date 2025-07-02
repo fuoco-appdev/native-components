@@ -300,7 +300,6 @@ function BottomSheet({
               <ScrollView
                 ref={scrollRef}
                 simultaneousHandlers={panGestureRef}
-                keyboardShouldPersistTaps={'always'}
                 contentContainerStyle={[
                   ...(isDarkTheme
                     ? [
@@ -330,7 +329,6 @@ function BottomSheet({
                 <FlatList
                   ref={scrollRef}
                   simultaneousHandlers={panGestureRef}
-                  keyboardShouldPersistTaps={'always'}
                   contentContainerStyle={[
                     ...(isDarkTheme
                       ? [

@@ -32,8 +32,6 @@ export const Default: Story = {
             disabled={false}
             label={'Name'}
             afterLabel={'right text'}
-            value={name}
-            onChange={(e) => setName(e.nativeEvent.text)}
           />
           <Input
             placeholder={'Type text here ...'}
@@ -119,7 +117,9 @@ export const WithDescription: Story = {
 
 export const TextArea: Story = {
   render: () => (
-    <Input.TextArea label={'This is a text area'} afterLabel={'right text'} />
+    <PortalProvider>
+      <Input.TextArea label={'This is a text area'} afterLabel={'right text'} />
+    </PortalProvider>
   ),
 };
 
