@@ -229,7 +229,7 @@ const lightStyles = StyleSheet.create<TextAreaStyles>({
     backgroundColor: Colors.gray_100,
   },
   backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.34)',
+    backgroundColor: 'rgba(255, 255, 255, 0.34)',
   },
   error: {},
   withIcon: {},
@@ -250,7 +250,7 @@ const darkStyles = StyleSheet.create<TextAreaStyles>({
     backgroundColor: Colors.dark_1,
   },
   backdrop: {
-    backgroundColor: 'rgba(255, 255, 255, 0.34)',
+    backgroundColor: 'rgba(0, 0, 0, 0.34)',
   },
   error: {},
   withIcon: {},
