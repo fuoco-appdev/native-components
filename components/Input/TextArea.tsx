@@ -320,34 +320,38 @@ const TextAreaInner = ({
       descriptionText={descriptionText}
       customStyles={customExtraStyles.formLayoutStyles}
       customLightStyles={{
+        ...customExtraStyles.formLayoutLightStyles,
         label: {
           backgroundColor: focused
             ? customLightStyles?.container?.backgroundColor ??
               lightStyles?.container?.backgroundColor
             : undefined,
+          ...customExtraStyles.formLayoutLightStyles?.label,
         },
         labelAfter: {
           backgroundColor: focused
             ? customLightStyles?.container?.backgroundColor ??
               lightStyles?.container?.backgroundColor
             : undefined,
+          ...customExtraStyles.formLayoutLightStyles?.labelAfter,
         },
-        ...customExtraStyles.formLayoutLightStyles,
       }}
       customDarkStyles={{
+        ...customExtraStyles.formLayoutLightStyles,
         label: {
           backgroundColor: focused
             ? customDarkStyles?.container?.backgroundColor ??
               darkStyles?.container?.backgroundColor
             : undefined,
+          ...customExtraStyles.formLayoutLightStyles?.label,
         },
         labelAfter: {
           backgroundColor: focused
             ? customDarkStyles?.container?.backgroundColor ??
               darkStyles?.container?.backgroundColor
             : undefined,
+          ...customExtraStyles.formLayoutLightStyles?.labelAfter,
         },
-        ...customExtraStyles.formLayoutLightStyles,
       }}
       onLayout={onLayout}
     >
@@ -530,7 +534,7 @@ function TextArea({
               position: 'absolute',
               height: height,
               width: width,
-              zIndex: 24,
+              zIndex: 99,
               top: -(inputLayout?.pageY ?? 0) - 30,
               left: -(inputLayout?.pageX ?? 0),
             },

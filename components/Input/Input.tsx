@@ -345,34 +345,38 @@ const InputInner = ({
       descriptionText={descriptionText}
       customStyles={customExtraStyles.formLayout}
       customLightStyles={{
+        ...customExtraLightStyles.formLayout,
         label: {
           backgroundColor: focused
             ? customLightStyles?.container?.backgroundColor ??
               lightStyles?.container?.backgroundColor
             : undefined,
+          ...customExtraLightStyles.formLayout?.label,
         },
         labelAfter: {
           backgroundColor: focused
             ? customLightStyles?.container?.backgroundColor ??
               lightStyles?.container?.backgroundColor
             : undefined,
+          ...customExtraLightStyles.formLayout?.labelAfter,
         },
-        ...customExtraLightStyles.formLayout,
       }}
       customDarkStyles={{
+        ...customExtraDarkStyles.formLayout,
         label: {
           backgroundColor: focused
             ? customDarkStyles?.container?.backgroundColor ??
               darkStyles?.container?.backgroundColor
             : undefined,
+          ...customExtraDarkStyles.formLayout?.label,
         },
         labelAfter: {
           backgroundColor: focused
             ? customDarkStyles?.container?.backgroundColor ??
               darkStyles?.container?.backgroundColor
             : undefined,
+          ...customExtraDarkStyles.formLayout?.labelAfter,
         },
-        ...customExtraDarkStyles.formLayout,
       }}
       onLayout={onLayout}
     >
@@ -622,7 +626,7 @@ function Input({
               position: 'absolute',
               height: height,
               width: width,
-              zIndex: 24,
+              zIndex: 999,
               top: -(inputLayout?.pageY ?? 0) - 30,
               left: -(inputLayout?.pageX ?? 0),
             },
