@@ -46,7 +46,6 @@ export interface FormLayoutStyles {
 const styles = StyleSheet.create<FormLayoutStyles>({
   root: {
     position: 'relative',
-    marginBottom: MarginsPaddings.mp_5,
     height: 'auto',
   },
   container: {
@@ -179,9 +178,6 @@ export interface FormLayoutProps {
   customStyles?: FormLayoutStyles;
   customLightStyles?: FormLayoutStyles;
   customDarkStyles?: FormLayoutStyles;
-  isLoading?: boolean;
-  loadingHighlightColor?: string;
-  loadingChildren?: any;
   align?: string;
   children?: any;
   descriptionText?: string;
@@ -202,9 +198,6 @@ export function FormLayout({
   customStyles = {},
   customLightStyles = {},
   customDarkStyles = {},
-  isLoading,
-  loadingHighlightColor = Colors.gray_300,
-  loadingChildren,
   size = 'medium',
   label,
   beforeLabel,
@@ -219,14 +212,6 @@ export function FormLayout({
   const isDarkTheme = theme === 'dark';
   const labelled = Boolean(label || beforeLabel || afterLabel);
   const shakeAnimation = useSharedValue(0);
-  const [containerLayout, setContainerLayout] = useState<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    pageX: number;
-    pageY: number;
-  }>();
 
   let textSizeStyle: TextStyle = {};
   if (size === 'tiny') {
@@ -290,47 +275,6 @@ export function FormLayout({
       ]}
       onLayout={onLayout}
     >
-      {isLoading && (
-        <View
-          style={[
-            {
-              display: 'flex',
-              flexDirection: 'column',
-              height: customStyles.container?.height ?? containerLayout?.height,
-              width: customStyles.container?.width ?? containerLayout?.width,
-            },
-          ]}
-        >
-          <Skeleton
-            boneColor={'transparent'}
-            highlightColor={loadingHighlightColor}
-            isLoading={true}
-            easing={Easing.bezier(0.0, 0.0, 0.2, 1)}
-            animationDirection={'horizontalRight'}
-            containerStyle={[
-              {
-                marginTop:
-                  ((textSizeStyle.lineHeight ?? 0) -
-                    (textSizeStyle?.fontSize ?? 0)) /
-                  2,
-                marginBottom:
-                  ((textSizeStyle.lineHeight ?? 0) -
-                    (textSizeStyle?.fontSize ?? 0)) /
-                  2,
-              },
-            ]}
-            layout={[
-              {
-                alignSelf: 'flex-start',
-                borderRadius: Globals.rounded_full,
-                width: 89,
-                height: textSizeStyle.fontSize,
-              },
-            ]}
-          />
-          {loadingChildren}
-        </View>
-      )}
       <View
         style={[
           ...(isDarkTheme
@@ -348,11 +292,6 @@ export function FormLayout({
               ]),
           { ...styles.container, ...customStyles.container },
         ]}
-        onLayout={(e) =>
-          e.currentTarget.measure((x, y, width, height, pageX, pageY) =>
-            setContainerLayout({ x, y, width, height, pageX, pageY })
-          )
-        }
       >
         {labelled && (
           <View

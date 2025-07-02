@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   ChevronRight,
@@ -6,9 +7,10 @@ import {
   ShoppingBasket,
 } from '../components/Icon/Icons/Line';
 import Input from '../components/Input/Input';
-import { ScrollView, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import Colors from '../components/Themes/colors';
-import { MarginsPaddings } from '../components';
+import { MarginsPaddings, PortalProvider } from '../components';
+import { useState } from 'react';
 
 const meta = {
   title: 'Data Input/Input',
@@ -20,56 +22,55 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <>
-      <Input
-        placeholder={'Type text here ...'}
-        disabled={false}
-        label={'Name'}
-        afterLabel={'right text'}
-      />
-      <Input
-        placeholder={'Type text here ...'}
-        disabled={false}
-        label={'Name'}
-        afterLabel={'right text'}
-      />
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          gap: MarginsPaddings.mp_5,
-        }}
-      >
-        <Input
-          customExtraStyles={{
-            formLayout: {
-              root: {
-                flex: 1,
-              },
-            },
-          }}
-          placeholder={'Type text here ...'}
-          disabled={false}
-          label={'Name'}
-          afterLabel={'right text'}
-        />
-        <Input
-          customExtraStyles={{
-            formLayout: {
-              root: {
-                flex: 1,
-              },
-            },
-          }}
-          placeholder={'Type text here ...'}
-          disabled={false}
-          label={'Name'}
-          afterLabel={'right text'}
-        />
-      </View>
-    </>
-  ),
+  render: () => {
+    const [name, setName] = useState<string>('');
+    return (
+      <PortalProvider>
+        <SafeAreaView style={[{ height: '100%', width: '100%' }]}>
+          <Input
+            placeholder={'Type text here ...'}
+            disabled={false}
+            label={'Name'}
+            afterLabel={'right text'}
+            value={name}
+            onChange={(e) => setName(e.nativeEvent.text)}
+          />
+          <Input
+            placeholder={'Type text here ...'}
+            disabled={false}
+            label={'Name'}
+            afterLabel={'right text'}
+            value={name}
+            onChange={(e) => setName(e.nativeEvent.text)}
+          />
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: MarginsPaddings.mp_5,
+            }}
+          >
+            <Input
+              placeholder={'Type text here ...'}
+              disabled={false}
+              label={'Name'}
+              afterLabel={'right text'}
+              value={name}
+              onChange={(e) => setName(e.nativeEvent.text)}
+            />
+            <Input
+              placeholder={'Type text here ...'}
+              disabled={false}
+              label={'Name'}
+              afterLabel={'right text'}
+              value={name}
+              onChange={(e) => setName(e.nativeEvent.text)}
+            />
+          </View>
+        </SafeAreaView>
+      </PortalProvider>
+    );
+  },
 };
 
 export const ErrorState: Story = {
