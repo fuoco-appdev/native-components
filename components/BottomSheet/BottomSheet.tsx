@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   GestureResponderEvent,
+  Keyboard,
   KeyboardAvoidingView,
   ListRenderItem,
   Platform,
@@ -134,6 +135,7 @@ function BottomSheet({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const panGestureRef = React.useRef<GestureType>(Gesture.Pan());
   const scrollRef = React.useRef<any>();
   const onGestureEventRef = React.useRef<PanGesture>();
@@ -205,6 +207,31 @@ function BottomSheet({
   useEffect(() => {
     onPanGestureRef?.(panGestureRef.current);
   }, [onPanGestureRef]);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (event) => {
+        setKeyboardHeight(event.endCoordinates.height);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    sheetHeight.value = sheetHeight.value - keyboardHeight;
+  }, [keyboardHeight, sheetHeight]);
 
   return (
     <Portal name={id} visible={isOpen}>
