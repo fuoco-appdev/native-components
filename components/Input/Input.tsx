@@ -608,7 +608,7 @@ const PopupInput = ({
           position: 'absolute',
           height: height - keyboardHeight,
           width: width,
-          bottom: 30,
+          bottom: 0,
         },
       ]}
     >
@@ -656,7 +656,7 @@ const PopupInput = ({
           style={[
             {
               position: 'absolute',
-              bottom: 0,
+              bottom: 30,
             },
           ]}
         >

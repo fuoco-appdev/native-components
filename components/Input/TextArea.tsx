@@ -339,7 +339,7 @@ const PopupTextArea = ({
           position: 'absolute',
           height: height - keyboardHeight,
           width: width,
-          bottom: 30,
+          bottom: 0,
         },
       ]}
     >
@@ -387,7 +387,7 @@ const PopupTextArea = ({
           style={[
             {
               position: 'absolute',
-              bottom: 0,
+              bottom: 30,
             },
           ]}
         >
