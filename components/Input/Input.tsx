@@ -345,7 +345,23 @@ const InputInner = ({
       labelOptional={labelOptional}
       error={error}
       descriptionText={descriptionText}
-      customStyles={customExtraStyles.formLayout}
+      customStyles={{
+        ...customExtraStyles.formLayout,
+        label: {
+          borderTopLeftRadius: Globals.rounded_lg,
+          borderTopRightRadius: Globals.rounded_lg,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          ...customExtraStyles.formLayout?.label,
+        },
+        labelAfter: {
+          borderTopLeftRadius: Globals.rounded_lg,
+          borderTopRightRadius: Globals.rounded_lg,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          ...customExtraStyles.formLayout?.labelAfter,
+        },
+      }}
       customLightStyles={{
         ...customExtraLightStyles.formLayout,
         label: {

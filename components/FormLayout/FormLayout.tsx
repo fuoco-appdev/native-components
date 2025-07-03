@@ -77,10 +77,6 @@ const styles = StyleSheet.create<FormLayoutStyles>({
     fontSize: Globals.font_size_sm,
     lineHeight: Globals.font_line_height_sm,
     padding: MarginsPaddings.mp_3,
-    borderTopLeftRadius: Globals.rounded_lg,
-    borderTopRightRadius: Globals.rounded_lg,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
     fontFamily: Globals.font_family,
   },
   labelBefore: {
@@ -94,10 +90,6 @@ const styles = StyleSheet.create<FormLayoutStyles>({
     textAlign: 'right',
     fontFamily: Globals.font_family,
     padding: MarginsPaddings.mp_3,
-    borderTopLeftRadius: Globals.rounded_lg,
-    borderTopRightRadius: Globals.rounded_lg,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
   },
   labelOptional: {
     fontSize: Globals.font_size_sm,

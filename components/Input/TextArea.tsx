@@ -464,7 +464,23 @@ const TextAreaInner = ({
       labelOptional={labelOptional}
       error={error}
       descriptionText={descriptionText}
-      customStyles={customExtraStyles.formLayoutStyles}
+      customStyles={{
+        ...customExtraStyles.formLayoutStyles,
+        label: {
+          borderTopLeftRadius: Globals.rounded_lg,
+          borderTopRightRadius: Globals.rounded_lg,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          ...customExtraStyles.formLayoutStyles?.label,
+        },
+        labelAfter: {
+          borderTopLeftRadius: Globals.rounded_lg,
+          borderTopRightRadius: Globals.rounded_lg,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          ...customExtraStyles.formLayoutStyles?.labelAfter,
+        },
+      }}
       customLightStyles={{
         ...customExtraStyles.formLayoutLightStyles,
         label: {
