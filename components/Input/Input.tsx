@@ -697,7 +697,7 @@ const PopupInput = ({
 function Input({
   onFocus,
   onBlur,
-  popout = true,
+  popout = false,
   blurType,
   placeholder,
   blurAmount,

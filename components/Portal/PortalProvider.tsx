@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 export interface PortalProviderProps {
   children: React.ReactNode;
@@ -31,10 +37,14 @@ export default function PortalProvider({ children }: PortalProviderProps) {
     });
   };
 
+  const items = useMemo(() => {
+    return Object.entries(components).map(([name, Component]) => Component);
+  }, [components]);
+
   return (
     <PortalContext.Provider value={{ addComponent, removeComponent }}>
       {children}
-      {Object.entries(components).map(([name, Component]) => Component)}
+      {items}
     </PortalContext.Provider>
   );
 }
