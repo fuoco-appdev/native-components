@@ -289,7 +289,7 @@ const PopupTextArea = ({
 } & TextAreaProps) => {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
-  const { height, width } = Dimensions.get('window');
+  const { height, width } = Dimensions.get('screen');
   const inputPopupRef = useRef<TextInput>(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
@@ -387,7 +387,7 @@ const PopupTextArea = ({
           style={[
             {
               position: 'absolute',
-              bottom: 0,
+              bottom: 30,
             },
           ]}
         >
