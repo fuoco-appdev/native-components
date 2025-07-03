@@ -82,7 +82,6 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     borderTopRightRadius: Globals.rounded_md,
     borderTopLeftRadius: Globals.rounded_md,
     zIndex: 2,
-    //maxHeight: '89%',
   },
   backdrop: {
     position: 'relative',
@@ -133,8 +132,8 @@ function BottomSheet({
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { height } = Dimensions.get('window');
-  const [contentHeight, setContentHeight] = useState<number>(0);
-  const [sheetHeight, setSheetHeight] = useState<number>(0);
+  const [scrollHeight, setScrollHeight] = useState<number>(0);
+  const sheetHeightValue = useSharedValue(0);
   const panGestureRef = React.useRef<GestureType>(Gesture.Pan());
   const scrollRef = React.useRef<any>();
   const onGestureEventRef = React.useRef<PanGesture>();
@@ -154,7 +153,7 @@ function BottomSheet({
       runOnJS(onClose)();
     }
     translateY.value = withTiming(
-      sheetHeight,
+      sheetHeightValue.value,
       { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
       () => {
         runOnJS(setIsOpen)(false);
@@ -164,24 +163,28 @@ function BottomSheet({
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
+    maxHeight: sheetHeightValue.value,
   }));
 
   onGestureEventRef.current = Gesture.Pan()
     .onUpdate((event) => {
-      translateY.value = Math.max(Math.min(event.translationY, sheetHeight), 0);
+      translateY.value = Math.max(
+        Math.min(event.translationY, sheetHeightValue.value),
+        0
+      );
     })
     .onEnd(() => {
-      if (translateY.value < sheetHeight / 1.5) {
+      if (translateY.value < sheetHeightValue.value / 1.5) {
         translateY.value = withTiming(0, {
           easing: Easing.bezier(0.4, 0.0, 0.2, 1),
           duration: duration,
         });
-      } else if (translateY.value > sheetHeight / 2) {
+      } else if (translateY.value > sheetHeightValue.value / 2) {
         if (onClose) {
           runOnJS(onClose)();
         }
         translateY.value = withTiming(
-          sheetHeight,
+          sheetHeightValue.value,
           { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
           () => {
             runOnJS(setIsOpen)(false);
@@ -207,8 +210,8 @@ function BottomSheet({
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       (event) => {
-        if (contentHeight > event.endCoordinates.height) {
-          setSheetHeight(contentHeight - event.endCoordinates.height);
+        if (scrollHeight > event.endCoordinates.height) {
+          sheetHeightValue.value = scrollHeight - event.endCoordinates.height;
         }
       }
     );
@@ -216,8 +219,8 @@ function BottomSheet({
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        if (contentHeight > 0) {
-          setSheetHeight(contentHeight);
+        if (scrollHeight > 0) {
+          sheetHeightValue.value = scrollHeight;
         }
       }
     );
@@ -226,7 +229,11 @@ function BottomSheet({
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
-  }, [contentHeight]);
+  }, [scrollHeight]);
+
+  useEffect(() => {
+    console.log(sheetHeightValue.value);
+  }, [sheetHeightValue]);
 
   return (
     <Portal name={id} visible={isOpen}>
@@ -314,7 +321,6 @@ function BottomSheet({
                 ...styles.sheet,
                 ...(customStyles?.sheet ?? {}),
                 ...(defaultSheetHeight && { height: defaultSheetHeight }),
-                maxHeight: sheetHeight > 0 ? sheetHeight : '60%',
               },
               sheetAnimatedStyle,
             ]}
@@ -323,10 +329,20 @@ function BottomSheet({
               <ScrollView
                 ref={scrollRef}
                 simultaneousHandlers={panGestureRef}
-                style={[{ maxHeight: sheetHeight > 0 ? sheetHeight : '60%' }]}
+                style={[
+                  {
+                    maxHeight:
+                      sheetHeightValue.value > 0
+                        ? sheetHeightValue.value
+                        : height * 0.6,
+                  },
+                ]}
                 onContentSizeChange={(contentWidth, contentHeight) => {
-                  setSheetHeight(Math.min(contentHeight, height * 0.6));
-                  setContentHeight(Math.min(contentHeight, height * 0.6));
+                  setScrollHeight(Math.min(contentHeight, height * 0.6));
+                  sheetHeightValue.value = Math.min(
+                    contentHeight,
+                    height * 0.6
+                  );
                 }}
                 contentContainerStyle={[
                   ...(isDarkTheme
@@ -356,10 +372,20 @@ function BottomSheet({
                 {children}
                 <FlatList
                   ref={scrollRef}
-                  style={[{ maxHeight: sheetHeight }]}
+                  style={[
+                    {
+                      maxHeight:
+                        sheetHeightValue.value > 0
+                          ? sheetHeightValue.value
+                          : height * 0.6,
+                    },
+                  ]}
                   onContentSizeChange={(contentWidth, contentHeight) => {
-                    setSheetHeight(Math.min(contentHeight, height * 0.6));
-                    setContentHeight(Math.min(contentHeight, height * 0.6));
+                    sheetHeightValue.value = Math.min(
+                      contentHeight,
+                      height * 0.6
+                    );
+                    setScrollHeight(Math.min(contentHeight, height * 0.6));
                   }}
                   simultaneousHandlers={panGestureRef}
                   contentContainerStyle={[
