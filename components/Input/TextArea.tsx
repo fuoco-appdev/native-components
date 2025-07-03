@@ -62,9 +62,7 @@ export interface TextAreaStyles {
 }
 
 export interface ExtraTextAreaStyles {
-  formLayoutStyles?: FormLayoutStyles;
-  formLayoutDarkStyles?: FormLayoutStyles;
-  formLayoutLightStyles?: FormLayoutStyles;
+  formLayout?: FormLayoutStyles;
 }
 
 export interface TextAreaProps {
@@ -143,6 +141,8 @@ export interface TextAreaProps {
   customLightStyles?: TextAreaStyles;
   customDarkStyles?: TextAreaStyles;
   customExtraStyles?: ExtraTextAreaStyles;
+  customExtraDarkStyles?: ExtraTextAreaStyles;
+  customExtraLightStyles?: ExtraTextAreaStyles;
   autofocus?: boolean;
   type?: KeyboardTypeOptions;
   numberOfLines?: number;
@@ -432,6 +432,8 @@ const TextAreaInner = ({
   customLightStyles = {},
   customDarkStyles = {},
   customExtraStyles = {},
+  customExtraDarkStyles = {},
+  customExtraLightStyles = {},
   descriptionText,
   disabled,
   error,
@@ -466,50 +468,50 @@ const TextAreaInner = ({
       error={error}
       descriptionText={descriptionText}
       customStyles={{
-        ...customExtraStyles.formLayoutStyles,
+        ...customExtraStyles.formLayout,
         label: {
           borderTopLeftRadius: Globals.rounded_lg,
           borderTopRightRadius: Globals.rounded_lg,
-          ...customExtraStyles.formLayoutStyles?.label,
+          ...customExtraStyles.formLayout?.label,
         },
         labelAfter: {
           borderTopLeftRadius: Globals.rounded_lg,
           borderTopRightRadius: Globals.rounded_lg,
-          ...customExtraStyles.formLayoutStyles?.labelAfter,
+          ...customExtraStyles.formLayout?.labelAfter,
         },
       }}
       customLightStyles={{
-        ...customExtraStyles.formLayoutLightStyles,
+        ...customExtraLightStyles.formLayout,
         label: {
           backgroundColor: focused
             ? customLightStyles?.container?.backgroundColor ??
               lightStyles?.container?.backgroundColor
             : undefined,
-          ...customExtraStyles.formLayoutLightStyles?.label,
+          ...customExtraLightStyles.formLayout?.label,
         },
         labelAfter: {
           backgroundColor: focused
             ? customLightStyles?.container?.backgroundColor ??
               lightStyles?.container?.backgroundColor
             : undefined,
-          ...customExtraStyles.formLayoutLightStyles?.labelAfter,
+          ...customExtraLightStyles.formLayout?.labelAfter,
         },
       }}
       customDarkStyles={{
-        ...customExtraStyles.formLayoutLightStyles,
+        ...customExtraDarkStyles.formLayout,
         label: {
           backgroundColor: focused
             ? customDarkStyles?.container?.backgroundColor ??
               darkStyles?.container?.backgroundColor
             : undefined,
-          ...customExtraStyles.formLayoutLightStyles?.label,
+          ...customExtraDarkStyles.formLayout?.label,
         },
         labelAfter: {
           backgroundColor: focused
             ? customDarkStyles?.container?.backgroundColor ??
               darkStyles?.container?.backgroundColor
             : undefined,
-          ...customExtraStyles.formLayoutLightStyles?.labelAfter,
+          ...customExtraDarkStyles.formLayout?.labelAfter,
         },
       }}
       onLayout={onLayout}
