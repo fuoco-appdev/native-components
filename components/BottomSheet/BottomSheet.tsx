@@ -300,12 +300,37 @@ function BottomSheet({
             ]}
           >
             <SafeAreaView>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                keyboardVerticalOffset={0}
-              >
-                {type === 'scroll-view' && (
-                  <ScrollView
+              {type === 'scroll-view' && (
+                <ScrollView
+                  ref={scrollRef}
+                  simultaneousHandlers={panGestureRef}
+                  contentContainerStyle={[
+                    ...(isDarkTheme
+                      ? [
+                          {
+                            ...darkStyles?.scrollView,
+                            ...(customDarkStyles?.scrollView ?? {}),
+                          },
+                        ]
+                      : [
+                          {
+                            ...lightStyles?.scrollView,
+                            ...(customLightStyles?.scrollView ?? {}),
+                          },
+                        ]),
+                    {
+                      ...styles.scrollView,
+                      ...(customStyles?.scrollView ?? {}),
+                    },
+                  ]}
+                >
+                  {children}
+                </ScrollView>
+              )}
+              {type === 'flat-list' && (
+                <>
+                  {children}
+                  <FlatList
                     ref={scrollRef}
                     simultaneousHandlers={panGestureRef}
                     contentContainerStyle={[
@@ -327,42 +352,12 @@ function BottomSheet({
                         ...(customStyles?.scrollView ?? {}),
                       },
                     ]}
-                  >
-                    {children}
-                  </ScrollView>
-                )}
-                {type === 'flat-list' && (
-                  <>
-                    {children}
-                    <FlatList
-                      ref={scrollRef}
-                      simultaneousHandlers={panGestureRef}
-                      contentContainerStyle={[
-                        ...(isDarkTheme
-                          ? [
-                              {
-                                ...darkStyles?.scrollView,
-                                ...(customDarkStyles?.scrollView ?? {}),
-                              },
-                            ]
-                          : [
-                              {
-                                ...lightStyles?.scrollView,
-                                ...(customLightStyles?.scrollView ?? {}),
-                              },
-                            ]),
-                        {
-                          ...styles.scrollView,
-                          ...(customStyles?.scrollView ?? {}),
-                        },
-                      ]}
-                      data={data}
-                      renderItem={renderItem}
-                      keyExtractor={keyExtractor}
-                    />
-                  </>
-                )}
-              </KeyboardAvoidingView>
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                  />
+                </>
+              )}
             </SafeAreaView>
           </Animated.View>
         </GestureDetector>
