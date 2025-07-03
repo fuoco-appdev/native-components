@@ -339,11 +339,10 @@ const PopupTextArea = ({
           position: 'absolute',
           height: height - keyboardHeight,
           width: width,
-          bottom: 0,
         },
       ]}
     >
-      <KeyboardAvoidingView behavior={'height'} style={[{ flex: 1 }]}>
+      <KeyboardAvoidingView behavior={'height'}>
         <View
           style={[
             ...(isDarkTheme
