@@ -23,6 +23,7 @@ import {
   TextInputSubmitEditingEventData,
   LayoutChangeEvent,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import Skeleton from 'react-native-reanimated-skeleton';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -310,7 +311,7 @@ const PopupTextArea = ({
   }, [isFocused, popout, inputPopupRef]);
 
   return (
-    <View
+    <SafeAreaView
       style={[
         {
           position: 'absolute',
@@ -386,7 +387,7 @@ const PopupTextArea = ({
           />
         </View>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
   );
 };
 
