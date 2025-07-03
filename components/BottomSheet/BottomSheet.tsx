@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
   GestureResponderEvent,
+  KeyboardAvoidingView,
   ListRenderItem,
+  Platform,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
@@ -298,37 +300,12 @@ function BottomSheet({
             ]}
           >
             <SafeAreaView>
-              {type === 'scroll-view' && (
-                <ScrollView
-                  ref={scrollRef}
-                  simultaneousHandlers={panGestureRef}
-                  contentContainerStyle={[
-                    ...(isDarkTheme
-                      ? [
-                          {
-                            ...darkStyles?.scrollView,
-                            ...(customDarkStyles?.scrollView ?? {}),
-                          },
-                        ]
-                      : [
-                          {
-                            ...lightStyles?.scrollView,
-                            ...(customLightStyles?.scrollView ?? {}),
-                          },
-                        ]),
-                    {
-                      ...styles.scrollView,
-                      ...(customStyles?.scrollView ?? {}),
-                    },
-                  ]}
-                >
-                  {children}
-                </ScrollView>
-              )}
-              {type === 'flat-list' && (
-                <>
-                  {children}
-                  <FlatList
+              <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                keyboardVerticalOffset={0}
+              >
+                {type === 'scroll-view' && (
+                  <ScrollView
                     ref={scrollRef}
                     simultaneousHandlers={panGestureRef}
                     contentContainerStyle={[
@@ -350,12 +327,42 @@ function BottomSheet({
                         ...(customStyles?.scrollView ?? {}),
                       },
                     ]}
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={keyExtractor}
-                  />
-                </>
-              )}
+                  >
+                    {children}
+                  </ScrollView>
+                )}
+                {type === 'flat-list' && (
+                  <>
+                    {children}
+                    <FlatList
+                      ref={scrollRef}
+                      simultaneousHandlers={panGestureRef}
+                      contentContainerStyle={[
+                        ...(isDarkTheme
+                          ? [
+                              {
+                                ...darkStyles?.scrollView,
+                                ...(customDarkStyles?.scrollView ?? {}),
+                              },
+                            ]
+                          : [
+                              {
+                                ...lightStyles?.scrollView,
+                                ...(customLightStyles?.scrollView ?? {}),
+                              },
+                            ]),
+                        {
+                          ...styles.scrollView,
+                          ...(customStyles?.scrollView ?? {}),
+                        },
+                      ]}
+                      data={data}
+                      renderItem={renderItem}
+                      keyExtractor={keyExtractor}
+                    />
+                  </>
+                )}
+              </KeyboardAvoidingView>
             </SafeAreaView>
           </Animated.View>
         </GestureDetector>
