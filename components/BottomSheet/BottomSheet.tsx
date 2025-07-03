@@ -1,11 +1,10 @@
+import { BlurView } from '@react-native-community/blur';
 import React, { useEffect, useState } from 'react';
 import {
+  Dimensions,
   GestureResponderEvent,
   Keyboard,
-  KeyboardAvoidingView,
   ListRenderItem,
-  Platform,
-  SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
@@ -30,7 +29,6 @@ import Animated, {
 import { Button, ButtonStyles } from '../Button';
 import { Portal } from '../Portal';
 import { Globals } from '../Themes';
-import { BlurView } from '@react-native-community/blur';
 
 export type SheetPositions = 'minimised' | 'maximised' | 'expanded';
 
@@ -84,8 +82,7 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     borderTopRightRadius: Globals.rounded_md,
     borderTopLeftRadius: Globals.rounded_md,
     zIndex: 2,
-    maxHeight: '89%',
-    flex: 1,
+    //maxHeight: '89%',
   },
   backdrop: {
     position: 'relative',
@@ -135,13 +132,14 @@ function BottomSheet({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const { height } = Dimensions.get('window');
+  const [contentHeight, setContentHeight] = useState<number>(0);
+  const [sheetHeight, setSheetHeight] = useState<number>(0);
   const panGestureRef = React.useRef<GestureType>(Gesture.Pan());
   const scrollRef = React.useRef<any>();
   const onGestureEventRef = React.useRef<PanGesture>();
 
   const translateY = useSharedValue(0);
-  const sheetHeight = useSharedValue(defaultSheetHeight ?? 0);
 
   useEffect(() => {
     if (open && !isOpen) {
@@ -156,7 +154,7 @@ function BottomSheet({
       runOnJS(onClose)();
     }
     translateY.value = withTiming(
-      sheetHeight.value,
+      sheetHeight,
       { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
       () => {
         runOnJS(setIsOpen)(false);
@@ -170,23 +168,20 @@ function BottomSheet({
 
   onGestureEventRef.current = Gesture.Pan()
     .onUpdate((event) => {
-      translateY.value = Math.max(
-        Math.min(event.translationY, sheetHeight.value),
-        0
-      );
+      translateY.value = Math.max(Math.min(event.translationY, sheetHeight), 0);
     })
     .onEnd(() => {
-      if (translateY.value < sheetHeight.value / 1.5) {
+      if (translateY.value < sheetHeight / 1.5) {
         translateY.value = withTiming(0, {
           easing: Easing.bezier(0.4, 0.0, 0.2, 1),
           duration: duration,
         });
-      } else if (translateY.value > sheetHeight.value / 2) {
+      } else if (translateY.value > sheetHeight / 2) {
         if (onClose) {
           runOnJS(onClose)();
         }
         translateY.value = withTiming(
-          sheetHeight.value,
+          sheetHeight,
           { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
           () => {
             runOnJS(setIsOpen)(false);
@@ -212,14 +207,18 @@ function BottomSheet({
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       (event) => {
-        setKeyboardHeight(event.endCoordinates.height);
+        if (contentHeight > event.endCoordinates.height) {
+          setSheetHeight(contentHeight - event.endCoordinates.height);
+        }
       }
     );
 
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        setKeyboardHeight(0);
+        if (contentHeight > 0) {
+          setSheetHeight(contentHeight);
+        }
       }
     );
 
@@ -227,11 +226,7 @@ function BottomSheet({
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
-  }, []);
-
-  useEffect(() => {
-    sheetHeight.value = sheetHeight.value - keyboardHeight;
-  }, [keyboardHeight, sheetHeight]);
+  }, [contentHeight]);
 
   return (
     <Portal name={id} visible={isOpen}>
@@ -294,9 +289,6 @@ function BottomSheet({
         <GestureDetector gesture={onGestureEventRef.current}>
           <Animated.View
             onLayout={(e) => {
-              sheetHeight.value = !defaultSheetHeight
-                ? e.nativeEvent.layout.height
-                : defaultSheetHeight;
               setTimeout(() => {
                 translateY.value = withTiming(0, {
                   easing: Easing.bezier(0.4, 0.0, 0.2, 1),
@@ -322,14 +314,53 @@ function BottomSheet({
                 ...styles.sheet,
                 ...(customStyles?.sheet ?? {}),
                 ...(defaultSheetHeight && { height: defaultSheetHeight }),
+                maxHeight: sheetHeight,
               },
               sheetAnimatedStyle,
             ]}
           >
-            <SafeAreaView>
-              {type === 'scroll-view' && (
-                <ScrollView
+            {type === 'scroll-view' && (
+              <ScrollView
+                ref={scrollRef}
+                simultaneousHandlers={panGestureRef}
+                style={[{ maxHeight: sheetHeight }]}
+                onContentSizeChange={(contentWidth, contentHeight) => {
+                  setSheetHeight(Math.min(contentHeight, height * 0.6));
+                  setContentHeight(Math.min(contentHeight, height * 0.6));
+                }}
+                contentContainerStyle={[
+                  ...(isDarkTheme
+                    ? [
+                        {
+                          ...darkStyles?.scrollView,
+                          ...(customDarkStyles?.scrollView ?? {}),
+                        },
+                      ]
+                    : [
+                        {
+                          ...lightStyles?.scrollView,
+                          ...(customLightStyles?.scrollView ?? {}),
+                        },
+                      ]),
+                  {
+                    ...styles.scrollView,
+                    ...(customStyles?.scrollView ?? {}),
+                  },
+                ]}
+              >
+                {children}
+              </ScrollView>
+            )}
+            {type === 'flat-list' && (
+              <>
+                {children}
+                <FlatList
                   ref={scrollRef}
+                  style={[{ maxHeight: sheetHeight }]}
+                  onContentSizeChange={(contentWidth, contentHeight) => {
+                    setSheetHeight(Math.min(contentHeight, height * 0.6));
+                    setContentHeight(Math.min(contentHeight, height * 0.6));
+                  }}
                   simultaneousHandlers={panGestureRef}
                   contentContainerStyle={[
                     ...(isDarkTheme
@@ -350,42 +381,12 @@ function BottomSheet({
                       ...(customStyles?.scrollView ?? {}),
                     },
                   ]}
-                >
-                  {children}
-                </ScrollView>
-              )}
-              {type === 'flat-list' && (
-                <>
-                  {children}
-                  <FlatList
-                    ref={scrollRef}
-                    simultaneousHandlers={panGestureRef}
-                    contentContainerStyle={[
-                      ...(isDarkTheme
-                        ? [
-                            {
-                              ...darkStyles?.scrollView,
-                              ...(customDarkStyles?.scrollView ?? {}),
-                            },
-                          ]
-                        : [
-                            {
-                              ...lightStyles?.scrollView,
-                              ...(customLightStyles?.scrollView ?? {}),
-                            },
-                          ]),
-                      {
-                        ...styles.scrollView,
-                        ...(customStyles?.scrollView ?? {}),
-                      },
-                    ]}
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={keyExtractor}
-                  />
-                </>
-              )}
-            </SafeAreaView>
+                  data={data}
+                  renderItem={renderItem}
+                  keyExtractor={keyExtractor}
+                />
+              </>
+            )}
           </Animated.View>
         </GestureDetector>
       </View>
