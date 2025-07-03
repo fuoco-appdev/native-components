@@ -22,6 +22,7 @@ import {
   KeyboardAvoidingView,
   TextInputSubmitEditingEventData,
   LayoutChangeEvent,
+  TouchableOpacity,
 } from 'react-native';
 import Skeleton from 'react-native-reanimated-skeleton';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -297,6 +298,10 @@ const PopupTextArea = ({
     onBlur?.(e);
   };
 
+  const onClose = () => {
+    inputPopupRef.current?.blur();
+  };
+
   useEffect(() => {
     if (inputPopupRef.current !== null && popout && isFocused) {
       inputPopupRef.current?.focus();
@@ -351,6 +356,7 @@ const PopupTextArea = ({
             }
             overlayColor={overlayColor ?? 'rgba(0, 0, 0, 0.13)'}
           />
+          <TouchableOpacity style={[{ flex: 1 }]} onPress={onClose} />
         </View>
 
         <View
