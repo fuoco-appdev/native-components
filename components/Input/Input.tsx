@@ -656,7 +656,7 @@ const PopupInput = ({
           style={[
             {
               position: 'absolute',
-              bottom: 30,
+              bottom: 0,
             },
           ]}
         >

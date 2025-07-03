@@ -387,7 +387,7 @@ const PopupTextArea = ({
           style={[
             {
               position: 'absolute',
-              bottom: 30,
+              bottom: 0,
             },
           ]}
         >
