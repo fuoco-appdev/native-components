@@ -314,7 +314,7 @@ function BottomSheet({
                 ...styles.sheet,
                 ...(customStyles?.sheet ?? {}),
                 ...(defaultSheetHeight && { height: defaultSheetHeight }),
-                maxHeight: sheetHeight,
+                maxHeight: sheetHeight > 0 ? sheetHeight : '60%',
               },
               sheetAnimatedStyle,
             ]}
@@ -323,7 +323,7 @@ function BottomSheet({
               <ScrollView
                 ref={scrollRef}
                 simultaneousHandlers={panGestureRef}
-                style={[{ maxHeight: sheetHeight }]}
+                style={[{ maxHeight: sheetHeight > 0 ? sheetHeight : '60%' }]}
                 onContentSizeChange={(contentWidth, contentHeight) => {
                   setSheetHeight(Math.min(contentHeight, height * 0.6));
                   setContentHeight(Math.min(contentHeight, height * 0.6));
