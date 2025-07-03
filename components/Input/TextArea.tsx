@@ -605,7 +605,7 @@ const TextAreaInner = ({
 function TextArea({
   onFocus,
   onBlur,
-  popout = true,
+  popout = false,
   blurAmount,
   blurType,
   overlayColor,
