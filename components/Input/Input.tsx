@@ -350,15 +350,11 @@ const InputInner = ({
         label: {
           borderTopLeftRadius: Globals.rounded_lg,
           borderTopRightRadius: Globals.rounded_lg,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
           ...customExtraStyles.formLayout?.label,
         },
         labelAfter: {
           borderTopLeftRadius: Globals.rounded_lg,
           borderTopRightRadius: Globals.rounded_lg,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
           ...customExtraStyles.formLayout?.labelAfter,
         },
       }}

@@ -469,15 +469,11 @@ const TextAreaInner = ({
         label: {
           borderTopLeftRadius: Globals.rounded_lg,
           borderTopRightRadius: Globals.rounded_lg,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
           ...customExtraStyles.formLayoutStyles?.label,
         },
         labelAfter: {
           borderTopLeftRadius: Globals.rounded_lg,
           borderTopRightRadius: Globals.rounded_lg,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
           ...customExtraStyles.formLayoutStyles?.labelAfter,
         },
       }}
