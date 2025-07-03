@@ -291,6 +291,7 @@ const PopupTextArea = ({
   const isDarkTheme = theme === 'dark';
   const { height, width } = Dimensions.get('window');
   const inputPopupRef = useRef<TextInput>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
     if (popout) {
@@ -305,6 +306,27 @@ const PopupTextArea = ({
   };
 
   useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (event) => {
+        setKeyboardHeight(event.endCoordinates.height);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0); // Reset height when keyboard hides
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
     if (inputPopupRef.current !== null && popout && isFocused) {
       inputPopupRef.current?.focus();
     }
@@ -315,7 +337,7 @@ const PopupTextArea = ({
       style={[
         {
           position: 'absolute',
-          height: height,
+          height: height - keyboardHeight,
           width: width,
           bottom: 30,
         },
