@@ -620,6 +620,7 @@ const PopupInput = ({
           position: 'absolute',
           height: height - keyboardHeight,
           width: width,
+          zIndex: 24,
         },
       ]}
     >
