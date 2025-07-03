@@ -557,6 +557,7 @@ const PopupInput = ({
 } & InputProps) => {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
+  const { height, width } = Dimensions.get('window');
   const inputPopupRef = useRef<TextInput>(null);
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
@@ -582,8 +583,8 @@ const PopupInput = ({
       style={[
         {
           position: 'absolute',
-          height: '100%',
-          width: '100%',
+          height: height,
+          width: width,
           bottom: 30,
         },
       ]}
