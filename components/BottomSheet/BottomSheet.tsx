@@ -72,6 +72,7 @@ const styles = StyleSheet.create<BottomSheetStyles>({
     position: 'absolute',
     height: '100%',
     width: '100%',
+    zIndex: 24,
   },
   sheet: {
     display: 'flex',
@@ -387,7 +388,7 @@ function BottomSheet({
                   ref={scrollRef}
                   style={[
                     {
-                      maxHeight: sheetHeight,
+                      maxHeight: sheetHeight > 0 ? sheetHeight : height * 0.6,
                     },
                   ]}
                   onContentSizeChange={(contentWidth, contentHeight) => {
