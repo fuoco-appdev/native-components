@@ -196,6 +196,8 @@ function BottomSheet({
   useEffect(() => {
     if (open && !isOpen) {
       setIsOpen(true);
+    } else if (!open && isOpen) {
+      setIsOpen(false);
     }
   }, [open, isOpen]);
 
