@@ -142,9 +142,14 @@ function BottomSheet({
 
   const translateY = useSharedValue(height);
   const sheetHeightValue = useSharedValue(0);
+  const isScrolling = useSharedValue(false);
 
   onGestureEventRef.current = Gesture.Pan()
     .onUpdate((event) => {
+      if (isScrolling.value) {
+        return;
+      }
+
       translateY.value = Math.max(
         Math.min(event.translationY, sheetHeightValue.value),
         0
@@ -347,6 +352,9 @@ function BottomSheet({
               <ScrollView
                 ref={scrollRef}
                 simultaneousHandlers={panGestureRef}
+                onScroll={(e) => {
+                  isScrolling.value = e.nativeEvent.contentOffset.y > 0;
+                }}
                 style={[
                   {
                     maxHeight: sheetHeight > 0 ? sheetHeight : height * 0.6,
@@ -388,6 +396,9 @@ function BottomSheet({
                 {children}
                 <FlatList
                   ref={scrollRef}
+                  onScroll={(e) => {
+                    isScrolling.value = e.nativeEvent.contentOffset.y > 0;
+                  }}
                   style={[
                     {
                       maxHeight: sheetHeight > 0 ? sheetHeight : height * 0.6,
