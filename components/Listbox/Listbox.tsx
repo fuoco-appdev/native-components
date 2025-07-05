@@ -1,8 +1,6 @@
 import {
-  FlatList,
   GestureResponderEvent,
   ListRenderItem,
-  Pressable,
   StyleSheet,
   useColorScheme,
   View,
@@ -12,9 +10,10 @@ import { BottomSheet, BottomSheetStyles } from '../BottomSheet';
 import { FormLayout, FormLayoutStyles } from '../FormLayout';
 // import { ArrowDropDown } from '../Icon/Icons/Line';
 import React from 'react';
+import { Button } from '../Button';
 import { ArrowDropDown } from '../Icon/Icons/Line';
 import { Colors, Globals, MarginsPaddings } from '../Themes';
-import { Typography, TypographyStyles } from '../Typography';
+import { TypographyStyles } from '../Typography';
 
 export interface ListboxProps {
   id?: string;
@@ -49,13 +48,19 @@ export interface ListboxStyles {
 }
 
 export interface ExtraListboxStyles {
+  button?: ButtonStyles;
   formLayout?: FormLayoutStyles;
   bottomSheet?: BottomSheetStyles;
   label?: TypographyStyles;
 }
 
 const styles = StyleSheet.create<ListboxStyles>({
+  listboxContainer: {
+    position: 'relative',
+    width: '100%',
+  },
   listboxButton: {
+    display: 'flex',
     overflow: 'hidden',
     paddingTop: MarginsPaddings.mp_4,
     paddingBottom: MarginsPaddings.mp_4,
@@ -73,6 +78,7 @@ const styles = StyleSheet.create<ListboxStyles>({
     position: 'relative',
     display: 'flex',
     flexDirection: 'row',
+    flex: 1,
     alignItems: 'center',
     paddingLeft: MarginsPaddings.mp_5,
     paddingRight: MarginsPaddings.mp_5,
@@ -116,7 +122,7 @@ function Listbox({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   return (
-    <>
+    <View style={[{ position: 'relative', flexShrink: 1, width: '100%' }]}>
       <FormLayout
         label={label}
         labelOptional={labelOptional}
@@ -126,145 +132,37 @@ function Listbox({
         customLightStyles={customExtraLightStyles?.formLayout}
         customDarkStyles={customExtraDarkStyles?.formLayout}
       >
-        <View
-          style={[
-            ...(isDarkTheme
-              ? [
-                  {
-                    ...darkStyles?.listboxContainer,
-                    ...(customDarkStyles?.listboxContainer ?? {}),
-                  },
-                ]
-              : [
-                  {
-                    ...lightStyles?.listboxContainer,
-                    ...(customLightStyles?.listboxContainer ?? {}),
-                  },
-                ]),
-            {
-              ...styles.listboxContainer,
-              ...(customStyles?.listboxContainer ?? {}),
+        <Button
+          customStyles={{
+            ...customExtraStyles?.button,
+            button: {
+              ...styles.listboxButton,
+              ...(customStyles?.listboxButton ?? {}),
             },
-          ]}
+          }}
+          customDarkStyles={{
+            ...customExtraDarkStyles?.button,
+            button: {
+              ...darkStyles?.listboxButton,
+              ...(customDarkStyles?.listboxButton ?? {}),
+            },
+          }}
+          customLightStyles={{
+            ...customExtraLightStyles?.button,
+            button: {
+              ...lightStyles?.listboxButton,
+              ...(customLightStyles?.listboxButton ?? {}),
+            },
+          }}
+          onPress={onOpen}
+          icon={icon}
+          iconRight={
+            <ArrowDropDown size={21} color={isDarkTheme ? '#fff' : '#000'} />
+          }
+          size={'full'}
         >
-          <Pressable
-            style={[
-              ...(isDarkTheme
-                ? [
-                    {
-                      ...darkStyles?.listboxButton,
-                      ...(customDarkStyles?.listboxButton ?? {}),
-                    },
-                  ]
-                : [
-                    {
-                      ...lightStyles?.listboxButton,
-                      ...(customLightStyles?.listboxButton ?? {}),
-                    },
-                  ]),
-              {
-                ...styles.listboxButton,
-                ...(customStyles?.listboxButton ?? {}),
-              },
-            ]}
-            onPress={onOpen}
-            android_ripple={{
-              radius: Globals.rounded_md,
-              borderless: false,
-              foreground: true,
-              color: isDarkTheme
-                ? 'rgba(255, 255, 255, 0.13)'
-                : 'rgba(0, 0, 0, 0.13)',
-            }}
-          >
-            <View
-              style={[
-                ...(isDarkTheme
-                  ? [
-                      {
-                        ...darkStyles?.listbox,
-                        ...(customDarkStyles?.listbox ?? {}),
-                      },
-                    ]
-                  : [
-                      {
-                        ...lightStyles?.listbox,
-                        ...(customLightStyles?.listbox ?? {}),
-                      },
-                    ]),
-                {
-                  ...styles.listbox,
-                  ...(customStyles?.listbox ?? {}),
-                },
-              ]}
-            >
-              {icon && (
-                <View
-                  style={[
-                    ...(isDarkTheme
-                      ? [
-                          {
-                            ...darkStyles?.iconContainer,
-                            ...(customDarkStyles?.iconContainer ?? {}),
-                          },
-                        ]
-                      : [
-                          {
-                            ...lightStyles?.iconContainer,
-                            ...(customLightStyles?.iconContainer ?? {}),
-                          },
-                        ]),
-                    {
-                      ...styles.iconContainer,
-                      ...(customStyles?.iconContainer ?? {}),
-                    },
-                  ]}
-                >
-                  {icon}
-                </View>
-              )}
-              <Typography.Text
-                customStyles={{
-                  ...customExtraStyles?.label,
-                  root: {
-                    lineHeight: 28,
-                    flex: 1,
-                  },
-                }}
-                customLightStyles={customExtraLightStyles?.label}
-                customDarkStyles={customExtraDarkStyles?.label}
-              >
-                {children}
-              </Typography.Text>
-              <View
-                style={[
-                  ...(isDarkTheme
-                    ? [
-                        {
-                          ...darkStyles?.chevronContainer,
-                          ...(customDarkStyles?.chevronContainer ?? {}),
-                        },
-                      ]
-                    : [
-                        {
-                          ...lightStyles?.chevronContainer,
-                          ...(customLightStyles?.chevronContainer ?? {}),
-                        },
-                      ]),
-                  {
-                    ...styles.chevronContainer,
-                    ...(customStyles?.chevronContainer ?? {}),
-                  },
-                ]}
-              >
-                <ArrowDropDown
-                  size={21}
-                  color={isDarkTheme ? '#fff' : '#000'}
-                />
-              </View>
-            </View>
-          </Pressable>
-        </View>
+          {children}
+        </Button>
       </FormLayout>
       <BottomSheet
         customStyles={customExtraStyles?.bottomSheet}
@@ -278,7 +176,7 @@ function Listbox({
         renderItem={renderBottomSheetItem}
         keyExtractor={keyExtractor}
       />
-    </>
+    </View>
   );
 }
 
