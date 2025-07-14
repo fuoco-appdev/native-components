@@ -346,7 +346,7 @@ export function FormLayout({
                     { ...styles.labelBefore, ...customStyles.labelBefore },
                   ]}
                 >
-                  {beforeLabel}
+                  {beforeLabel}{' '}
                 </Text>
               )}
               {label}

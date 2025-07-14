@@ -1,6 +1,6 @@
 {
   "name": "@fuoco.appdev/native-components",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
