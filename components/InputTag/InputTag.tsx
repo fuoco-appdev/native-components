@@ -41,7 +41,7 @@ import {
   VisibilityOff,
 } from '../Icon/Icons/Line';
 import React, { useEffect, useRef, useState } from 'react';
-import Typography from '../Typography/Typography';
+import Typography, { TypographyStyles } from '../Typography/Typography';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -66,13 +66,13 @@ export interface InputTagStyles {
   tagList?: ViewStyle;
   tagListContent?: ViewStyle;
   tagContainer?: ViewStyle;
-  tagText?: TextStyle;
   removeTag?: TextStyle;
 }
 
 export interface ExtraInputTagStyles {
   formLayout?: FormLayoutStyles;
   revealButton?: ButtonStyles;
+  tagTitle?: TypographyStyles;
 }
 
 export interface InputTagIcons {
@@ -239,10 +239,6 @@ const styles = StyleSheet.create<InputTagStyles>({
     paddingHorizontal: MarginsPaddings.mp_5,
     marginRight: MarginsPaddings.mp_3,
     marginVertical: MarginsPaddings.mp_2,
-  },
-  tagText: {
-    color: '#1e3a8a',
-    fontSize: 14,
   },
   removeTag: {
     color: '#1e3a8a',
@@ -503,7 +499,14 @@ const InputTagInner = ({
                       ]),
                 ]}
               >
-                <Typography.Title level={4}>{item}</Typography.Title>
+                <Typography.Title
+                  customStyles={customExtraStyles.tagTitle}
+                  customLightStyles={customExtraLightStyles.tagTitle}
+                  customDarkStyles={customExtraDarkStyles.tagTitle}
+                  level={4}
+                >
+                  {item}
+                </Typography.Title>
                 <TouchableOpacity onPress={() => removeTag(index)}>
                   <Line.Close size={13} color={isDarkTheme ? '#000' : '#000'} />
                 </TouchableOpacity>
