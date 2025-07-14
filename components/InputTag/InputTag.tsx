@@ -80,6 +80,7 @@ export interface InputTagIcons {
   hiddenReveal?: React.ReactNode;
   copy?: React.ReactNode;
   error?: React.ReactNode;
+  tagClose?: React.ReactNode;
 }
 
 export interface InputTagProps {
@@ -508,7 +509,12 @@ const InputTagInner = ({
                   {item}
                 </Typography.Title>
                 <TouchableOpacity onPress={() => removeTag(index)}>
-                  <Line.Close size={13} color={isDarkTheme ? '#000' : '#000'} />
+                  {icons?.tagClose ?? (
+                    <Line.Close
+                      size={13}
+                      color={isDarkTheme ? '#000' : '#000'}
+                    />
+                  )}
                 </TouchableOpacity>
               </View>
             )}
