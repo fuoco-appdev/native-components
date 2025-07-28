@@ -178,13 +178,13 @@ function BottomSheet({
     .simultaneousWithExternalGesture(scrollRef);
 
   const onAnimatedClose = () => {
-    if (onClose) {
-      runOnJS(onClose)();
-    }
     translateY.value = withTiming(
       sheetHeight,
       { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
       () => {
+        if (onClose) {
+          runOnJS(onClose)();
+        }
         runOnJS(setIsOpen)(false);
       }
     );

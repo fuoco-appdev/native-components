@@ -1,7 +1,9 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   FlexStyle,
   GestureResponderEvent,
   ImageStyle,
+  LayoutChangeEvent,
   Pressable,
   PressableProps,
   StyleSheet,
@@ -18,6 +20,7 @@ import Colors from '../Themes/colors';
 import MarginsPaddings from '../Themes/margins_paddings';
 import Globals from '../Themes/globals';
 import { darkTheme } from '@storybook/react-native-theming';
+import React, { forwardRef } from 'react';
 
 export interface ButtonStyles {
   root?: ViewStyle | TextStyle | ImageStyle;
@@ -29,6 +32,7 @@ export interface ButtonStyles {
 }
 
 export interface ButtonProps {
+  onLayout?: (event: LayoutChangeEvent) => void;
   children?: React.ReactNode;
   onPress?: ((event: GestureResponderEvent) => void) | null | undefined;
   pressableProps?: PressableProps;
@@ -60,12 +64,10 @@ const styles = StyleSheet.create<ButtonStyles>({
   root: {
     position: 'relative',
     height: 'auto',
-    width: 'auto',
   },
   button: {
     position: 'relative',
     display: 'flex',
-    alignSelf: 'flex-start',
     flexDirection: 'row',
     paddingTop: MarginsPaddings.mp_4,
     paddingBottom: MarginsPaddings.mp_4,
@@ -135,7 +137,8 @@ const darkStyles = StyleSheet.create<ButtonStyles>({
   },
 });
 
-export default function Button({
+function Button({
+  onLayout,
   pressableProps = {},
   onPress,
   block,
@@ -393,6 +396,7 @@ export default function Button({
 
   return (
     <View
+      onLayout={onLayout}
       style={[
         ...(isDarkTheme
           ? [{ ...darkStyles?.root, ...(customDarkStyles?.root ?? {}) }]
@@ -562,3 +566,5 @@ export default function Button({
     </View>
   );
 }
+
+export default Button;
