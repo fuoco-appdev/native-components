@@ -5,6 +5,7 @@ export * from './Typography';
 export * from './Icon';
 export * from './Portal';
 export * from './Avatar';
+export * from './Dropdown';
 // export * from './image'
 // export * from './avatar'
 // export * from './crop-image'
