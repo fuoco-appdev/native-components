@@ -135,7 +135,9 @@ function BottomSheet({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { height } = Dimensions.get('window');
   const [scrollHeight, setScrollHeight] = useState<number>(0);
-  const [sheetHeight, setSheetHeight] = useState<number>(0);
+  const [sheetHeight, setSheetHeight] = useState<number>(
+    defaultSheetHeight ?? 0
+  );
   const panGestureRef = React.useRef<GestureType>(Gesture.Pan());
   const scrollRef = React.useRef<any>();
   const onGestureEventRef = React.useRef<PanGesture>(Gesture.Pan());
@@ -340,15 +342,14 @@ function BottomSheet({
                       ...(customLightStyles?.sheet ?? {}),
                     },
                   ]),
-              sheetAnimatedStyle,
               {
                 ...styles.sheet,
                 ...(customStyles?.sheet ?? {}),
                 ...(defaultSheetHeight && {
-                  height: defaultSheetHeight,
                   minHeight: defaultSheetHeight,
                 }),
               },
+              sheetAnimatedStyle,
             ]}
           >
             {type === 'scroll-view' && (
