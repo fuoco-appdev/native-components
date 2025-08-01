@@ -340,12 +340,15 @@ function BottomSheet({
                       ...(customLightStyles?.sheet ?? {}),
                     },
                   ]),
+              sheetAnimatedStyle,
               {
                 ...styles.sheet,
                 ...(customStyles?.sheet ?? {}),
-                ...(defaultSheetHeight && { height: defaultSheetHeight }),
+                ...(defaultSheetHeight && {
+                  height: defaultSheetHeight,
+                  maxHeight: defaultSheetHeight,
+                }),
               },
-              sheetAnimatedStyle,
             ]}
           >
             {type === 'scroll-view' && (
