@@ -346,7 +346,7 @@ function BottomSheet({
                 ...(customStyles?.sheet ?? {}),
                 ...(defaultSheetHeight && {
                   height: defaultSheetHeight,
-                  maxHeight: defaultSheetHeight,
+                  minHeight: defaultSheetHeight,
                 }),
               },
             ]}
