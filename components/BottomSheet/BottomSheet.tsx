@@ -365,11 +365,21 @@ function BottomSheet({
                   },
                 ]}
                 onContentSizeChange={(contentWidth, contentHeight) => {
-                  setScrollHeight(Math.min(contentHeight, height * 0.6));
-                  setSheetHeight(Math.min(contentHeight, height * 0.6));
+                  setScrollHeight(
+                    Math.min(
+                      defaultSheetHeight ?? contentHeight,
+                      defaultSheetHeight ?? height * 0.6
+                    )
+                  );
+                  setSheetHeight(
+                    Math.min(
+                      defaultSheetHeight ?? contentHeight,
+                      defaultSheetHeight ?? height * 0.6
+                    )
+                  );
                   sheetHeightValue.value = Math.min(
-                    contentHeight,
-                    height * 0.6
+                    defaultSheetHeight ?? contentHeight,
+                    defaultSheetHeight ?? height * 0.6
                   );
                 }}
                 contentContainerStyle={[
@@ -409,11 +419,21 @@ function BottomSheet({
                     },
                   ]}
                   onContentSizeChange={(contentWidth, contentHeight) => {
-                    setSheetHeight(Math.min(contentHeight, height * 0.6));
-                    setScrollHeight(Math.min(contentHeight, height * 0.6));
+                    setSheetHeight(
+                      Math.min(
+                        defaultSheetHeight ?? contentHeight,
+                        defaultSheetHeight ?? height * 0.6
+                      )
+                    );
+                    setScrollHeight(
+                      Math.min(
+                        defaultSheetHeight ?? contentHeight,
+                        defaultSheetHeight ?? height * 0.6
+                      )
+                    );
                     sheetHeightValue.value = Math.min(
-                      contentHeight,
-                      height * 0.6
+                      defaultSheetHeight ?? contentHeight,
+                      defaultSheetHeight ?? height * 0.6
                     );
                   }}
                   simultaneousHandlers={panGestureRef}
