@@ -248,6 +248,7 @@ function InputGeocodingSearch({
             marginLeft: MarginsPaddings.mp_5,
             marginRight: MarginsPaddings.mp_5,
             marginTop: MarginsPaddings.mp_5,
+            flex: 1,
           },
           ...customExtraStyles?.bottomSheetInput,
         }}
