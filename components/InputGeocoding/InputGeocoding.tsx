@@ -392,7 +392,7 @@ function InputGeocoding({
         open={open}
         onClose={() => setOpen(false)}
         type={'scroll-view'}
-        defaultSheetHeight={height * 0.8}
+        defaultSheetHeight={height * 0.6}
         customStyles={{
           root: {
             paddingBottom: MarginsPaddings.mp_5,
