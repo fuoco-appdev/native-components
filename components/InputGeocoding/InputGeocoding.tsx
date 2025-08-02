@@ -245,9 +245,9 @@ function InputGeocodingSearch({
         placeholder={strings?.searchPlaceholder}
         customStyles={{
           container: {
-            marginLeft: MarginsPaddings.mp_5,
-            marginRight: MarginsPaddings.mp_5,
-            marginTop: MarginsPaddings.mp_5,
+            paddingLeft: MarginsPaddings.mp_5,
+            paddingRight: MarginsPaddings.mp_5,
+            paddingTop: MarginsPaddings.mp_5,
             flex: 1,
           },
           ...customExtraStyles?.bottomSheetInput,
