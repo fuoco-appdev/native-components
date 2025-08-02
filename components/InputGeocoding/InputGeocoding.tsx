@@ -46,6 +46,7 @@ export interface InputGeocodingStyles {
   borderless?: ViewStyle | TextStyle | ImageStyle;
   iconContainer?: ViewStyle | TextStyle | ImageStyle;
   input?: ViewStyle | TextStyle | ImageStyle;
+  searchContainer?: ViewStyle;
   actionsContainer?: ViewStyle | TextStyle | ImageStyle;
 }
 
@@ -116,6 +117,12 @@ const styles = StyleSheet.create<InputGeocodingStyles>({
     flexDirection: 'column',
     marginRight: MarginsPaddings.mp_4,
   },
+  searchContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingLeft: MarginsPaddings.mp_5,
+    paddingRight: MarginsPaddings.mp_5,
+  },
   input: {
     overflow: 'hidden',
     backgroundColor: 'transparent',
@@ -177,6 +184,9 @@ const darkStyles = StyleSheet.create<InputGeocodingStyles>({
 });
 
 function InputGeocodingSearch({
+  customStyles,
+  customDarkStyles,
+  customLightStyles,
   customExtraStyles,
   customExtraLightStyles,
   customExtraDarkStyles,
@@ -187,6 +197,9 @@ function InputGeocodingSearch({
   onClose,
   strings,
 }: {
+  customStyles?: InputGeocodingStyles;
+  customDarkStyles?: InputGeocodingStyles;
+  customLightStyles?: InputGeocodingStyles;
   customExtraStyles?: ExtraInputGeocodingStyles;
   customExtraDarkStyles?: ExtraInputGeocodingStyles;
   customExtraLightStyles?: ExtraInputGeocodingStyles;
@@ -201,6 +214,8 @@ function InputGeocodingSearch({
     searchPlaceholder?: string;
   };
 }) {
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
   const [searchValue, setSearchValue] = useState<string>(value ?? '');
   const [features, setFeatures] = useState<any[]>([]);
 
@@ -225,7 +240,24 @@ function InputGeocodingSearch({
   }, [mapboxAccessToken, placeType, searchValue, setFeatures]);
 
   return (
-    <>
+    <View
+      style={[
+        ...(isDarkTheme
+          ? [
+              {
+                ...darkStyles?.searchContainer,
+                ...(customDarkStyles?.searchContainer ?? {}),
+              },
+            ]
+          : [
+              {
+                ...lightStyles?.searchContainer,
+                ...(customLightStyles?.searchContainer ?? {}),
+              },
+            ]),
+        { ...styles.searchContainer, ...(customStyles?.searchContainer ?? {}) },
+      ]}
+    >
       <Typography.Title
         level={4}
         customStyles={{
@@ -245,9 +277,7 @@ function InputGeocodingSearch({
         placeholder={strings?.searchPlaceholder}
         customStyles={{
           container: {
-            paddingLeft: MarginsPaddings.mp_5,
-            paddingRight: MarginsPaddings.mp_5,
-            paddingTop: MarginsPaddings.mp_5,
+            marginTop: MarginsPaddings.mp_5,
             flex: 1,
           },
           ...customExtraStyles?.bottomSheetInput,
@@ -274,7 +304,7 @@ function InputGeocodingSearch({
           {value['place_name']}
         </BottomSheet.Item>
       ))}
-    </>
+    </View>
   );
 }
 
@@ -404,6 +434,9 @@ function InputGeocoding({
         customDarkStyles={customExtraDarkStyles.bottomSheet}
       >
         <InputGeocodingSearch
+          customStyles={customStyles}
+          customLightStyles={customLightStyles}
+          customDarkStyles={customDarkStyles}
           customExtraStyles={customExtraStyles}
           customExtraLightStyles={customExtraLightStyles}
           customExtraDarkStyles={customExtraDarkStyles}
