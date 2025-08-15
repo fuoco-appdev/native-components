@@ -228,7 +228,7 @@ function InputGeocodingSearch({
   useEffect(() => {
     const timeout = setTimeout(async () => {
       try {
-        const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchValue}.json?access_token=${mapboxAccessToken}&autocomplete=true&types=${placeType}`;
+        const endpoint = `https://api.mapbox.com/search/geocode/v6/forward?q=${searchValue}&access_token=${mapboxAccessToken}&autocomplete=true&types=${placeType}`;
         const response = await fetch(endpoint);
         const results = await response.json();
         setFeatures(results?.features);
@@ -370,7 +370,7 @@ function InputGeocoding({
         resolve();
       }
 
-      const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${defaultLongitude},${defaultLatitude}.json?access_token=${mapboxAccessToken}&types=${placeType}`;
+      const endpoint = `https://api.mapbox.com/search/geocode/v6/reverse?longitude=${defaultLongitude}&latitude=${defaultLatitude}&access_token=${mapboxAccessToken}&types=${placeType}`;
       const response = await fetch(endpoint);
       const results = await response.json();
       if (results.features?.length > 0) {
