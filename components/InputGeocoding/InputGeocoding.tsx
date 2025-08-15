@@ -76,6 +76,7 @@ export interface InputGeocodingProps {
     | 'region'
     | 'country';
   defaultCoordinates?: [number, number];
+  defaultValue?: string;
   customStyles?: InputGeocodingStyles;
   customLightStyles?: InputGeocodingStyles;
   customDarkStyles?: InputGeocodingStyles;
@@ -312,6 +313,7 @@ function InputGeocoding({
   mapboxAccessToken,
   placeType = 'place',
   defaultCoordinates,
+  defaultValue,
   strings = {
     searchNotFound: 'No entries to show',
     searchPlaceholder: 'Search',
@@ -337,7 +339,7 @@ function InputGeocoding({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [open, setOpen] = useState<boolean>(false);
-  const [value, setValue] = useState<string | undefined>(undefined);
+  const [value, setValue] = useState<string | undefined>(defaultValue);
   const { height } = Dimensions.get('screen');
 
   const onChanged = (feature: any) => {
@@ -346,7 +348,7 @@ function InputGeocoding({
   };
 
   useEffect(() => {
-    if (value) {
+    if (value || defaultValue) {
       return;
     }
 
