@@ -38,6 +38,7 @@ import {
 } from '../BottomSheet';
 import { Line } from '../Icon';
 import Input, { ExtraInputStyles, InputStyles } from '../Input/Input';
+import nominatim from 'nominatim-client';
 
 export interface InputGeocodingStyles {
   container?: ViewStyle | TextStyle | ImageStyle;
@@ -62,7 +63,7 @@ export interface ExtraInputGeocodingStyles {
 }
 
 export interface InputGeocodingProps {
-  mapboxAccessToken: string;
+  nominatimClient: nominatim.NominatimClient;
   strings?: {
     bottomSheetTitle?: string;
     searchNotFound?: string;
@@ -92,7 +93,9 @@ export interface InputGeocodingProps {
   beforeLabel?: string;
   afterLabel?: string;
   labelOptional?: string;
-  onLocationChanged?: (feature: any) => void;
+  onLocationChanged?: (
+    item: nominatim.SearchResultItem | nominatim.ReverseResult
+  ) => void;
 }
 
 const styles = StyleSheet.create<InputGeocodingStyles>({
@@ -192,7 +195,7 @@ function InputGeocodingSearch({
   customExtraLightStyles,
   customExtraDarkStyles,
   value,
-  mapboxAccessToken,
+  nominatimClient,
   placeType,
   onChanged,
   onClose,
@@ -205,9 +208,9 @@ function InputGeocodingSearch({
   customExtraDarkStyles?: ExtraInputGeocodingStyles;
   customExtraLightStyles?: ExtraInputGeocodingStyles;
   value: string | undefined;
-  mapboxAccessToken: string;
+  nominatimClient: nominatim.NominatimClient;
   placeType: string;
-  onChanged?: (feature: any) => void;
+  onChanged?: (item: nominatim.SearchResultItem) => void;
   onClose?: () => void;
   strings?: {
     bottomSheetTitle?: string;
@@ -218,27 +221,27 @@ function InputGeocodingSearch({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [searchValue, setSearchValue] = useState<string>(value ?? '');
-  const [features, setFeatures] = useState<any[]>([]);
+  const [items, setItems] = useState<nominatim.SearchResultItem[]>([]);
 
-  const onFeaturePressed = (feature: any) => {
-    onChanged?.(feature);
+  const onFeaturePressed = (item: nominatim.SearchResultItem) => {
+    onChanged?.(item);
     onClose?.();
   };
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
       try {
-        const endpoint = `https://api.mapbox.com/search/geocode/v6/forward?q=${searchValue}&access_token=${mapboxAccessToken}&autocomplete=true&types=${placeType}`;
-        const response = await fetch(endpoint);
-        const results = await response.json();
-        setFeatures(results?.features);
+        const results = await nominatimClient.search({
+          q: searchValue,
+        });
+        setItems(results);
       } catch (error) {
         console.error('Error fetching data, ', error);
       }
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [mapboxAccessToken, placeType, searchValue, setFeatures]);
+  }, [nominatimClient, placeType, searchValue, setItems]);
 
   return (
     <View
@@ -291,9 +294,9 @@ function InputGeocodingSearch({
         value={searchValue}
         onChange={(e) => setSearchValue(e.nativeEvent.text)}
       />
-      {features?.map((value) => (
+      {items?.map((value) => (
         <BottomSheet.Item
-          key={`feature_${value.id}`}
+          key={value.place_id}
           onPress={() => onFeaturePressed(value)}
           customStyles={customExtraStyles?.bottomSheetItem}
           customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
@@ -302,7 +305,7 @@ function InputGeocodingSearch({
           customExtraLightStyles={customExtraLightStyles?.extraBottomSheetItem}
           customExtraDarkStyles={customExtraDarkStyles?.extraBottomSheetItem}
         >
-          {value['place_name']}
+          {value.display_name}
         </BottomSheet.Item>
       ))}
     </View>
@@ -310,7 +313,7 @@ function InputGeocodingSearch({
 }
 
 function InputGeocoding({
-  mapboxAccessToken,
+  nominatimClient,
   placeType = 'place',
   defaultCoordinates,
   defaultValue,
@@ -342,9 +345,11 @@ function InputGeocoding({
   const [value, setValue] = useState<string | undefined>(defaultValue);
   const { height } = Dimensions.get('screen');
 
-  const onChanged = (feature: any) => {
-    setValue(feature['place_name']);
-    onLocationChanged?.(feature);
+  const onChanged = (
+    item: nominatim.SearchResultItem | nominatim.ReverseResult
+  ) => {
+    setValue(item.display_name);
+    onLocationChanged?.(item);
   };
 
   useEffect(() => {
@@ -370,21 +375,19 @@ function InputGeocoding({
         resolve();
       }
 
-      const endpoint = `https://api.mapbox.com/search/geocode/v6/reverse?longitude=${defaultLongitude}&latitude=${defaultLatitude}&access_token=${mapboxAccessToken}&types=${placeType}`;
-      const response = await fetch(endpoint);
-      const results = await response.json();
-      if (results.features?.length > 0) {
-        const feature = results.features[0];
-        if (feature['place_name'] !== value) {
-          setValue(feature['place_name']);
-          onLocationChanged?.(feature);
-        }
-        resolve();
+      const result = await nominatimClient.reverse({
+        lon: defaultLongitude,
+        lat: defaultLatitude,
+      });
+      if (result.display_name !== value) {
+        setValue(result.display_name);
+        onLocationChanged?.(result);
       }
+      resolve();
     });
 
     updateLocationAsync.then();
-  }, [defaultCoordinates, mapboxAccessToken, placeType]);
+  }, [defaultCoordinates, nominatimClient, placeType]);
 
   return (
     <>
@@ -443,7 +446,7 @@ function InputGeocoding({
           customExtraLightStyles={customExtraLightStyles}
           customExtraDarkStyles={customExtraDarkStyles}
           value={value}
-          mapboxAccessToken={mapboxAccessToken}
+          nominatimClient={nominatimClient}
           placeType={placeType}
           strings={strings}
           onChanged={onChanged}
