@@ -38,7 +38,34 @@ import {
 } from '../BottomSheet';
 import { Line } from '../Icon';
 import Input, { ExtraInputStyles, InputStyles } from '../Input/Input';
-import nominatim from 'nominatim-client';
+
+export interface NominatimSearchResult {
+  place_id: number;
+  licence: string;
+  osm_type: 'node' | 'way' | 'relation';
+  osm_id: number;
+  lat: string;
+  lon: string;
+  display_name: string;
+  address: { [key: string]: string | undefined };
+  boundingbox?: [string, string, string, string];
+  importance?: number;
+  class?: string;
+  type?: string;
+}
+
+export interface NominatimReverseResult {
+  place_id: number;
+  licence: string;
+  osm_type: 'node' | 'way' | 'relation';
+  osm_id: number;
+  lat: string;
+  lon: string;
+  display_name: string;
+  address: { [key: string]: string | undefined };
+  boundingbox?: [string, string, string, string];
+  error?: string | null;
+}
 
 export interface InputGeocodingStyles {
   container?: ViewStyle | TextStyle | ImageStyle;
@@ -62,20 +89,29 @@ export interface ExtraInputGeocodingStyles {
   extraBottomSheetInput?: ExtraInputStyles;
 }
 
+export enum NominatimZoom {
+  Country = 3,
+  State = 5,
+  County = 8,
+  City = 10,
+  Town = 12,
+  Village = 13,
+  Neighbourhood = 14,
+  AnySettlement = 15,
+  MajorStreets = 16,
+  MajorAndMinorStreets = 17,
+  Building = 18,
+}
+
 export interface InputGeocodingProps {
-  nominatimClient: nominatim.NominatimClient;
+  userAgent: string;
   strings?: {
     bottomSheetTitle?: string;
     searchNotFound?: string;
     searchPlaceholder?: string;
   };
-  placeType?:
-    | 'address'
-    | 'postcode'
-    | 'place'
-    | 'district'
-    | 'region'
-    | 'country';
+  layer?: 'address' | 'poi' | 'railway' | 'natural' | 'manmade';
+  zoom?: NominatimZoom;
   defaultCoordinates?: [number, number];
   defaultValue?: string;
   customStyles?: InputGeocodingStyles;
@@ -94,7 +130,7 @@ export interface InputGeocodingProps {
   afterLabel?: string;
   labelOptional?: string;
   onLocationChanged?: (
-    item: nominatim.SearchResultItem | nominatim.ReverseResult
+    item: NominatimSearchResult | NominatimReverseResult
   ) => void;
 }
 
@@ -195,8 +231,9 @@ function InputGeocodingSearch({
   customExtraLightStyles,
   customExtraDarkStyles,
   value,
-  nominatimClient,
-  placeType,
+  userAgent,
+  layer,
+  zoom,
   onChanged,
   onClose,
   strings,
@@ -208,9 +245,10 @@ function InputGeocodingSearch({
   customExtraDarkStyles?: ExtraInputGeocodingStyles;
   customExtraLightStyles?: ExtraInputGeocodingStyles;
   value: string | undefined;
-  nominatimClient: nominatim.NominatimClient;
-  placeType: string;
-  onChanged?: (item: nominatim.SearchResultItem) => void;
+  userAgent: string;
+  layer: string;
+  zoom: number;
+  onChanged?: (item: NominatimSearchResult) => void;
   onClose?: () => void;
   strings?: {
     bottomSheetTitle?: string;
@@ -221,9 +259,9 @@ function InputGeocodingSearch({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [searchValue, setSearchValue] = useState<string>(value ?? '');
-  const [items, setItems] = useState<nominatim.SearchResultItem[]>([]);
+  const [items, setItems] = useState<NominatimSearchResult[]>([]);
 
-  const onFeaturePressed = (item: nominatim.SearchResultItem) => {
+  const onFeaturePressed = (item: NominatimSearchResult) => {
     onChanged?.(item);
     onClose?.();
   };
@@ -231,17 +269,34 @@ function InputGeocodingSearch({
   useEffect(() => {
     const timeout = setTimeout(async () => {
       try {
-        const results = await nominatimClient.search({
-          q: searchValue,
-        });
-        setItems(results);
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            searchValue
+          )}&zoom=${zoom}&layer=${layer}&addressdetails=1`,
+          {
+            headers: {
+              'User-Agent': userAgent,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.length === 0) {
+          console.log('No results found');
+          return;
+        }
+        setItems(data);
       } catch (error) {
         console.error('Error fetching data, ', error);
       }
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [nominatimClient, placeType, searchValue, setItems]);
+  }, [userAgent, layer, zoom, searchValue, setItems]);
 
   return (
     <View
@@ -313,8 +368,9 @@ function InputGeocodingSearch({
 }
 
 function InputGeocoding({
-  nominatimClient,
-  placeType = 'place',
+  userAgent,
+  layer = 'address',
+  zoom = NominatimZoom.Building,
   defaultCoordinates,
   defaultValue,
   strings = {
@@ -345,9 +401,7 @@ function InputGeocoding({
   const [value, setValue] = useState<string | undefined>(defaultValue);
   const { height } = Dimensions.get('screen');
 
-  const onChanged = (
-    item: nominatim.SearchResultItem | nominatim.ReverseResult
-  ) => {
+  const onChanged = (item: NominatimSearchResult | NominatimReverseResult) => {
     setValue(item.display_name);
     onLocationChanged?.(item);
   };
@@ -375,19 +429,38 @@ function InputGeocoding({
         resolve();
       }
 
-      const result = await nominatimClient.reverse({
-        lon: defaultLongitude,
-        lat: defaultLatitude,
-      });
-      if (result.display_name !== value) {
-        setValue(result.display_name);
-        onLocationChanged?.(result);
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${defaultLatitude}&lon=${defaultLongitude}&zoom=${zoom}&layer=${layer}&addressdetails=1`,
+          {
+            headers: {
+              'User-Agent': userAgent,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: NominatimReverseResult = await response.json();
+        if (data.error) {
+          console.error('Error:', data.error);
+          return;
+        }
+
+        if (data.display_name !== value) {
+          setValue(data.display_name);
+          onLocationChanged?.(data);
+        }
+        resolve();
+      } catch (error: any) {
+        console.error(error);
       }
-      resolve();
     });
 
     updateLocationAsync.then();
-  }, [defaultCoordinates, nominatimClient, placeType]);
+  }, [defaultCoordinates, userAgent, layer, zoom]);
 
   return (
     <>
@@ -446,8 +519,9 @@ function InputGeocoding({
           customExtraLightStyles={customExtraLightStyles}
           customExtraDarkStyles={customExtraDarkStyles}
           value={value}
-          nominatimClient={nominatimClient}
-          placeType={placeType}
+          userAgent={userAgent}
+          layer={layer}
+          zoom={zoom}
           strings={strings}
           onChanged={onChanged}
           onClose={() => setOpen(false)}

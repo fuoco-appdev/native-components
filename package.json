@@ -1,6 +1,6 @@
 {
   "name": "@fuoco.appdev/native-components",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
@@ -89,7 +89,6 @@
     "lodash.memoize": "^4.1.2",
     "lodash.shuffle": "^4.2.0",
     "moment": "^2.30.1",
-    "nominatim-client": "^3.2.1",
     "prettier": "2.8.8",
     "react-native-builder-bob": "^0.30.2",
     "react-native-svg": "^15.6.0",
