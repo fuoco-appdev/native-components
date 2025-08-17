@@ -177,23 +177,23 @@ function Dropdown({
 
   useEffect(() => {
     if (alignment === DropdownAlignment.Left) {
-      const dropdownX = anchorLayout.pageX;
-      const dropdownY = anchorLayout.pageY + anchorLayout.height;
+      const dropdownX = anchorLayout.x;
+      const dropdownY = anchorLayout.y + anchorLayout.height;
       setLayout({
         x: Math.max(Math.min(dropdownX, width - dropdownWidth), 0),
         y: Math.max(Math.min(dropdownY, height - dropdownYOffset), 0),
       });
     } else if (alignment === DropdownAlignment.Right) {
-      const dropdownX = anchorLayout.pageX + anchorLayout.width;
-      const dropdownY = anchorLayout.pageY + anchorLayout.height;
+      const dropdownX = anchorLayout.x + anchorLayout.width;
+      const dropdownY = anchorLayout.y + anchorLayout.height;
       setLayout({
         x: Math.max(Math.min(dropdownX, width - dropdownWidth), 0),
         y: Math.max(Math.min(dropdownY, height - dropdownYOffset), 0),
       });
     } else if (alignment === DropdownAlignment.Center) {
       const dropdownX =
-        anchorLayout.pageX - dropdownWidth / 2 + anchorLayout.width / 2;
-      const dropdownY = anchorLayout.pageY + anchorLayout.height;
+        anchorLayout.x - dropdownWidth / 2 + anchorLayout.width / 2;
+      const dropdownY = anchorLayout.y + anchorLayout.height;
       setLayout({
         x: Math.max(Math.min(dropdownX, width - dropdownWidth), 0),
         y: Math.max(Math.min(dropdownY, height - dropdownYOffset), 0),
@@ -294,8 +294,8 @@ function Dropdown({
               {
                 ...styles.dropdown,
                 ...(customStyles?.dropdown ?? {}),
-                top: layout.y,
-                left: layout.x,
+                top: isNaN(layout.y) ? 0 : layout.y,
+                left: isNaN(layout.x) ? 0 : layout.x,
                 width: dropdownWidth,
               },
               sheetAnimatedStyle,
