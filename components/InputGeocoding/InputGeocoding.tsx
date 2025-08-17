@@ -113,7 +113,10 @@ export interface InputGeocodingProps {
   };
   layer?: 'address' | 'poi' | 'railway' | 'natural' | 'manmade';
   zoom?: NominatimZoom;
-  defaultCoordinates?: [number, number];
+  defaultCoordinates?: {
+    latitude: number;
+    longitude: number;
+  };
   defaultValue?: string;
   customStyles?: InputGeocodingStyles;
   customLightStyles?: InputGeocodingStyles;
@@ -424,8 +427,8 @@ function InputGeocoding({
       let defaultLatitude = 0;
 
       if (defaultCoordinates) {
-        defaultLongitude = defaultCoordinates[0] ?? 0;
-        defaultLatitude = defaultCoordinates[1] ?? 0;
+        defaultLongitude = defaultCoordinates.longitude ?? 0;
+        defaultLatitude = defaultCoordinates.latitude ?? 0;
       }
 
       if (
