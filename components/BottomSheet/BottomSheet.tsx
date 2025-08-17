@@ -198,7 +198,7 @@ function BottomSheet({
       0,
       { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
       () => {
-        Vibration.vibrate(50);
+        runOnJS(Vibration.vibrate)(50);
       }
     );
   };
