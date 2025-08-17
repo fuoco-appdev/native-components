@@ -293,7 +293,7 @@ function InputGeocodingSearch({
       } catch (error) {
         console.error('Error fetching data, ', error);
       }
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(timeout);
   }, [userAgent, layer, zoom, searchValue, setItems]);

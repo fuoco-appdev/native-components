@@ -10,6 +10,7 @@ import {
   useColorScheme,
   View,
   ViewStyle,
+  Vibration,
 } from 'react-native';
 import {
   FlatList,
@@ -196,7 +197,9 @@ function BottomSheet({
     translateY.value = withTiming(
       0,
       { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
-      () => {}
+      () => {
+        Vibration.vibrate(50);
+      }
     );
   };
 
@@ -222,12 +225,12 @@ function BottomSheet({
 
   useEffect(() => {
     if (!isOpen) {
-      onAnimatedClose();
+      setTimeout(() => onAnimatedClose(), 250);
       return;
     }
 
     if (sheetHeight > 0) {
-      onAnimatedOpen();
+      setTimeout(() => onAnimatedOpen(), 250);
     }
   }, [isOpen, sheetHeight]);
 
