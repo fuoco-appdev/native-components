@@ -177,23 +177,23 @@ function Dropdown({
 
   useEffect(() => {
     if (alignment === DropdownAlignment.Left) {
-      const dropdownX = anchorLayout.x;
-      const dropdownY = anchorLayout.y + anchorLayout.height;
+      const dropdownX = anchorLayout.pageX;
+      const dropdownY = anchorLayout.pageY + anchorLayout.height;
       setLayout({
         x: Math.max(Math.min(dropdownX, width - dropdownWidth), 0),
         y: Math.max(Math.min(dropdownY, height - dropdownYOffset), 0),
       });
     } else if (alignment === DropdownAlignment.Right) {
-      const dropdownX = anchorLayout.x + anchorLayout.width;
-      const dropdownY = anchorLayout.y + anchorLayout.height;
+      const dropdownX = anchorLayout.pageX + anchorLayout.width;
+      const dropdownY = anchorLayout.pageY + anchorLayout.height;
       setLayout({
         x: Math.max(Math.min(dropdownX, width - dropdownWidth), 0),
         y: Math.max(Math.min(dropdownY, height - dropdownYOffset), 0),
       });
     } else if (alignment === DropdownAlignment.Center) {
       const dropdownX =
-        anchorLayout.x - dropdownWidth / 2 + anchorLayout.width / 2;
-      const dropdownY = anchorLayout.y + anchorLayout.height;
+        anchorLayout.pageX - dropdownWidth / 2 + anchorLayout.width / 2;
+      const dropdownY = anchorLayout.pageY + anchorLayout.height;
       setLayout({
         x: Math.max(Math.min(dropdownX, width - dropdownWidth), 0),
         y: Math.max(Math.min(dropdownY, height - dropdownYOffset), 0),
