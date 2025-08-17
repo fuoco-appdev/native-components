@@ -105,6 +105,7 @@ export enum NominatimZoom {
 
 export interface InputGeocodingProps {
   userAgent: string;
+  countryCodes: string[];
   strings?: {
     bottomSheetTitle?: string;
     searchNotFound?: string;
@@ -234,6 +235,7 @@ function InputGeocodingSearch({
   userAgent,
   layer,
   zoom,
+  countryCodes = [],
   onChanged,
   onClose,
   strings,
@@ -248,6 +250,7 @@ function InputGeocodingSearch({
   userAgent: string;
   layer: string;
   zoom: number;
+  countryCodes: string[];
   onChanged?: (item: NominatimSearchResult) => void;
   onClose?: () => void;
   strings?: {
@@ -272,6 +275,8 @@ function InputGeocodingSearch({
         const response = await fetch(
           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
             searchValue
+          )}&countrycodes=${countryCodes.join(
+            ','
           )}&zoom=${zoom}&layer=${layer}&addressdetails=1`,
           {
             headers: {
@@ -371,6 +376,7 @@ function InputGeocoding({
   userAgent,
   layer = 'address',
   zoom = NominatimZoom.Building,
+  countryCodes,
   defaultCoordinates,
   defaultValue,
   strings = {
@@ -407,7 +413,7 @@ function InputGeocoding({
   };
 
   useEffect(() => {
-    if (value || defaultValue) {
+    if (value) {
       return;
     }
 
@@ -522,6 +528,7 @@ function InputGeocoding({
           userAgent={userAgent}
           layer={layer}
           zoom={zoom}
+          countryCodes={countryCodes}
           strings={strings}
           onChanged={onChanged}
           onClose={() => setOpen(false)}
