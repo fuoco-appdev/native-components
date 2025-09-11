@@ -77,7 +77,6 @@ function TabsScrollView({
       horizontal={true}
       scrollEventThrottle={16}
       showsHorizontalScrollIndicator={false}
-      scrollToOverflowEnabled={true}
       snapToInterval={tabsContext.rootSize.width}
       style={[
         styles.scrollView,
