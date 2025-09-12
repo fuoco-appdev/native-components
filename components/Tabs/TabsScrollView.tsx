@@ -1,15 +1,15 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
+  ScrollView,
   StyleSheet,
   useColorScheme,
   ViewStyle,
 } from 'react-native';
 import Animated, {
   Easing,
-  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -42,19 +42,16 @@ function TabsScrollView({
   customLightStyles,
 }: TabsScrollViewProps) {
   const tabsContext = useContext(TabsContext);
-  const [width, setWidth] = useState<number>(0);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      if (!tabsContext.scrollValue) {
-        return;
-      }
+  const scrollHandler = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (!tabsContext.scrollValue) {
+      return;
+    }
 
-      tabsContext.scrollValue.value = event.contentOffset.x;
-    },
-  });
+    tabsContext.scrollValue.value = event.nativeEvent.contentOffset.x;
+  };
 
   const onMomentumScrollEnd = (
     event: NativeSyntheticEvent<NativeScrollEvent>
@@ -69,20 +66,18 @@ function TabsScrollView({
     }
   };
 
-  useEffect(() => {
-    setWidth(tabsContext.rootSize.width);
-  }, [tabsContext.rootSize]);
-
   return (
-    <Animated.ScrollView
+    <ScrollView
       ref={tabsContext.scrollRef}
       onScroll={scrollHandler}
       onMomentumScrollEnd={onMomentumScrollEnd}
       pagingEnabled={true}
       horizontal={true}
       scrollEventThrottle={16}
+      decelerationRate="fast"
       showsHorizontalScrollIndicator={false}
-      snapToInterval={width}
+      disableIntervalMomentum={true}
+      snapToInterval={tabsContext.rootSize.width}
       style={[
         styles.scrollView,
         customStyles?.scrollView ?? {},
@@ -92,7 +87,7 @@ function TabsScrollView({
       ]}
     >
       {children}
-    </Animated.ScrollView>
+    </ScrollView>
   );
 }
 
