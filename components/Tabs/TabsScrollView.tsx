@@ -1,5 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -42,6 +42,7 @@ function TabsScrollView({
   customLightStyles,
 }: TabsScrollViewProps) {
   const tabsContext = useContext(TabsContext);
+  const [width, setWidth] = useState<number>(0);
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
 
@@ -68,6 +69,10 @@ function TabsScrollView({
     }
   };
 
+  useEffect(() => {
+    setWidth(tabsContext.rootSize.width);
+  }, [tabsContext.rootSize]);
+
   return (
     <Animated.ScrollView
       ref={tabsContext.scrollRef}
@@ -77,7 +82,7 @@ function TabsScrollView({
       horizontal={true}
       scrollEventThrottle={16}
       showsHorizontalScrollIndicator={false}
-      snapToInterval={tabsContext.rootSize.width}
+      snapToInterval={width}
       style={[
         styles.scrollView,
         customStyles?.scrollView ?? {},
