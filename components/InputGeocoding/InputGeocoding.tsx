@@ -1,43 +1,29 @@
 /* eslint-disable react/react-in-jsx-scope */
+import React, { useEffect, useState } from 'react';
 import {
+  Dimensions,
   ImageStyle,
+  NativeSyntheticEvent,
   StyleSheet,
+  TextInputChangeEventData,
   TextStyle,
   View,
   ViewStyle,
   useColorScheme,
-  TextInput,
-  TextInputProps,
-  NativeSyntheticEvent,
-  TextInputChangeEventData,
-  TextInputFocusEventData,
-  KeyboardTypeOptions,
-  ColorValue,
-  KeyboardAvoidingView,
-  Dimensions,
 } from 'react-native';
-import Clipboard from '@react-native-clipboard/clipboard';
-import Colors from '../Themes/colors';
-import MarginsPaddings from '../Themes/margins_paddings';
-import Globals from '../Themes/globals';
-import Button, { ButtonStyles } from '../Button/Button';
-import { FormLayout, FormLayoutStyles } from '../FormLayout/FormLayout';
-import {
-  ContentCopy,
-  ErrorOutline,
-  Visibility,
-  VisibilityOff,
-} from '../Icon/Icons/Line';
-import React, { useEffect, useState } from 'react';
-import Typography, { TypographyStyles } from '../Typography/Typography';
 import {
   BottomSheet,
   BottomSheetItemStyles,
   BottomSheetStyles,
   ExtraBottomSheetItemStyles,
 } from '../BottomSheet';
-import { Line } from '../Icon';
+import Button, { ButtonStyles } from '../Button/Button';
+import { FormLayout, FormLayoutStyles } from '../FormLayout/FormLayout';
 import Input, { ExtraInputStyles, InputStyles } from '../Input/Input';
+import Colors from '../Themes/colors';
+import Globals from '../Themes/globals';
+import MarginsPaddings from '../Themes/margins_paddings';
+import Typography, { TypographyStyles } from '../Typography/Typography';
 
 export interface NominatimSearchResult {
   place_id: number;
@@ -105,7 +91,15 @@ export enum NominatimZoom {
 
 export interface InputGeocodingProps {
   userAgent: string;
-  countryCodes: string[];
+  disableReverseSearch?: boolean;
+  countryCodes?: string[];
+  amenity?: string;
+  street?: string;
+  city?: string;
+  county?: string;
+  state?: string;
+  country?: string;
+  postalcode?: string;
   strings?: {
     bottomSheetTitle?: string;
     searchNotFound?: string;
@@ -117,7 +111,6 @@ export interface InputGeocodingProps {
     latitude: number;
     longitude: number;
   };
-  defaultValue?: string;
   customStyles?: InputGeocodingStyles;
   customLightStyles?: InputGeocodingStyles;
   customDarkStyles?: InputGeocodingStyles;
@@ -234,11 +227,17 @@ function InputGeocodingSearch({
   customExtraStyles,
   customExtraLightStyles,
   customExtraDarkStyles,
-  value,
   userAgent,
   layer,
   zoom,
-  countryCodes = [],
+  countryCodes,
+  amenity,
+  street,
+  city,
+  county,
+  state,
+  country,
+  postalcode,
   onChanged,
   onClose,
   strings,
@@ -249,11 +248,17 @@ function InputGeocodingSearch({
   customExtraStyles?: ExtraInputGeocodingStyles;
   customExtraDarkStyles?: ExtraInputGeocodingStyles;
   customExtraLightStyles?: ExtraInputGeocodingStyles;
-  value: string | undefined;
   userAgent: string;
   layer: string;
   zoom: number;
-  countryCodes: string[];
+  countryCodes?: string[];
+  amenity?: string;
+  street?: string;
+  city?: string;
+  county?: string;
+  state?: string;
+  country?: string;
+  postalcode?: string;
   onChanged?: (item: NominatimSearchResult) => void;
   onClose?: () => void;
   strings?: {
@@ -264,7 +269,7 @@ function InputGeocodingSearch({
 }) {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
-  const [searchValue, setSearchValue] = useState<string>(value ?? '');
+  const [searchValue, setSearchValue] = useState<string>('');
   const [items, setItems] = useState<NominatimSearchResult[]>([]);
 
   const onFeaturePressed = (item: NominatimSearchResult) => {
@@ -273,20 +278,72 @@ function InputGeocodingSearch({
   };
 
   useEffect(() => {
+    const url = 'https://nominatim.openstreetmap.org/search';
+    const params = new URLSearchParams('');
+    params.append('format', 'json');
+    //params.append('q', encodeURIComponent(searchValue));
+    params.append('addressdetails', '1');
+
+    if (countryCodes) {
+      params.append('countrycodes', countryCodes.join(','));
+    }
+    if (zoom) {
+      params.append('zoom', zoom.toString());
+    }
+    if (layer) {
+      params.append('layer', layer);
+    }
+    if (amenity) {
+      params.append('amenity', amenity);
+    }
+
+    if (
+      street &&
+      (zoom === NominatimZoom.MajorAndMinorStreets ||
+        zoom === NominatimZoom.MajorStreets)
+    ) {
+      params.append('street', searchValue);
+    } else if (street) {
+      params.append('street', street);
+    }
+
+    if (city && zoom === NominatimZoom.City) {
+      params.append('city', searchValue);
+    } else if (city) {
+      params.append('city', city);
+    }
+
+    if (county && zoom === NominatimZoom.County) {
+      params.append('county', searchValue);
+    } else if (county) {
+      params.append('county', county);
+    }
+
+    if (state && zoom === NominatimZoom.State) {
+      params.append('state', searchValue);
+    } else if (state) {
+      params.append('state', state);
+    }
+
+    if (country && zoom === NominatimZoom.Country) {
+      params.append('country', searchValue);
+    } else if (country) {
+      params.append('country', country);
+    }
+
+    if (postalcode) {
+      params.append('postalcode', postalcode);
+    }
+
+    console.log(params.toString());
+
     const timeout = setTimeout(async () => {
       try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            searchValue
-          )}&countrycodes=${countryCodes.join(
-            ','
-          )}&zoom=${zoom}&layer=${layer}&addressdetails=1`,
-          {
-            headers: {
-              'User-Agent': userAgent,
-            },
-          }
-        );
+        const response = await fetch(`${url}?${params.toString()}`, {
+          headers: {
+            'User-Agent': userAgent,
+          },
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -304,7 +361,21 @@ function InputGeocodingSearch({
     }, 1500);
 
     return () => clearTimeout(timeout);
-  }, [userAgent, layer, zoom, searchValue, setItems]);
+  }, [
+    userAgent,
+    layer,
+    zoom,
+    searchValue,
+    setItems,
+    countryCodes,
+    amenity,
+    street,
+    city,
+    county,
+    state,
+    country,
+    postalcode,
+  ]);
 
   return (
     <View
@@ -377,11 +448,18 @@ function InputGeocodingSearch({
 
 function InputGeocoding({
   userAgent,
+  disableReverseSearch,
   layer = 'address',
   zoom = NominatimZoom.Building,
   countryCodes,
+  amenity,
+  street,
+  city,
+  county,
+  state,
+  country,
+  postalcode,
   defaultCoordinates,
-  defaultValue,
   strings = {
     searchNotFound: 'No entries to show',
     searchPlaceholder: 'Search',
@@ -393,7 +471,7 @@ function InputGeocoding({
   customExtraStyles = {},
   customExtraDarkStyles = {},
   customExtraLightStyles = {},
-  icon = <Line.LocationOn size={21} color={Colors.brand_600} />,
+  icon,
   placeholder = '123 Main Street, Quebec, Canada',
   descriptionText,
   disabled,
@@ -407,16 +485,15 @@ function InputGeocoding({
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
   const [open, setOpen] = useState<boolean>(false);
-  const [value, setValue] = useState<string | undefined>(defaultValue);
+  const [value, setValue] = useState<string | undefined>();
   const { height } = Dimensions.get('screen');
 
   const onChanged = (item: NominatimSearchResult | NominatimReverseResult) => {
-    setValue(item.display_name);
     onLocationChanged?.(item);
   };
 
   useEffect(() => {
-    if (value) {
+    if (value || disableReverseSearch) {
       return;
     }
 
@@ -459,7 +536,6 @@ function InputGeocoding({
         }
 
         if (data.display_name !== value) {
-          setValue(data.display_name);
           onLocationChanged?.(data);
         }
         resolve();
@@ -469,7 +545,33 @@ function InputGeocoding({
     });
 
     updateLocationAsync.then();
-  }, [defaultCoordinates, userAgent, layer, zoom]);
+  }, [defaultCoordinates, userAgent, layer, zoom, disableReverseSearch]);
+
+  useEffect(() => {
+    if (
+      street &&
+      (zoom === NominatimZoom.MajorAndMinorStreets ||
+        zoom === NominatimZoom.MajorStreets)
+    ) {
+      setValue(street);
+    }
+
+    if (city && zoom === NominatimZoom.City) {
+      setValue(city);
+    }
+
+    if (county && zoom === NominatimZoom.County) {
+      setValue(county);
+    }
+
+    if (state && zoom === NominatimZoom.State) {
+      setValue(state);
+    }
+
+    if (country && zoom === NominatimZoom.Country) {
+      setValue(country);
+    }
+  }, [street, city, county, state, country, zoom]);
 
   return (
     <>
@@ -527,11 +629,17 @@ function InputGeocoding({
           customExtraStyles={customExtraStyles}
           customExtraLightStyles={customExtraLightStyles}
           customExtraDarkStyles={customExtraDarkStyles}
-          value={value}
           userAgent={userAgent}
           layer={layer}
           zoom={zoom}
           countryCodes={countryCodes}
+          amenity={amenity}
+          street={street}
+          city={city}
+          county={county}
+          state={state}
+          country={country}
+          postalcode={postalcode}
           strings={strings}
           onChanged={onChanged}
           onClose={() => setOpen(false)}
@@ -540,5 +648,369 @@ function InputGeocoding({
     </>
   );
 }
+
+export interface AddressFormStyles {
+  root?: ViewStyle;
+  horizontalContainer?: ViewStyle;
+}
+
+export interface ExtraAddressFormStyles {
+  inputGeocoding?: InputGeocodingStyles;
+  extraInputGeocoding?: ExtraInputGeocodingStyles;
+  input?: InputStyles;
+  extraInput?: ExtraInputStyles;
+}
+
+export interface AddressFormProps {
+  userAgent: string;
+  strings?: {
+    country?: string;
+    state?: string;
+    city?: string;
+    street?: string;
+    civic?: string;
+    postalCode?: string;
+  };
+  defaultCoordinates?: {
+    latitude: number;
+    longitude: number;
+  };
+  value?: {
+    country?: string;
+    state?: string;
+    city?: string;
+    street?: string;
+    civic?: string;
+    postalCode?: string;
+  };
+  placeholder?: {
+    country?: string;
+    state?: string;
+    city?: string;
+    street?: string;
+    civic?: string;
+    postalCode?: string;
+  };
+  error?: {
+    country?: string;
+    state?: string;
+    city?: string;
+    street?: string;
+    civic?: string;
+    postalCode?: string;
+  };
+  customStyles?: AddressFormStyles;
+  customLightStyles?: AddressFormStyles;
+  customDarkStyles?: AddressFormStyles;
+  customExtraStyles?: ExtraAddressFormStyles;
+  customExtraDarkStyles?: ExtraAddressFormStyles;
+  customExtraLightStyles?: ExtraAddressFormStyles;
+  onLocationChanged?: (item: NominatimReverseResult) => void;
+  onCountryChanged?: (item: NominatimSearchResult) => void;
+  onStateChanged?: (item: NominatimSearchResult) => void;
+  onCityChanged?: (item: NominatimSearchResult) => void;
+  onStreetChanged?: (item: NominatimSearchResult) => void;
+  onCivicChanged?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
+  onPostalCodeChanged?: (
+    e: NativeSyntheticEvent<TextInputChangeEventData>
+  ) => void;
+}
+
+const addressFormStyles = StyleSheet.create<AddressFormStyles>({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  horizontalContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: MarginsPaddings.mp_5,
+  },
+});
+const addressFormLightStyles = StyleSheet.create<AddressFormStyles>({});
+const addressFormDarkStyles = StyleSheet.create<AddressFormStyles>({});
+
+function AddressForm({
+  userAgent,
+  defaultCoordinates,
+  value,
+  strings = {
+    country: 'Country',
+    state: 'State / Province',
+    city: 'City',
+    street: 'Street',
+    civic: 'Civic',
+    postalCode: 'Postal code',
+  },
+  placeholder = {
+    country: 'Canada',
+    state: 'Quebec',
+    city: 'Montreal',
+    street: 'Peel',
+    civic: '123',
+    postalCode: 'A1B 2C3',
+  },
+  error,
+  customStyles = {},
+  customLightStyles = {},
+  customDarkStyles = {},
+  customExtraStyles = {},
+  customExtraDarkStyles = {},
+  customExtraLightStyles = {},
+  onLocationChanged,
+  onCountryChanged,
+  onStateChanged,
+  onCityChanged,
+  onStreetChanged,
+  onCivicChanged,
+  onPostalCodeChanged,
+}: AddressFormProps) {
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
+  const [reverseResult, setReverseResult] = useState<
+    NominatimReverseResult | undefined
+  >(undefined);
+  const [countryValue, setCountryValue] = useState<string | undefined>(
+    value?.country
+  );
+  const [stateValue, setStateValue] = useState<string | undefined>(
+    value?.state
+  );
+  const [cityValue, setCityValue] = useState<string | undefined>(value?.city);
+  const [streetValue, setStreetValue] = useState<string | undefined>(
+    value?.street
+  );
+  const [civicValue, setCivicValue] = useState<string | undefined>(
+    value?.civic
+  );
+  const [postalCodeValue, setPostalCodeValue] = useState<string | undefined>(
+    value?.postalCode
+  );
+
+  useEffect(() => {
+    if (
+      reverseResult ||
+      (value &&
+        Object.values(value).filter((item) => item !== undefined).length > 0)
+    ) {
+      return;
+    }
+
+    const updateLocationAsync = new Promise<void>(async (resolve, reject) => {
+      let selectedLongitude = 0;
+      let selectedLatitude = 0;
+      let defaultLongitude = 0;
+      let defaultLatitude = 0;
+
+      if (defaultCoordinates) {
+        defaultLongitude = defaultCoordinates.longitude ?? 0;
+        defaultLatitude = defaultCoordinates.latitude ?? 0;
+      }
+
+      if (
+        selectedLongitude === defaultLongitude &&
+        selectedLatitude === defaultLatitude
+      ) {
+        resolve();
+      }
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${defaultLatitude}&lon=${defaultLongitude}&zoom=${NominatimZoom.Building}&layer=address&addressdetails=1`,
+          {
+            headers: {
+              'User-Agent': userAgent,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: NominatimReverseResult = await response.json();
+        if (data.error) {
+          console.error('Error:', data.error);
+          return;
+        }
+
+        const country = data.address.country;
+        const county = data.address.county;
+        const houseNumber = data.address.house_number;
+        const postalCode = data.address.postcode;
+        const region = data.address.region;
+        const road = data.address.road;
+        const state = data.address.state;
+        const town = data.address.town;
+        setReverseResult(data);
+        setCountryValue(country);
+        setStateValue(state);
+        setCityValue(town);
+        setStreetValue(road);
+        setCivicValue(houseNumber);
+        setPostalCodeValue(postalCode);
+        onLocationChanged?.(data);
+        resolve();
+      } catch (error: any) {
+        console.error(error);
+      }
+    });
+
+    updateLocationAsync.then();
+  }, [defaultCoordinates, userAgent, value]);
+
+  return (
+    <View
+      style={[
+        ...(isDarkTheme
+          ? [
+              {
+                ...addressFormDarkStyles?.root,
+                ...(customDarkStyles?.root ?? {}),
+              },
+            ]
+          : [
+              {
+                ...addressFormLightStyles?.root,
+                ...(customLightStyles?.root ?? {}),
+              },
+            ]),
+        { ...addressFormStyles.root, ...(customStyles?.root ?? {}) },
+      ]}
+    >
+      <InputGeocoding
+        userAgent={userAgent}
+        zoom={NominatimZoom.Country}
+        country={value?.country ?? countryValue}
+        label={strings.country}
+        disableReverseSearch={true}
+        customStyles={customExtraStyles.inputGeocoding}
+        customLightStyles={customExtraLightStyles.inputGeocoding}
+        customDarkStyles={customExtraDarkStyles.inputGeocoding}
+        customExtraStyles={customExtraStyles.extraInputGeocoding}
+        customExtraLightStyles={customExtraLightStyles.extraInputGeocoding}
+        customExtraDarkStyles={customExtraDarkStyles.extraInputGeocoding}
+        placeholder={placeholder?.country}
+        error={error?.country}
+        onLocationChanged={onCountryChanged}
+      />
+      <InputGeocoding
+        userAgent={userAgent}
+        zoom={NominatimZoom.State}
+        country={value?.country ?? countryValue}
+        state={value?.state ?? stateValue}
+        label={strings.state}
+        disableReverseSearch={true}
+        customStyles={customExtraStyles.inputGeocoding}
+        customLightStyles={customExtraLightStyles.inputGeocoding}
+        customDarkStyles={customExtraDarkStyles.inputGeocoding}
+        customExtraStyles={customExtraStyles.extraInputGeocoding}
+        customExtraLightStyles={customExtraLightStyles.extraInputGeocoding}
+        customExtraDarkStyles={customExtraDarkStyles.extraInputGeocoding}
+        placeholder={placeholder?.state}
+        error={error?.state}
+        onLocationChanged={onStateChanged}
+      />
+      <InputGeocoding
+        userAgent={userAgent}
+        zoom={NominatimZoom.City}
+        country={value?.country ?? countryValue}
+        state={value?.state ?? stateValue}
+        city={value?.city ?? cityValue}
+        label={strings.city}
+        disableReverseSearch={true}
+        customStyles={customExtraStyles.inputGeocoding}
+        customLightStyles={customExtraLightStyles.inputGeocoding}
+        customDarkStyles={customExtraDarkStyles.inputGeocoding}
+        customExtraStyles={customExtraStyles.extraInputGeocoding}
+        customExtraLightStyles={customExtraLightStyles.extraInputGeocoding}
+        customExtraDarkStyles={customExtraDarkStyles.extraInputGeocoding}
+        placeholder={placeholder?.city}
+        error={error?.city}
+        onLocationChanged={onCityChanged}
+      />
+      <InputGeocoding
+        userAgent={userAgent}
+        zoom={NominatimZoom.MajorAndMinorStreets}
+        country={value?.country ?? countryValue}
+        state={value?.state ?? stateValue}
+        city={value?.city ?? cityValue}
+        street={value?.street ?? streetValue}
+        label={strings.street}
+        disableReverseSearch={true}
+        customStyles={customExtraStyles.inputGeocoding}
+        customLightStyles={customExtraLightStyles.inputGeocoding}
+        customDarkStyles={customExtraDarkStyles.inputGeocoding}
+        customExtraStyles={customExtraStyles.extraInputGeocoding}
+        customExtraLightStyles={customExtraLightStyles.extraInputGeocoding}
+        customExtraDarkStyles={customExtraDarkStyles.extraInputGeocoding}
+        placeholder={placeholder?.street}
+        error={error?.street}
+        onLocationChanged={onStreetChanged}
+      />
+      <View
+        style={[
+          ...(isDarkTheme
+            ? [
+                {
+                  ...addressFormDarkStyles?.horizontalContainer,
+                  ...(customDarkStyles?.horizontalContainer ?? {}),
+                },
+              ]
+            : [
+                {
+                  ...addressFormLightStyles?.horizontalContainer,
+                  ...(customLightStyles?.horizontalContainer ?? {}),
+                },
+              ]),
+          {
+            ...addressFormStyles.horizontalContainer,
+            ...(customStyles?.horizontalContainer ?? {}),
+          },
+        ]}
+      >
+        <Input
+          type={'number-pad'}
+          label={strings.civic}
+          customStyles={customExtraStyles.input}
+          customLightStyles={customExtraLightStyles.input}
+          customDarkStyles={customExtraDarkStyles.input}
+          customExtraStyles={customExtraStyles.extraInput}
+          customExtraLightStyles={customExtraLightStyles.extraInput}
+          customExtraDarkStyles={customExtraDarkStyles.extraInput}
+          placeholder={placeholder?.civic}
+          error={error?.civic}
+          value={value?.civic ?? civicValue}
+          onChange={onCivicChanged}
+        />
+        <Input
+          type={'default'}
+          label={strings.postalCode}
+          customStyles={customExtraStyles.input}
+          customLightStyles={customExtraLightStyles.input}
+          customDarkStyles={customExtraDarkStyles.input}
+          customExtraStyles={customExtraStyles.extraInput}
+          customExtraLightStyles={customExtraLightStyles.extraInput}
+          customExtraDarkStyles={customExtraDarkStyles.extraInput}
+          placeholder={placeholder?.postalCode}
+          error={error?.postalCode}
+          value={value?.postalCode ?? postalCodeValue}
+          onChange={(e) => {
+            const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+            if (postalCodeRegex.test(e.nativeEvent.text)) {
+              onPostalCodeChanged?.(e);
+            }
+          }}
+          textInputProps={{
+            maxLength: 7,
+            autoCapitalize: 'characters',
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+InputGeocoding.AddressForm = AddressForm;
 
 export default InputGeocoding;
