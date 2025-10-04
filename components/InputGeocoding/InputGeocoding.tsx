@@ -11,6 +11,7 @@ import {
   ViewStyle,
   useColorScheme,
 } from 'react-native';
+import Skeleton from 'react-native-reanimated-skeleton';
 import {
   BottomSheet,
   BottomSheetItemStyles,
@@ -69,6 +70,7 @@ export interface ExtraInputGeocodingStyles {
   button?: ButtonStyles;
   bottomSheet?: BottomSheetStyles;
   bottomSheetTitle?: TypographyStyles;
+  bottomSheetText?: TypographyStyles;
   bottomSheetItem?: BottomSheetItemStyles;
   extraBottomSheetItem?: ExtraBottomSheetItemStyles;
   bottomSheetInput?: InputStyles;
@@ -271,6 +273,7 @@ function InputGeocodingSearch({
   const isDarkTheme = theme === 'dark';
   const [searchValue, setSearchValue] = useState<string>('');
   const [items, setItems] = useState<NominatimSearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onFeaturePressed = (item: NominatimSearchResult) => {
     onChanged?.(item);
@@ -335,8 +338,7 @@ function InputGeocodingSearch({
       params.append('postalcode', postalcode);
     }
 
-    console.log(params.toString());
-
+    setIsLoading(true);
     const timeout = setTimeout(async () => {
       try {
         const response = await fetch(`${url}?${params.toString()}`, {
@@ -344,6 +346,8 @@ function InputGeocodingSearch({
             'User-Agent': userAgent,
           },
         });
+
+        setIsLoading(false);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -357,6 +361,7 @@ function InputGeocodingSearch({
         setItems(data);
       } catch (error) {
         console.error('Error fetching data, ', error);
+        setIsLoading(false);
       }
     }, 1500);
 
@@ -428,20 +433,115 @@ function InputGeocodingSearch({
         value={searchValue}
         onChange={(e) => setSearchValue(e.nativeEvent.text)}
       />
-      {items?.map((value) => (
-        <BottomSheet.Item
-          key={value.place_id}
-          onPress={() => onFeaturePressed(value)}
-          customStyles={customExtraStyles?.bottomSheetItem}
-          customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
-          customLightStyles={customExtraLightStyles?.bottomSheetItem}
-          customExtraStyles={customExtraStyles?.extraBottomSheetItem}
-          customExtraLightStyles={customExtraLightStyles?.extraBottomSheetItem}
-          customExtraDarkStyles={customExtraDarkStyles?.extraBottomSheetItem}
+      {!isLoading &&
+        items.length > 0 &&
+        items?.map((value) => (
+          <BottomSheet.Item
+            key={value.place_id}
+            onPress={() => onFeaturePressed(value)}
+            customStyles={customExtraStyles?.bottomSheetItem}
+            customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
+            customLightStyles={customExtraLightStyles?.bottomSheetItem}
+            customExtraStyles={customExtraStyles?.extraBottomSheetItem}
+            customExtraLightStyles={
+              customExtraLightStyles?.extraBottomSheetItem
+            }
+            customExtraDarkStyles={customExtraDarkStyles?.extraBottomSheetItem}
+          >
+            {value.display_name}
+          </BottomSheet.Item>
+        ))}
+      {!isLoading && items.length <= 0 && (
+        <Typography.Text
+          customStyles={{
+            root: {
+              width: '100%',
+              textAlign: 'center',
+              padding: MarginsPaddings.mp_5,
+              ...customExtraStyles?.bottomSheetText,
+            },
+          }}
+          customLightStyles={customExtraLightStyles?.bottomSheetText}
+          customDarkStyles={customExtraDarkStyles?.bottomSheetText}
         >
-          {value.display_name}
-        </BottomSheet.Item>
-      ))}
+          {strings?.searchNotFound}
+        </Typography.Text>
+      )}
+      {isLoading && (
+        <Skeleton
+          isLoading={true}
+          containerStyle={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+          layout={[
+            {
+              key: 'text1',
+              width: '100%',
+              height: 13,
+              borderRadius: 13,
+              marginTop: MarginsPaddings.mp_5 + 4,
+              marginBottom: 4,
+            },
+            {
+              key: 'text2',
+              width: '34%',
+              height: 13,
+              borderRadius: 13,
+              marginTop: 4,
+              marginBottom: MarginsPaddings.mp_5 + 4,
+            },
+            {
+              key: 'text3',
+              width: '100%',
+              height: 13,
+              borderRadius: 13,
+              marginTop: MarginsPaddings.mp_5 + 4,
+              marginBottom: 4,
+            },
+            {
+              key: 'text4',
+              width: '34%',
+              height: 13,
+              borderRadius: 13,
+              marginTop: 4,
+              marginBottom: MarginsPaddings.mp_5 + 4,
+            },
+            {
+              key: 'text5',
+              width: '100%',
+              height: 13,
+              borderRadius: 13,
+              marginTop: MarginsPaddings.mp_5 + 4,
+              marginBottom: 4,
+            },
+            {
+              key: 'text6',
+              width: '34%',
+              height: 13,
+              borderRadius: 13,
+              marginTop: 4,
+              marginBottom: MarginsPaddings.mp_5 + 4,
+            },
+            {
+              key: 'text7',
+              width: '100%',
+              height: 13,
+              borderRadius: 13,
+              marginTop: MarginsPaddings.mp_5 + 4,
+              marginBottom: 4,
+            },
+            {
+              key: 'text8',
+              width: '34%',
+              height: 13,
+              borderRadius: 13,
+              marginTop: 4,
+              marginBottom: MarginsPaddings.mp_5 + 4,
+            },
+          ]}
+        />
+      )}
     </View>
   );
 }
@@ -995,12 +1095,7 @@ function AddressForm({
           placeholder={placeholder?.postalCode}
           error={error?.postalCode}
           value={value?.postalCode ?? postalCodeValue}
-          onChange={(e) => {
-            const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-            if (postalCodeRegex.test(e.nativeEvent.text)) {
-              onPostalCodeChanged?.(e);
-            }
-          }}
+          onChange={onPostalCodeChanged}
           textInputProps={{
             maxLength: 7,
             autoCapitalize: 'characters',
