@@ -1,36 +1,31 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react/react-in-jsx-scope */
+import Clipboard from '@react-native-clipboard/clipboard';
+import { BlurView } from '@react-native-community/blur';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  ColorValue,
+  Dimensions,
   ImageStyle,
+  Keyboard,
+  KeyboardAvoidingView,
+  KeyboardTypeOptions,
+  LayoutChangeEvent,
+  NativeSyntheticEvent,
+  SafeAreaView,
   StyleSheet,
+  TextInput,
+  TextInputChangeEventData,
+  TextInputFocusEventData,
+  TextInputProps,
   TextStyle,
+  TouchableOpacity,
+  Vibration,
   View,
   ViewStyle,
   useColorScheme,
-  TextInput,
-  TextInputProps,
-  NativeSyntheticEvent,
-  TextInputChangeEventData,
-  TextInputFocusEventData,
-  KeyboardTypeOptions,
-  ColorValue,
-  Keyboard,
-  Platform,
-  Dimensions,
-  LayoutRectangle,
-  Vibration,
-  KeyboardAvoidingView,
-  TextInputSubmitEditingEventData,
-  LayoutChangeEvent,
-  TouchableOpacity,
-  SafeAreaView,
 } from 'react-native';
-import Skeleton from 'react-native-reanimated-skeleton';
-import Clipboard from '@react-native-clipboard/clipboard';
-import Colors from '../Themes/colors';
-import MarginsPaddings from '../Themes/margins_paddings';
-import Globals from '../Themes/globals';
 import Button, { ButtonStyles } from '../Button/Button';
 import { FormLayout, FormLayoutStyles } from '../FormLayout/FormLayout';
 import {
@@ -39,17 +34,10 @@ import {
   Visibility,
   VisibilityOff,
 } from '../Icon/Icons/Line';
-import React, { useEffect, useRef, useState } from 'react';
-import Typography from '../Typography/Typography';
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
-import { BlurView } from '@react-native-community/blur';
 import { Portal } from '../Portal';
+import Colors from '../Themes/colors';
+import Globals from '../Themes/globals';
+import MarginsPaddings from '../Themes/margins_paddings';
 import TextArea from './TextArea';
 
 export interface InputStyles {
@@ -201,7 +189,6 @@ const styles = StyleSheet.create<InputStyles>({
     width: '100%',
   },
   error: {
-    borderColor: Colors.red_500,
     borderWidth: 1,
     borderStyle: 'solid',
     fontFamily: Globals.font_family,
@@ -245,7 +232,9 @@ const lightStyles = StyleSheet.create<InputStyles>({
   backdrop: {
     backgroundColor: 'rgba(255, 255, 255, 0.34)',
   },
-  error: {},
+  error: {
+    borderColor: Colors.red_500,
+  },
   withIcon: {},
   borderless: {},
   iconContainer: {
@@ -266,7 +255,9 @@ const darkStyles = StyleSheet.create<InputStyles>({
   backdrop: {
     backgroundColor: 'rgba(0, 0, 0, 0.34)',
   },
-  error: {},
+  error: {
+    borderColor: Colors.red_500,
+  },
   withIcon: {},
   borderless: {},
   iconContainer: {
@@ -411,13 +402,13 @@ const InputInner = ({
             ...(isDarkTheme
               ? [
                   darkStyles?.container,
-                  error ? darkStyles.error : {},
                   customDarkStyles?.container ?? {},
+                  error ? darkStyles.error : {},
                 ]
               : [
                   lightStyles?.container,
-                  error ? lightStyles.error : {},
                   customLightStyles?.container ?? {},
+                  error ? lightStyles.error : {},
                 ]),
           ]}
         >
