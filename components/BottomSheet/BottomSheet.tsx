@@ -197,15 +197,14 @@ function BottomSheet({
     translateY.value = withTiming(
       0,
       { easing: Easing.bezier(0.0, 0.0, 0.2, 1), duration: duration },
-      () => {
-        runOnJS(Vibration.vibrate)(50);
-      }
+      () => {}
     );
   };
 
   useEffect(() => {
     if (open && !isOpen) {
       setIsOpen(true);
+      runOnJS(Vibration.vibrate)(50);
     } else if (!open && isOpen) {
       setIsOpen(false);
     }
