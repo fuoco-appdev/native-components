@@ -890,8 +890,7 @@ function AddressForm({
   useEffect(() => {
     if (
       reverseResult ||
-      (value &&
-        Object.values(value).filter((item) => item !== undefined).length > 0)
+      (value && !Object.values<string | undefined>(value).includes(undefined))
     ) {
       return;
     }
