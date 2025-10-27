@@ -770,6 +770,9 @@ function InputGeocoding({
 
     if (country && zoom === NominatimZoom.Country) {
       setValue(country);
+    }
+
+    if (country) {
       setProvinces(iso3166.country(country ?? ''));
     }
   }, [street, city, county, state, country, zoom]);
