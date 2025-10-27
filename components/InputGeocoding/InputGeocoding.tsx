@@ -592,6 +592,9 @@ function InputGeocoding({
   const isDarkTheme = theme === 'dark';
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string | undefined>();
+  const [provinces, setProvinces] = useState<iso3166.CountryInfo.Full | null>(
+    null
+  );
   const { height } = Dimensions.get('screen');
 
   const onChanged = (data: NominatimSearchResult | NominatimReverseResult) => {
@@ -767,6 +770,7 @@ function InputGeocoding({
 
     if (country && zoom === NominatimZoom.Country) {
       setValue(country);
+      setProvinces(iso3166.country(country ?? ''));
     }
   }, [street, city, county, state, country, zoom]);
 
@@ -896,7 +900,7 @@ function InputGeocoding({
           onClose={() => setOpen(false)}
           type={'flat-list'}
           defaultSheetHeight={height * 0.6}
-          data={Object.values(iso3166.country(country ?? '')?.sub ?? {})}
+          data={Object.values(provinces?.sub ?? {})}
           renderItem={({ item }) => (
             <BottomSheet.Item
               customStyles={customExtraStyles?.bottomSheetItem}
@@ -911,7 +915,14 @@ function InputGeocoding({
               customExtraStyles={customExtraStyles?.extraBottomSheetItem}
               key={item.name}
               onPress={(e) => {
-                onProvinceChangedAsync(item);
+                const key = Object.keys(provinces?.sub ?? {}).find(
+                  (subKey) => provinces?.sub[subKey].name === item.name
+                );
+                const subdivision = iso3166.subdivision(key ?? '');
+                if (subdivision) {
+                  onProvinceChangedAsync(subdivision);
+                }
+
                 setOpen(false);
               }}
             >
