@@ -1,4 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
+import { iso31661, ISO31661AssignedEntry } from 'iso-3166';
+import iso3166 from 'iso-3166-2';
 import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
@@ -7,10 +9,11 @@ import {
   StyleSheet,
   TextInputChangeEventData,
   TextStyle,
+  useColorScheme,
   View,
   ViewStyle,
-  useColorScheme,
 } from 'react-native';
+import CountryFlag from 'react-native-country-flag';
 import Skeleton from 'react-native-reanimated-skeleton';
 import {
   BottomSheet,
@@ -128,8 +131,12 @@ export interface InputGeocodingProps {
   beforeLabel?: string;
   afterLabel?: string;
   labelOptional?: string;
-  onLocationChanged?: (
-    item: NominatimSearchResult | NominatimReverseResult
+  onSearchChanged?: (
+    search: NominatimSearchResult | NominatimReverseResult,
+    iso: {
+      country?: ISO31661AssignedEntry;
+      province?: iso3166.SubdivisionInfo.Full | null;
+    }
   ) => void;
 }
 
@@ -284,7 +291,6 @@ function InputGeocodingSearch({
     const url = 'https://nominatim.openstreetmap.org/search';
     const params = new URLSearchParams('');
     params.append('format', 'json');
-    //params.append('q', encodeURIComponent(searchValue));
     params.append('addressdetails', '1');
 
     if (countryCodes) {
@@ -580,7 +586,7 @@ function InputGeocoding({
   beforeLabel,
   afterLabel,
   labelOptional,
-  onLocationChanged,
+  onSearchChanged,
 }: InputGeocodingProps) {
   const theme = useColorScheme();
   const isDarkTheme = theme === 'dark';
@@ -588,8 +594,92 @@ function InputGeocoding({
   const [value, setValue] = useState<string | undefined>();
   const { height } = Dimensions.get('screen');
 
-  const onChanged = (item: NominatimSearchResult | NominatimReverseResult) => {
-    onLocationChanged?.(item);
+  const onChanged = (data: NominatimSearchResult | NominatimReverseResult) => {
+    onSearchChanged?.(data, {
+      country: iso31661.find(
+        (item) => item.alpha2 === data.address.country_code?.toUpperCase()
+      ),
+      province: iso3166.subdivision(data.address?.['ISO3166-2-lvl4'] ?? ''),
+    });
+  };
+
+  const onCountryChangedAsync = async (iso: ISO31661AssignedEntry) => {
+    const url = 'https://nominatim.openstreetmap.org/search';
+    const params = new URLSearchParams('');
+    params.append('format', 'json');
+    params.append('addressdetails', '1');
+
+    if (countryCodes) {
+      params.append('countrycodes', countryCodes.join(','));
+    }
+
+    params.append('country', iso.name);
+
+    try {
+      const response = await fetch(`${url}?${params.toString()}`, {
+        headers: {
+          'User-Agent': userAgent,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.length === 0) {
+        console.log('No results found');
+        return;
+      }
+      onSearchChanged?.(data[0], {
+        country: iso,
+      });
+    } catch (error) {
+      console.error('Error fetching data, ', error);
+    }
+  };
+
+  const onProvinceChangedAsync = async (iso: iso3166.SubdivisionInfo.Full) => {
+    const url = 'https://nominatim.openstreetmap.org/search';
+    const params = new URLSearchParams('');
+    params.append('format', 'json');
+    params.append('addressdetails', '1');
+
+    if (countryCodes) {
+      params.append('countrycodes', countryCodes.join(','));
+    }
+
+    if (country) {
+      params.append('country', country);
+    }
+
+    params.append('state', iso.name);
+
+    try {
+      const response = await fetch(`${url}?${params.toString()}`, {
+        headers: {
+          'User-Agent': userAgent,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.length === 0) {
+        console.log('No results found');
+        return;
+      }
+      onSearchChanged?.(data[0], {
+        country: iso31661.find(
+          (item) => item.alpha2 === iso.countryCode?.toUpperCase()
+        ),
+        province: iso,
+      });
+    } catch (error) {
+      console.error('Error fetching data, ', error);
+    }
   };
 
   useEffect(() => {
@@ -636,7 +726,14 @@ function InputGeocoding({
         }
 
         if (data.display_name !== value) {
-          onLocationChanged?.(data);
+          onSearchChanged?.(data, {
+            country: iso31661.find(
+              (item) => item.alpha2 === data.address.country_code?.toUpperCase()
+            ),
+            province: iso3166.subdivision(
+              data.address?.['ISO3166-2-lvl4'] ?? ''
+            ),
+          });
         }
         resolve();
       } catch (error: any) {
@@ -707,44 +804,130 @@ function InputGeocoding({
           {!value ? placeholder : value}
         </Button>
       </FormLayout>
-      <BottomSheet
-        id={'input-geocoding'}
-        open={open}
-        onClose={() => setOpen(false)}
-        type={'scroll-view'}
-        defaultSheetHeight={height * 0.6}
-        customStyles={{
-          root: {
-            paddingBottom: MarginsPaddings.mp_5,
-          },
-          ...customExtraStyles.bottomSheet,
-        }}
-        customLightStyles={customExtraLightStyles.bottomSheet}
-        customDarkStyles={customExtraDarkStyles.bottomSheet}
-      >
-        <InputGeocodingSearch
-          customStyles={customStyles}
-          customLightStyles={customLightStyles}
-          customDarkStyles={customDarkStyles}
-          customExtraStyles={customExtraStyles}
-          customExtraLightStyles={customExtraLightStyles}
-          customExtraDarkStyles={customExtraDarkStyles}
-          userAgent={userAgent}
-          layer={layer}
-          zoom={zoom}
-          countryCodes={countryCodes}
-          amenity={amenity}
-          street={street}
-          city={city}
-          county={county}
-          state={state}
-          country={country}
-          postalcode={postalcode}
-          strings={strings}
-          onChanged={onChanged}
+      {zoom !== NominatimZoom.Country && zoom !== NominatimZoom.State && (
+        <BottomSheet
+          id={'input-geocoding-search'}
+          open={open}
           onClose={() => setOpen(false)}
+          type={'scroll-view'}
+          defaultSheetHeight={height * 0.6}
+          customStyles={{
+            root: {
+              paddingBottom: MarginsPaddings.mp_5,
+            },
+            ...customExtraStyles.bottomSheet,
+          }}
+          customLightStyles={customExtraLightStyles.bottomSheet}
+          customDarkStyles={customExtraDarkStyles.bottomSheet}
+        >
+          <InputGeocodingSearch
+            customStyles={customStyles}
+            customLightStyles={customLightStyles}
+            customDarkStyles={customDarkStyles}
+            customExtraStyles={customExtraStyles}
+            customExtraLightStyles={customExtraLightStyles}
+            customExtraDarkStyles={customExtraDarkStyles}
+            userAgent={userAgent}
+            layer={layer}
+            zoom={zoom}
+            countryCodes={countryCodes}
+            amenity={amenity}
+            street={street}
+            city={city}
+            county={county}
+            state={state}
+            country={country}
+            postalcode={postalcode}
+            strings={strings}
+            onChanged={onChanged}
+            onClose={() => setOpen(false)}
+          />
+        </BottomSheet>
+      )}
+      {zoom === NominatimZoom.Country && (
+        <BottomSheet
+          id={'input-geocoding-countries'}
+          open={open}
+          onClose={() => setOpen(false)}
+          type={'flat-list'}
+          defaultSheetHeight={height * 0.6}
+          data={iso31661}
+          renderItem={({ item }) => (
+            <BottomSheet.Item
+              customStyles={customExtraStyles?.bottomSheetItem}
+              customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
+              customLightStyles={customExtraLightStyles?.bottomSheetItem}
+              customExtraDarkStyles={
+                customExtraDarkStyles?.extraBottomSheetItem
+              }
+              customExtraLightStyles={
+                customExtraLightStyles?.extraBottomSheetItem
+              }
+              customExtraStyles={customExtraStyles?.extraBottomSheetItem}
+              key={item.name}
+              icon={
+                <CountryFlag
+                  isoCode={item.alpha2.toUpperCase() ?? 'ca'}
+                  size={21}
+                />
+              }
+              onPress={(e) => {
+                onCountryChangedAsync(item);
+                setOpen(false);
+              }}
+            >
+              {item.name}
+            </BottomSheet.Item>
+          )}
+          customStyles={{
+            root: {
+              paddingBottom: MarginsPaddings.mp_5,
+            },
+            ...customExtraStyles.bottomSheet,
+          }}
+          customLightStyles={customExtraLightStyles.bottomSheet}
+          customDarkStyles={customExtraDarkStyles.bottomSheet}
         />
-      </BottomSheet>
+      )}
+      {zoom === NominatimZoom.State && (
+        <BottomSheet
+          id={'input-geocoding-states'}
+          open={open}
+          onClose={() => setOpen(false)}
+          type={'flat-list'}
+          defaultSheetHeight={height * 0.6}
+          data={Object.values(iso3166.country(country ?? '')?.sub ?? {})}
+          renderItem={({ item }) => (
+            <BottomSheet.Item
+              customStyles={customExtraStyles?.bottomSheetItem}
+              customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
+              customLightStyles={customExtraLightStyles?.bottomSheetItem}
+              customExtraDarkStyles={
+                customExtraDarkStyles?.extraBottomSheetItem
+              }
+              customExtraLightStyles={
+                customExtraLightStyles?.extraBottomSheetItem
+              }
+              customExtraStyles={customExtraStyles?.extraBottomSheetItem}
+              key={item.name}
+              onPress={(e) => {
+                onProvinceChangedAsync(item);
+                setOpen(false);
+              }}
+            >
+              {item.name}
+            </BottomSheet.Item>
+          )}
+          customStyles={{
+            root: {
+              paddingBottom: MarginsPaddings.mp_5,
+            },
+            ...customExtraStyles.bottomSheet,
+          }}
+          customLightStyles={customExtraLightStyles.bottomSheet}
+          customDarkStyles={customExtraDarkStyles.bottomSheet}
+        />
+      )}
     </>
   );
 }
@@ -805,11 +988,41 @@ export interface AddressFormProps {
   customExtraStyles?: ExtraAddressFormStyles;
   customExtraDarkStyles?: ExtraAddressFormStyles;
   customExtraLightStyles?: ExtraAddressFormStyles;
-  onLocationChanged?: (item: NominatimReverseResult) => void;
-  onCountryChanged?: (item: NominatimSearchResult) => void;
-  onStateChanged?: (item: NominatimSearchResult) => void;
-  onCityChanged?: (item: NominatimSearchResult) => void;
-  onStreetChanged?: (item: NominatimSearchResult) => void;
+  onSearchChanged?: (
+    search: NominatimReverseResult,
+    iso: {
+      country?: ISO31661AssignedEntry;
+      province?: iso3166.SubdivisionInfo.Full | null;
+    }
+  ) => void;
+  onCountryChanged?: (
+    search: NominatimSearchResult,
+    iso: {
+      country?: ISO31661AssignedEntry;
+      province?: iso3166.SubdivisionInfo.Full | null;
+    }
+  ) => void;
+  onStateChanged?: (
+    search: NominatimSearchResult,
+    iso: {
+      country?: ISO31661AssignedEntry;
+      province?: iso3166.SubdivisionInfo.Full | null;
+    }
+  ) => void;
+  onCityChanged?: (
+    search: NominatimSearchResult,
+    iso: {
+      country?: ISO31661AssignedEntry;
+      province?: iso3166.SubdivisionInfo.Full | null;
+    }
+  ) => void;
+  onStreetChanged?: (
+    search: NominatimSearchResult,
+    iso: {
+      country?: ISO31661AssignedEntry;
+      province?: iso3166.SubdivisionInfo.Full | null;
+    }
+  ) => void;
   onCivicChanged?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
   onPostalCodeChanged?: (
     e: NativeSyntheticEvent<TextInputChangeEventData>
@@ -857,7 +1070,7 @@ function AddressForm({
   customExtraStyles = {},
   customExtraDarkStyles = {},
   customExtraLightStyles = {},
-  onLocationChanged,
+  onSearchChanged,
   onCountryChanged,
   onStateChanged,
   onCityChanged,
@@ -948,7 +1161,12 @@ function AddressForm({
         setStreetValue(road);
         setCivicValue(houseNumber);
         setPostalCodeValue(postalCode);
-        onLocationChanged?.(data);
+        onSearchChanged?.(data, {
+          country: iso31661.find(
+            (item) => item.alpha2 === data.address.country_code?.toUpperCase()
+          ),
+          province: iso3166.subdivision(data.address?.['ISO3166-2-lvl4'] ?? ''),
+        });
         resolve();
       } catch (error: any) {
         console.error(error);
@@ -991,7 +1209,7 @@ function AddressForm({
         customExtraDarkStyles={customExtraDarkStyles.extraInputGeocoding}
         placeholder={placeholder?.country}
         error={error?.country}
-        onLocationChanged={onCountryChanged}
+        onSearchChanged={onCountryChanged}
       />
       <InputGeocoding
         userAgent={userAgent}
@@ -1008,7 +1226,7 @@ function AddressForm({
         customExtraDarkStyles={customExtraDarkStyles.extraInputGeocoding}
         placeholder={placeholder?.state}
         error={error?.state}
-        onLocationChanged={onStateChanged}
+        onSearchChanged={onStateChanged}
       />
       <InputGeocoding
         userAgent={userAgent}
@@ -1026,7 +1244,7 @@ function AddressForm({
         customExtraDarkStyles={customExtraDarkStyles.extraInputGeocoding}
         placeholder={placeholder?.city}
         error={error?.city}
-        onLocationChanged={onCityChanged}
+        onSearchChanged={onCityChanged}
       />
       <InputGeocoding
         userAgent={userAgent}
@@ -1045,7 +1263,7 @@ function AddressForm({
         customExtraDarkStyles={customExtraDarkStyles.extraInputGeocoding}
         placeholder={placeholder?.street}
         error={error?.street}
-        onLocationChanged={onStreetChanged}
+        onSearchChanged={onStreetChanged}
       />
       <View
         style={[
