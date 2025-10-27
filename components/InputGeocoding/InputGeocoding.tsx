@@ -1115,7 +1115,13 @@ function AddressForm({
   );
 
   useEffect(() => {
-    if (reverseResult || value) {
+    if (
+      reverseResult ||
+      (value &&
+        Object.values<string | undefined>(value).filter(
+          (item) => item === undefined
+        ).length !== Object.keys(value).length)
+    ) {
       return;
     }
 
