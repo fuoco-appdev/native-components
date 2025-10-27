@@ -1115,10 +1115,7 @@ function AddressForm({
   );
 
   useEffect(() => {
-    if (
-      reverseResult ||
-      (value && !Object.values<string | undefined>(value).includes(undefined))
-    ) {
+    if (reverseResult || value) {
       return;
     }
 
