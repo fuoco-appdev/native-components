@@ -59,6 +59,7 @@ export interface BottomSheetProps {
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
   customLightStyles?: BottomSheetStyles;
+  listEmptyComponent?: React.ReactNode;
   children?: React.ReactNode;
   data?: ArrayLike<any> | null;
   gestureRefs?: React.MutableRefObject<any>[];
@@ -116,6 +117,7 @@ function BottomSheet({
   customLightStyles,
   blurType,
   blurAmount,
+  listEmptyComponent,
   reducedTransparencyFallbackColor,
   overlayColor,
   type = 'scroll-view',
@@ -420,6 +422,7 @@ function BottomSheet({
                       maxHeight: sheetHeight > 0 ? sheetHeight : height * 0.6,
                     },
                   ]}
+                  ListEmptyComponent={listEmptyComponent}
                   onContentSizeChange={(contentWidth, contentHeight) => {
                     setSheetHeight(
                       Math.min(
