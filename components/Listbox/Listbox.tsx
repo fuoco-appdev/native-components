@@ -10,7 +10,7 @@ import { BottomSheet, BottomSheetStyles } from '../BottomSheet';
 import { FormLayout, FormLayoutStyles } from '../FormLayout';
 // import { ArrowDropDown } from '../Icon/Icons/Line';
 import React from 'react';
-import { Button } from '../Button';
+import { Button, ButtonStyles } from '../Button';
 import { ArrowDropDown } from '../Icon/Icons/Line';
 import { Colors, Globals, MarginsPaddings } from '../Themes';
 import { TypographyStyles } from '../Typography';
@@ -169,13 +169,15 @@ function Listbox({
         customDarkStyles={customExtraDarkStyles?.bottomSheet}
         customLightStyles={customExtraLightStyles?.bottomSheet}
         id={`language-switch-${id}`}
-        type={'flat-list'}
         open={open}
         onClose={onClose}
-        data={data}
-        renderItem={renderBottomSheetItem}
-        keyExtractor={keyExtractor}
-      />
+      >
+        <BottomSheet.FlatList
+          data={data}
+          renderItem={renderBottomSheetItem}
+          keyExtractor={keyExtractor}
+        />
+      </BottomSheet>
     </View>
   );
 }

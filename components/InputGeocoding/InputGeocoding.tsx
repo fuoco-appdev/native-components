@@ -816,7 +816,6 @@ function InputGeocoding({
           id={'input-geocoding-search'}
           open={open}
           onClose={() => setOpen(false)}
-          type={'scroll-view'}
           defaultSheetHeight={height * 0.6}
           customStyles={{
             root: {
@@ -827,28 +826,30 @@ function InputGeocoding({
           customLightStyles={customExtraLightStyles.bottomSheet}
           customDarkStyles={customExtraDarkStyles.bottomSheet}
         >
-          <InputGeocodingSearch
-            customStyles={customStyles}
-            customLightStyles={customLightStyles}
-            customDarkStyles={customDarkStyles}
-            customExtraStyles={customExtraStyles}
-            customExtraLightStyles={customExtraLightStyles}
-            customExtraDarkStyles={customExtraDarkStyles}
-            userAgent={userAgent}
-            layer={layer}
-            zoom={zoom}
-            countryCodes={countryCodes}
-            amenity={amenity}
-            street={street}
-            city={city}
-            county={county}
-            state={state}
-            country={country}
-            postalcode={postalcode}
-            strings={strings}
-            onChanged={onChanged}
-            onClose={() => setOpen(false)}
-          />
+          <BottomSheet.ScrollView>
+            <InputGeocodingSearch
+              customStyles={customStyles}
+              customLightStyles={customLightStyles}
+              customDarkStyles={customDarkStyles}
+              customExtraStyles={customExtraStyles}
+              customExtraLightStyles={customExtraLightStyles}
+              customExtraDarkStyles={customExtraDarkStyles}
+              userAgent={userAgent}
+              layer={layer}
+              zoom={zoom}
+              countryCodes={countryCodes}
+              amenity={amenity}
+              street={street}
+              city={city}
+              county={county}
+              state={state}
+              country={country}
+              postalcode={postalcode}
+              strings={strings}
+              onChanged={onChanged}
+              onClose={() => setOpen(false)}
+            />
+          </BottomSheet.ScrollView>
         </BottomSheet>
       )}
       {zoom === NominatimZoom.Country && (
@@ -856,36 +857,7 @@ function InputGeocoding({
           id={'input-geocoding-countries'}
           open={open}
           onClose={() => setOpen(false)}
-          type={'flat-list'}
           defaultSheetHeight={height * 0.6}
-          data={iso31661}
-          renderItem={({ item }) => (
-            <BottomSheet.Item
-              customStyles={customExtraStyles?.bottomSheetItem}
-              customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
-              customLightStyles={customExtraLightStyles?.bottomSheetItem}
-              customExtraDarkStyles={
-                customExtraDarkStyles?.extraBottomSheetItem
-              }
-              customExtraLightStyles={
-                customExtraLightStyles?.extraBottomSheetItem
-              }
-              customExtraStyles={customExtraStyles?.extraBottomSheetItem}
-              key={item.name}
-              icon={
-                <CountryFlag
-                  isoCode={item.alpha2.toUpperCase() ?? 'ca'}
-                  size={21}
-                />
-              }
-              onPress={(e) => {
-                onCountryChangedAsync(item);
-                setOpen(false);
-              }}
-            >
-              {item.name}
-            </BottomSheet.Item>
-          )}
           customStyles={{
             root: {
               paddingBottom: MarginsPaddings.mp_5,
@@ -894,44 +866,45 @@ function InputGeocoding({
           }}
           customLightStyles={customExtraLightStyles.bottomSheet}
           customDarkStyles={customExtraDarkStyles.bottomSheet}
-        />
+        >
+          <BottomSheet.FlatList
+            data={iso31661}
+            renderItem={({ item }) => (
+              <BottomSheet.Item
+                customStyles={customExtraStyles?.bottomSheetItem}
+                customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
+                customLightStyles={customExtraLightStyles?.bottomSheetItem}
+                customExtraDarkStyles={
+                  customExtraDarkStyles?.extraBottomSheetItem
+                }
+                customExtraLightStyles={
+                  customExtraLightStyles?.extraBottomSheetItem
+                }
+                customExtraStyles={customExtraStyles?.extraBottomSheetItem}
+                key={item.name}
+                icon={
+                  <CountryFlag
+                    isoCode={item.alpha2.toUpperCase() ?? 'ca'}
+                    size={21}
+                  />
+                }
+                onPress={(e) => {
+                  onCountryChangedAsync(item);
+                  setOpen(false);
+                }}
+              >
+                {item.name}
+              </BottomSheet.Item>
+            )}
+          />
+        </BottomSheet>
       )}
       {zoom === NominatimZoom.State && (
         <BottomSheet
           id={'input-geocoding-states'}
           open={open}
           onClose={() => setOpen(false)}
-          type={'flat-list'}
           defaultSheetHeight={height * 0.6}
-          data={Object.values(provinces?.sub ?? {})}
-          renderItem={({ item }) => (
-            <BottomSheet.Item
-              customStyles={customExtraStyles?.bottomSheetItem}
-              customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
-              customLightStyles={customExtraLightStyles?.bottomSheetItem}
-              customExtraDarkStyles={
-                customExtraDarkStyles?.extraBottomSheetItem
-              }
-              customExtraLightStyles={
-                customExtraLightStyles?.extraBottomSheetItem
-              }
-              customExtraStyles={customExtraStyles?.extraBottomSheetItem}
-              key={item.name}
-              onPress={(e) => {
-                const key = Object.keys(provinces?.sub ?? {}).find(
-                  (subKey) => provinces?.sub[subKey].name === item.name
-                );
-                const subdivision = iso3166.subdivision(key ?? '');
-                if (subdivision) {
-                  onProvinceChangedAsync(subdivision);
-                }
-
-                setOpen(false);
-              }}
-            >
-              {item.name}
-            </BottomSheet.Item>
-          )}
           customStyles={{
             root: {
               paddingBottom: MarginsPaddings.mp_5,
@@ -940,7 +913,39 @@ function InputGeocoding({
           }}
           customLightStyles={customExtraLightStyles.bottomSheet}
           customDarkStyles={customExtraDarkStyles.bottomSheet}
-        />
+        >
+          <BottomSheet.FlatList
+            data={Object.values(provinces?.sub ?? {})}
+            renderItem={({ item }) => (
+              <BottomSheet.Item
+                customStyles={customExtraStyles?.bottomSheetItem}
+                customDarkStyles={customExtraDarkStyles?.bottomSheetItem}
+                customLightStyles={customExtraLightStyles?.bottomSheetItem}
+                customExtraDarkStyles={
+                  customExtraDarkStyles?.extraBottomSheetItem
+                }
+                customExtraLightStyles={
+                  customExtraLightStyles?.extraBottomSheetItem
+                }
+                customExtraStyles={customExtraStyles?.extraBottomSheetItem}
+                key={item.name}
+                onPress={(e) => {
+                  const key = Object.keys(provinces?.sub ?? {}).find(
+                    (subKey) => provinces?.sub[subKey].name === item.name
+                  );
+                  const subdivision = iso3166.subdivision(key ?? '');
+                  if (subdivision) {
+                    onProvinceChangedAsync(subdivision);
+                  }
+
+                  setOpen(false);
+                }}
+              >
+                {item.name}
+              </BottomSheet.Item>
+            )}
+          />
+        </BottomSheet>
       )}
     </>
   );
