@@ -1,5 +1,5 @@
 import { BlurView } from '@react-native-community/blur';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   GestureResponderEvent,
@@ -11,6 +11,8 @@ import {
   View,
   ViewStyle,
   Vibration,
+  ScrollViewProps,
+  FlatListProps,
 } from 'react-native';
 import {
   FlatList,
@@ -23,6 +25,7 @@ import {
 import Animated, {
   Easing,
   runOnJS,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -43,7 +46,6 @@ export interface BottomSheetStyles {
 export interface BottomSheetProps {
   id: string;
   open: boolean;
-  type?: 'scroll-view' | 'flat-list';
   defaultSheetHeight?: number;
   duration?: number;
   blurType?:
@@ -59,16 +61,9 @@ export interface BottomSheetProps {
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
   customLightStyles?: BottomSheetStyles;
-  listEmptyComponent?:
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | React.ComponentType<any>
-    | null;
   children?: React.ReactNode;
-  data?: ArrayLike<any> | null;
   gestureRefs?: React.MutableRefObject<any>[];
   onPanGestureRef?: (ref: GestureType) => void;
-  renderItem?: ListRenderItem<any> | null;
-  keyExtractor?: (item: any, index: number) => string;
   onClose?: () => void;
 }
 
@@ -114,24 +109,41 @@ const darkStyles = StyleSheet.create<BottomSheetStyles>({
   },
 });
 
+export const BottomSheetContext = React.createContext<{
+  sheetHeight: number;
+  height: number;
+  setScrollHeight: (height: number) => void;
+  setSheetHeight: (height: number) => void;
+  defaultSheetHeight?: number;
+  sheetHeightValue?: SharedValue<number>;
+  scrollRef?: React.RefObject<any>;
+  panGestureRef?: React.RefObject<GestureType>;
+  isScrolling?: SharedValue<boolean>;
+}>({
+  sheetHeight: 0,
+  height: 0,
+  setScrollHeight: () => {},
+  defaultSheetHeight: 0,
+  setSheetHeight: () => {},
+  sheetHeightValue: undefined,
+  scrollRef: undefined,
+  panGestureRef: undefined,
+  isScrolling: undefined,
+});
+
 function BottomSheet({
   customStyles,
   customDarkStyles,
   customLightStyles,
   blurType,
   blurAmount,
-  listEmptyComponent,
   reducedTransparencyFallbackColor,
   overlayColor,
-  type = 'scroll-view',
   duration = 150,
   defaultSheetHeight,
   id,
   open = false,
-  data,
   gestureRefs,
-  renderItem,
-  keyExtractor,
   onPanGestureRef,
   children,
   onClose,
@@ -359,117 +371,21 @@ function BottomSheet({
               sheetAnimatedStyle,
             ]}
           >
-            {type === 'scroll-view' && (
-              <ScrollView
-                ref={scrollRef}
-                simultaneousHandlers={panGestureRef}
-                onScroll={(e) => {
-                  isScrolling.value = e.nativeEvent.contentOffset.y > 0;
-                }}
-                style={[
-                  {
-                    maxHeight: sheetHeight > 0 ? sheetHeight : height * 0.6,
-                  },
-                ]}
-                onContentSizeChange={(contentWidth, contentHeight) => {
-                  setScrollHeight(
-                    Math.min(
-                      defaultSheetHeight ?? contentHeight,
-                      defaultSheetHeight ?? height * 0.6
-                    )
-                  );
-                  setSheetHeight(
-                    Math.min(
-                      defaultSheetHeight ?? contentHeight,
-                      defaultSheetHeight ?? height * 0.6
-                    )
-                  );
-                  sheetHeightValue.value = Math.min(
-                    defaultSheetHeight ?? contentHeight,
-                    defaultSheetHeight ?? height * 0.6
-                  );
-                }}
-                contentContainerStyle={[
-                  ...(isDarkTheme
-                    ? [
-                        {
-                          ...darkStyles?.scrollView,
-                          ...(customDarkStyles?.scrollView ?? {}),
-                        },
-                      ]
-                    : [
-                        {
-                          ...lightStyles?.scrollView,
-                          ...(customLightStyles?.scrollView ?? {}),
-                        },
-                      ]),
-                  {
-                    ...styles.scrollView,
-                    ...(customStyles?.scrollView ?? {}),
-                  },
-                ]}
-              >
-                {children}
-              </ScrollView>
-            )}
-            {type === 'flat-list' && (
-              <>
-                {children}
-                <FlatList
-                  ref={scrollRef}
-                  onScroll={(e) => {
-                    isScrolling.value = e.nativeEvent.contentOffset.y > 0;
-                  }}
-                  style={[
-                    {
-                      maxHeight: sheetHeight > 0 ? sheetHeight : height * 0.6,
-                    },
-                  ]}
-                  ListEmptyComponent={listEmptyComponent}
-                  onContentSizeChange={(contentWidth, contentHeight) => {
-                    setSheetHeight(
-                      Math.min(
-                        defaultSheetHeight ?? contentHeight,
-                        defaultSheetHeight ?? height * 0.6
-                      )
-                    );
-                    setScrollHeight(
-                      Math.min(
-                        defaultSheetHeight ?? contentHeight,
-                        defaultSheetHeight ?? height * 0.6
-                      )
-                    );
-                    sheetHeightValue.value = Math.min(
-                      defaultSheetHeight ?? contentHeight,
-                      defaultSheetHeight ?? height * 0.6
-                    );
-                  }}
-                  simultaneousHandlers={panGestureRef}
-                  contentContainerStyle={[
-                    ...(isDarkTheme
-                      ? [
-                          {
-                            ...darkStyles?.scrollView,
-                            ...(customDarkStyles?.scrollView ?? {}),
-                          },
-                        ]
-                      : [
-                          {
-                            ...lightStyles?.scrollView,
-                            ...(customLightStyles?.scrollView ?? {}),
-                          },
-                        ]),
-                    {
-                      ...styles.scrollView,
-                      ...(customStyles?.scrollView ?? {}),
-                    },
-                  ]}
-                  data={data}
-                  renderItem={renderItem}
-                  keyExtractor={keyExtractor}
-                />
-              </>
-            )}
+            <BottomSheetContext.Provider
+              value={{
+                scrollRef,
+                panGestureRef,
+                isScrolling,
+                sheetHeight,
+                height,
+                setScrollHeight,
+                setSheetHeight,
+                sheetHeightValue,
+                defaultSheetHeight,
+              }}
+            >
+              {children}
+            </BottomSheetContext.Provider>
           </Animated.View>
         </GestureDetector>
       </View>
@@ -477,6 +393,188 @@ function BottomSheet({
   );
 }
 
+export interface BottomSheetScrollViewStyles {
+  scrollView?: ViewStyle;
+}
+
+export interface BottomSheetScrollViewProps extends ScrollViewProps {
+  customStyles?: BottomSheetScrollViewStyles;
+  customLightStyles?: BottomSheetScrollViewStyles;
+  customDarkStyles?: BottomSheetScrollViewStyles;
+  children?: React.ReactNode;
+}
+
+export function BottomSheetScrollView({
+  customStyles,
+  customLightStyles,
+  customDarkStyles,
+  children,
+  ...props
+}: BottomSheetScrollViewProps) {
+  const {
+    scrollRef,
+    panGestureRef,
+    isScrolling,
+    sheetHeight,
+    height,
+    setScrollHeight,
+    setSheetHeight,
+    sheetHeightValue,
+    defaultSheetHeight,
+  } = useContext(BottomSheetContext);
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
+  return (
+    <ScrollView
+      {...props}
+      ref={scrollRef}
+      simultaneousHandlers={panGestureRef}
+      onScroll={(e) => {
+        if (!isScrolling) {
+          return;
+        }
+
+        isScrolling.value = e.nativeEvent.contentOffset.y > 0;
+      }}
+      style={[
+        {
+          maxHeight: sheetHeight > 0 ? sheetHeight : height * 0.6,
+        },
+      ]}
+      onContentSizeChange={(contentWidth, contentHeight) => {
+        setScrollHeight(
+          Math.min(
+            defaultSheetHeight ?? contentHeight,
+            defaultSheetHeight ?? height * 0.6
+          )
+        );
+        setSheetHeight(
+          Math.min(
+            defaultSheetHeight ?? contentHeight,
+            defaultSheetHeight ?? height * 0.6
+          )
+        );
+        if (sheetHeightValue) {
+          sheetHeightValue.value = Math.min(
+            defaultSheetHeight ?? contentHeight,
+            defaultSheetHeight ?? height * 0.6
+          );
+        }
+      }}
+      contentContainerStyle={[
+        ...(isDarkTheme
+          ? [
+              {
+                ...darkStyles?.scrollView,
+                ...(customDarkStyles?.scrollView ?? {}),
+              },
+            ]
+          : [
+              {
+                ...lightStyles?.scrollView,
+                ...(customLightStyles?.scrollView ?? {}),
+              },
+            ]),
+        {
+          ...styles.scrollView,
+          ...(customStyles?.scrollView ?? {}),
+        },
+      ]}
+    >
+      {children}
+    </ScrollView>
+  );
+}
+
+export interface BottomSheetFlatListStyles {
+  flatList?: ViewStyle;
+}
+
+export interface BottomSheetFlatListProps extends FlatListProps<any> {
+  customStyles?: BottomSheetFlatListStyles;
+  customLightStyles?: BottomSheetFlatListStyles;
+  customDarkStyles?: BottomSheetFlatListStyles;
+  children?: React.ReactNode;
+}
+
+export function BottomSheetFlatList({
+  customStyles,
+  customLightStyles,
+  customDarkStyles,
+  ...props
+}: BottomSheetFlatListProps) {
+  const {
+    scrollRef,
+    panGestureRef,
+    isScrolling,
+    sheetHeight,
+    height,
+    setScrollHeight,
+    setSheetHeight,
+    sheetHeightValue,
+    defaultSheetHeight,
+  } = useContext(BottomSheetContext);
+  const theme = useColorScheme();
+  const isDarkTheme = theme === 'dark';
+  return (
+    <FlatList
+      {...props}
+      ref={scrollRef}
+      onScroll={(e) => {
+        if (!isScrolling) {
+          return;
+        }
+
+        isScrolling.value = e.nativeEvent.contentOffset.y > 0;
+      }}
+      style={[
+        {
+          maxHeight: sheetHeight > 0 ? sheetHeight : height * 0.6,
+        },
+      ]}
+      onContentSizeChange={(contentWidth, contentHeight) => {
+        setSheetHeight(
+          Math.min(
+            defaultSheetHeight ?? contentHeight,
+            defaultSheetHeight ?? height * 0.6
+          )
+        );
+        setScrollHeight(
+          Math.min(
+            defaultSheetHeight ?? contentHeight,
+            defaultSheetHeight ?? height * 0.6
+          )
+        );
+        if (sheetHeightValue) {
+          sheetHeightValue.value = Math.min(
+            defaultSheetHeight ?? contentHeight,
+            defaultSheetHeight ?? height * 0.6
+          );
+        }
+      }}
+      simultaneousHandlers={panGestureRef}
+      contentContainerStyle={[
+        ...(isDarkTheme
+          ? [
+              {
+                ...darkStyles?.scrollView,
+                ...(customDarkStyles?.flatList ?? {}),
+              },
+            ]
+          : [
+              {
+                ...lightStyles?.scrollView,
+                ...(customLightStyles?.flatList ?? {}),
+              },
+            ]),
+        {
+          ...styles.scrollView,
+          ...(customStyles?.flatList ?? {}),
+        },
+      ]}
+    />
+  );
+}
 export interface BottomSheetItemStyles {
   root?: ViewStyle;
 }
@@ -540,4 +638,7 @@ function BottomSheetItem({
 }
 
 BottomSheet.Item = BottomSheetItem;
+BottomSheet.ScrollView = BottomSheetScrollView;
+BottomSheet.FlatList = BottomSheetFlatList;
+
 export default BottomSheet;
