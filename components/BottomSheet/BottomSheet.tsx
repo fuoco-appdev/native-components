@@ -59,7 +59,10 @@ export interface BottomSheetProps {
   customStyles?: BottomSheetStyles;
   customDarkStyles?: BottomSheetStyles;
   customLightStyles?: BottomSheetStyles;
-  listEmptyComponent?: React.ReactNode;
+  listEmptyComponent?:
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | React.ComponentType<any>
+    | null;
   children?: React.ReactNode;
   data?: ArrayLike<any> | null;
   gestureRefs?: React.MutableRefObject<any>[];
