@@ -52,7 +52,7 @@ export * from './Input';
 export * from './InputTag';
 export * from './InputGeocoding';
 export * from './DatePicker';
-// export * from './input-number'
+export * from './InputNumber';
 export * from './InputPhoneNumber';
 // export * from './input-geocoding'
 // export * from './radio'
