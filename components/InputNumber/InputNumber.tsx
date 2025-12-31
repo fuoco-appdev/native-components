@@ -1,47 +1,30 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react/react-in-jsx-scope */
-import Clipboard from '@react-native-clipboard/clipboard';
-import { BlurView } from '@react-native-community/blur';
-import React, { RefObject, useEffect, useRef, useState } from 'react';
+import React, { RefObject, useRef } from 'react';
 import {
   ColorValue,
-  Dimensions,
   GestureResponderEvent,
   ImageStyle,
-  Keyboard,
-  KeyboardAvoidingView,
   KeyboardTypeOptions,
   LayoutChangeEvent,
   NativeSyntheticEvent,
-  SafeAreaView,
   StyleSheet,
   TextInput,
   TextInputChangeEventData,
   TextInputFocusEventData,
   TextInputProps,
   TextStyle,
-  TouchableOpacity,
-  Vibration,
   View,
   ViewStyle,
   useColorScheme,
 } from 'react-native';
 import Button, { ButtonStyles } from '../Button/Button';
 import { FormLayout, FormLayoutStyles } from '../FormLayout/FormLayout';
-import {
-  ContentCopy,
-  ErrorOutline,
-  Visibility,
-  VisibilityOff,
-  Remove,
-  Add,
-} from '../Icon/Icons/Line';
-import { Portal } from '../Portal';
+import { Add, ErrorOutline, Remove } from '../Icon/Icons/Line';
 import Colors from '../Themes/colors';
 import Globals from '../Themes/globals';
 import MarginsPaddings from '../Themes/margins_paddings';
-import { Line } from 'react-native-svg';
 
 export interface InputNumberStyles {
   root?: ViewStyle;
@@ -128,6 +111,7 @@ const styles = StyleSheet.create<InputNumberStyles>({
     position: 'relative',
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: Globals.rounded_md,
     paddingLeft: MarginsPaddings.mp_5,
     paddingRight: MarginsPaddings.mp_5,
@@ -152,6 +136,10 @@ const styles = StyleSheet.create<InputNumberStyles>({
     marginRight: MarginsPaddings.mp_4,
   },
   input: {
+    display: 'flex',
+    flexDirection: 'row',
+    textAlign: 'center',
+    flex: 1,
     overflow: 'hidden',
     backgroundColor: 'transparent',
     paddingTop: MarginsPaddings.mp_4,
