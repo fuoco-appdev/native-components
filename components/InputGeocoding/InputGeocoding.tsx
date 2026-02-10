@@ -239,6 +239,7 @@ function InputGeocodingSearch({
   customExtraDarkStyles,
   url,
   userAgent,
+  timeout = 500,
   layer,
   zoom,
   countryCodes,
@@ -261,6 +262,7 @@ function InputGeocodingSearch({
   customExtraLightStyles?: ExtraInputGeocodingStyles;
   url: string;
   userAgent: string;
+  timeout?: number;
   layer: string;
   zoom: number;
   countryCodes?: string[];
@@ -348,7 +350,7 @@ function InputGeocodingSearch({
     }
 
     setIsLoading(true);
-    const timeout = setTimeout(async () => {
+    const timeoutId = setTimeout(async () => {
       try {
         const response = await fetch(`${searchUrl}?${params.toString()}`, {
           headers: {
@@ -372,12 +374,13 @@ function InputGeocodingSearch({
         console.error('Error fetching data, ', error);
         setIsLoading(false);
       }
-    }, 1500);
+    }, timeout);
 
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(timeoutId);
   }, [
     url,
     userAgent,
+    timeout,
     layer,
     zoom,
     searchValue,
