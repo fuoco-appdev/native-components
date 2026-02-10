@@ -95,6 +95,7 @@ export enum NominatimZoom {
 }
 
 export interface InputGeocodingProps {
+  url: string;
   userAgent: string;
   disableReverseSearch?: boolean;
   countryCodes?: string[];
@@ -236,6 +237,7 @@ function InputGeocodingSearch({
   customExtraStyles,
   customExtraLightStyles,
   customExtraDarkStyles,
+  url,
   userAgent,
   layer,
   zoom,
@@ -257,6 +259,7 @@ function InputGeocodingSearch({
   customExtraStyles?: ExtraInputGeocodingStyles;
   customExtraDarkStyles?: ExtraInputGeocodingStyles;
   customExtraLightStyles?: ExtraInputGeocodingStyles;
+  url: string;
   userAgent: string;
   layer: string;
   zoom: number;
@@ -288,7 +291,7 @@ function InputGeocodingSearch({
   };
 
   useEffect(() => {
-    const url = 'https://nominatim.openstreetmap.org/search';
+    const searchUrl = `${url}/search`;
     const params = new URLSearchParams('');
     params.append('format', 'json');
     params.append('addressdetails', '1');
@@ -347,7 +350,7 @@ function InputGeocodingSearch({
     setIsLoading(true);
     const timeout = setTimeout(async () => {
       try {
-        const response = await fetch(`${url}?${params.toString()}`, {
+        const response = await fetch(`${searchUrl}?${params.toString()}`, {
           headers: {
             'User-Agent': userAgent,
           },
@@ -373,6 +376,7 @@ function InputGeocodingSearch({
 
     return () => clearTimeout(timeout);
   }, [
+    url,
     userAgent,
     layer,
     zoom,
@@ -553,6 +557,7 @@ function InputGeocodingSearch({
 }
 
 function InputGeocoding({
+  url,
   userAgent,
   disableReverseSearch,
   layer = 'address',
@@ -607,7 +612,7 @@ function InputGeocoding({
   };
 
   const onCountryChangedAsync = async (iso: ISO31661AssignedEntry) => {
-    const url = 'https://nominatim.openstreetmap.org/search';
+    const searchUrl = `${url}/search`;
     const params = new URLSearchParams('');
     params.append('format', 'json');
     params.append('addressdetails', '1');
@@ -619,7 +624,7 @@ function InputGeocoding({
     params.append('country', iso.name);
 
     try {
-      const response = await fetch(`${url}?${params.toString()}`, {
+      const response = await fetch(`${searchUrl}?${params.toString()}`, {
         headers: {
           'User-Agent': userAgent,
         },
@@ -643,7 +648,7 @@ function InputGeocoding({
   };
 
   const onProvinceChangedAsync = async (iso: iso3166.SubdivisionInfo.Full) => {
-    const url = 'https://nominatim.openstreetmap.org/search';
+    const searchUrl = `${url}/search`;
     const params = new URLSearchParams('');
     params.append('format', 'json');
     params.append('addressdetails', '1');
@@ -659,7 +664,7 @@ function InputGeocoding({
     params.append('state', iso.name);
 
     try {
-      const response = await fetch(`${url}?${params.toString()}`, {
+      const response = await fetch(`${searchUrl}?${params.toString()}`, {
         headers: {
           'User-Agent': userAgent,
         },
@@ -710,7 +715,7 @@ function InputGeocoding({
 
       try {
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${defaultLatitude}&lon=${defaultLongitude}&zoom=${zoom}&layer=${layer}&addressdetails=1`,
+          `${url}/reverse?format=json&lat=${defaultLatitude}&lon=${defaultLongitude}&zoom=${zoom}&layer=${layer}&addressdetails=1`,
           {
             headers: {
               'User-Agent': userAgent,
@@ -745,7 +750,7 @@ function InputGeocoding({
     });
 
     updateLocationAsync.then();
-  }, [defaultCoordinates, userAgent, layer, zoom, disableReverseSearch]);
+  }, [url, defaultCoordinates, userAgent, layer, zoom, disableReverseSearch]);
 
   useEffect(() => {
     if (
@@ -834,6 +839,7 @@ function InputGeocoding({
               customExtraStyles={customExtraStyles}
               customExtraLightStyles={customExtraLightStyles}
               customExtraDarkStyles={customExtraDarkStyles}
+              url={url}
               userAgent={userAgent}
               layer={layer}
               zoom={zoom}
@@ -964,6 +970,7 @@ export interface ExtraAddressFormStyles {
 }
 
 export interface AddressFormProps {
+  url: string;
   userAgent: string;
   strings?: {
     country?: string;
@@ -1063,6 +1070,7 @@ const addressFormLightStyles = StyleSheet.create<AddressFormStyles>({});
 const addressFormDarkStyles = StyleSheet.create<AddressFormStyles>({});
 
 function AddressForm({
+  url,
   userAgent,
   defaultCoordinates,
   value,
@@ -1150,7 +1158,7 @@ function AddressForm({
 
       try {
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${defaultLatitude}&lon=${defaultLongitude}&zoom=${NominatimZoom.Building}&layer=address&addressdetails=1`,
+          `${url}/reverse?format=json&lat=${defaultLatitude}&lon=${defaultLongitude}&zoom=${NominatimZoom.Building}&layer=address&addressdetails=1`,
           {
             headers: {
               'User-Agent': userAgent,
@@ -1196,7 +1204,7 @@ function AddressForm({
     });
 
     updateLocationAsync.then();
-  }, [defaultCoordinates, userAgent, value]);
+  }, [defaultCoordinates, userAgent, value, url]);
 
   return (
     <View
@@ -1218,6 +1226,7 @@ function AddressForm({
       ]}
     >
       <InputGeocoding
+        url={url}
         userAgent={userAgent}
         zoom={NominatimZoom.Country}
         country={value?.country ?? countryValue}
@@ -1234,6 +1243,7 @@ function AddressForm({
         onSearchChanged={onCountryChanged}
       />
       <InputGeocoding
+        url={url}
         userAgent={userAgent}
         zoom={NominatimZoom.State}
         country={value?.country ?? countryValue}
@@ -1251,6 +1261,7 @@ function AddressForm({
         onSearchChanged={onStateChanged}
       />
       <InputGeocoding
+        url={url}
         userAgent={userAgent}
         zoom={NominatimZoom.City}
         country={value?.country ?? countryValue}
@@ -1269,6 +1280,7 @@ function AddressForm({
         onSearchChanged={onCityChanged}
       />
       <InputGeocoding
+        url={url}
         userAgent={userAgent}
         zoom={NominatimZoom.MajorAndMinorStreets}
         country={value?.country ?? countryValue}
