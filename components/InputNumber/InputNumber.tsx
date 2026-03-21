@@ -225,7 +225,7 @@ const InputNumberInner = ({
   placeholder,
   placeholderTextColor,
   value,
-  type,
+  type = 'numeric',
   customStyles = {},
   customLightStyles = {},
   customDarkStyles = {},
