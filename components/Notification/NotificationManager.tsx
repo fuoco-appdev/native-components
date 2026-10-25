@@ -1,11 +1,6 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { Dimensions, View } from 'react-native';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import Notification, { NotificationProps } from './Notification'; // Assuming your Notification component is in the same directory
 import { Portal } from '../Portal';
 
@@ -25,6 +20,7 @@ export const useNotification = () => useContext(NotificationContext);
 
 const NotificationContainer = () => {
   const notificationContext = useNotification();
+  const insets = useContext(SafeAreaInsetsContext);
   const [notifications, setNotifications] = useState<
     { props: NotificationProps; height: number }[]
   >([]);
@@ -56,6 +52,7 @@ const NotificationContainer = () => {
     <View
       style={{
         position: 'absolute',
+        top: insets?.top ?? 0,
         height: '100%',
         width: '100%',
       }}
