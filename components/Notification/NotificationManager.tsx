@@ -50,6 +50,7 @@ const NotificationContainer = () => {
 
   return (
     <View
+      pointerEvents="box-none"
       style={{
         position: 'absolute',
         top: insets?.top ?? 0,
