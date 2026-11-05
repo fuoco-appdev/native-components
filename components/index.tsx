@@ -51,6 +51,7 @@ export * from './Checkbox';
 export * from './Input';
 export * from './InputTag';
 export * from './InputGeocoding';
+export * from './InputMapboxGeocoding';
 export * from './DatePicker';
 export * from './InputNumber';
 export * from './InputPhoneNumber';
